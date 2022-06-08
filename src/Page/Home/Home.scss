@@ -1,0 +1,41 @@
+.Home{
+  // set div's container
+  height: 100vh;
+  width:100;
+  // div 置中
+  display: flex;
+  justify-content:center;
+  align-items:center;
+
+  background-image: linear-gradient(to right,#373b44,#4286f4);
+  color: #fff;
+  .setTime{
+    display:grid;
+    grid-template-rows:min-content min-content;
+    grid-template-columns: 1fr 1fr;
+    grid-gap:20px;
+  }
+  
+
+}
+
+.traffic{
+  display: flex;
+  justify-content: space-around;
+  //icon's default setting
+  ion-icon{
+    color:rgb(144, 143, 143);
+    font-size: 36px;
+  }
+  //let radio disappear
+  input {
+    display: none;
+    // visibility: hidden;
+    // height:0;
+    // width:0;
+  }
+  //when icon is checked, change icon's color to white
+  input:checked +label ion-icon{
+    color:#fff
+  }
+}
