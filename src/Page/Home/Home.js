@@ -3,6 +3,7 @@ import './Home.scss';
 import CitySelect from '../../Components/CitySelect'
 import { city, districts } from '../../Assets/rawData'
 import {TimeOption} from '../../Components/TimeOption'
+import moment from 'moment';
 ////////
 // set font size and font family
 ////
@@ -27,6 +28,8 @@ function Home() {
     setRegion(e.target.value);
     setDistrict(districts[e.target.value][0][0]);
   }
+  console.log('Today',moment().format("MMM Do"));
+  console.log('Tomorrow',moment().add(1, 'days').format("MMM Do"))
 
   return (
     <div className="Home">
