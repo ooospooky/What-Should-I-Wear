@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
 import './Home.scss';
 import CitySelect from '../../Components/CitySelect'
-import {city,districts} from '../../Assets/rawData'
+import { city, districts } from '../../Assets/rawData'
+import {TimeOption} from '../../Components/TimeOption'
 ////////
-// set region and district default
+// set font size and font family
 ////
 function Home() {
-  const [goOutTime, setGoOutTime] = useState('');
-  const [goHomeTime, setGoHomeTime] = useState('');
-  const [traffic, setTraffic] = useState('');
+  const [goOutTime, setGoOutTime] = useState('09:00');
+  const [goHomeTime, setGoHomeTime] = useState('18:00');
+  const [traffic, setTraffic] = useState('moto');
   const [region, setRegion] = useState('基隆市')
-  const [district,setDistrict] = useState(districts[region][0])
+  const [district, setDistrict] = useState(districts[region][0])
   const handleSubmit = (event) => {
-    console.log(goOutTime, goHomeTime)
+    console.log('t',goOutTime, goHomeTime)
     console.log(traffic)
     console.log(region)
     console.log(district)
@@ -22,20 +23,22 @@ function Home() {
     setTraffic(event.target.value);
   }
   const changeArea = (e) => {
-    console.log('e',e.target.value)
-      setRegion(e.target.value) ;
-      setDistrict(districts[e.target.value][0][0]);
+    console.log('e', e.target.value)
+    setRegion(e.target.value);
+    setDistrict(districts[e.target.value][0][0]);
   }
 
   return (
     <div className="Home">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="Home__form">
         {/* 出門&回家 */}
         <div className="setTime">
           <label htmlFor="go-out-time" className="setTime__outLabel">出門時間</label>
           <label htmlFor="go-home-time" className="setTime__backLabel">回家時間</label>
-          <input type="text" id="go-out-time" className="setTime__outInput" onChange={(e) => { setGoOutTime(e.target.value) }} ></input>
-          <input type="text" id="go-home-time" className="setTime__backInput" onChange={(e) => { setGoHomeTime(e.target.value) }}></input>
+          <TimeOption onChange={(e) => { setGoOutTime(e.target.value) }} defaultTime={goOutTime} />
+          <TimeOption onChange={(e) => { setGoHomeTime(e.target.value)}} defaultTime={goHomeTime}/>
+          {/* <input type="text" id="go-out-time" className="setTime__outInput" onChange={(e) => { setGoOutTime(e.target.value) }} ></input> */}
+          {/* <input type="text" id="go-home-time" className="setTime__backInput" onChange={(e) => { setGoHomeTime(e.target.value) }}></input> */}
         </div>
         {/*  */}
         {/*  交通工具 */}
@@ -44,44 +47,48 @@ function Home() {
           {/* walk */}
           <input type="radio" id="walk" value="walk" className="traffic__walkinput" onChange={onChangeValue} checked={traffic === "walk"}></input>
           <label htmlFor="walk" className="traffic__walklabel">
-            <ion-icon name="walk"  className="traffic__walklabel--icon"></ion-icon>
+            <ion-icon name="walk" className="traffic__walklabel--icon"></ion-icon>
           </label>
           {/* bike */}
           <input type="radio" id="moto" value="moto" onChange={onChangeValue} checked={traffic === "moto"} ></input>
           <label htmlFor="moto">
-          <ion-icon name="bicycle"></ion-icon>
+            <ion-icon name="bicycle"></ion-icon>
           </label>
           {/* car */}
           <input type="radio" id="car" value="car" onChange={onChangeValue} checked={traffic === "car"} ></input>
           <label htmlFor="car">
-          <ion-icon name="car-sport"></ion-icon>
+            <ion-icon name="car-sport"></ion-icon>
           </label>
-           {/* car */}
-           <input type="radio" id="bus" value="bus" onChange={onChangeValue} checked={traffic === "bus"} ></input>
+          {/* car */}
+          <input type="radio" id="bus" value="bus" onChange={onChangeValue} checked={traffic === "bus"} ></input>
           <label htmlFor="bus">
-          <ion-icon name="bus"></ion-icon>
+            <ion-icon name="bus"></ion-icon>
           </label>
         </div>
         {/*  */}
+        <div>
         <h3>地區</h3>
-        <select id="dec" default={region} onChange={(e)=>changeArea(e)}>
-          {city.map((data)=>{
+        <select className="area__input" default={region} value={region} onChange={(e) => changeArea(e)}>
+          {city.map((data) => {
             return (
               <option value={data}>{data}</option>
             )
           })}
         </select>
         {/* {console.log(districts[region],'teset',region)} */}
-        <select default={district} value={district} onChange={(e) => setDistrict(e.target.value)}>
-        {districts[region].map((data,num)=>{
-            return(
+        <select className="area__input" default={district} value={district} onChange={(e) => setDistrict(e.target.value)}>
+          {districts[region].map((data, num) => {
+            return (
               <option value={data[0]}>{data[0]}</option>
             )
           })}
         </select>
+        </div>
 
-        <input type="submit" value="What Should I Wear?" />
-
+        {/* <input type="submit" value="What Should I Wear?" /> */}
+        <div className="subbmit">
+        <button  className="subbmit__btn" onClick={handleSubmit}> What Should I Wear? </button>
+        </div>
       </form>
     </div>
   )

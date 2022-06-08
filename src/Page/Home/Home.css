@@ -1,6 +1,6 @@
 .Home {
   height: 100vh;
-  width: 100;
+  width: 100vw;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -15,6 +15,10 @@
   color: #fff;
 }
 
+.Home__form {
+  width: 30%;
+}
+
 .Home .setTime {
   display: -ms-grid;
   display: grid;
@@ -24,6 +28,13 @@
   -ms-grid-columns: 1fr 1fr;
       grid-template-columns: 1fr 1fr;
   grid-gap: 20px;
+}
+
+.Home .setTime__Input {
+  height: 2rem;
+  width: 11rem;
+  background-color: #57534e9e;
+  color: #fff;
 }
 
 .traffic {
@@ -45,5 +56,49 @@
 
 .traffic input:checked + label ion-icon {
   color: #fff;
+}
+
+.area__input {
+  height: 2rem;
+  width: 9rem;
+  background-color: #57534e9e;
+  color: #fff;
+}
+
+.area__input:first-of-type {
+  margin-right: 2rem;
+}
+
+.subbmit {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.subbmit__btn {
+  margin-top: 3.5rem;
+  background-color: #60a5faa5;
+  color: #fff;
+  border: none;
+  border-radius: 5rem;
+  width: 50%;
+  height: 3rem;
+  cursor: pointer;
+  -webkit-box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+}
+
+.subbmit__btn:hover {
+  background-color: #418de9a5;
+}
+
+.subbmit__btn:active {
+  -webkit-transform: translateY(3px);
+          transform: translateY(3px);
+  -webkit-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 /*# sourceMappingURL=Home.css.map */

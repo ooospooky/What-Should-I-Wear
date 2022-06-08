@@ -1,7 +1,7 @@
 .Home{
   // set div's container
   height: 100vh;
-  width:100;
+  width:100vw;
   // div 置中
   display: flex;
   justify-content:center;
@@ -9,15 +9,23 @@
 
   background-image: linear-gradient(to right,#373b44,#4286f4);
   color: #fff;
+  &__form{
+    width: 30%;
+  }
   .setTime{
     display:grid;
     grid-template-rows:min-content min-content;
     grid-template-columns: 1fr 1fr;
     grid-gap:20px;
+    &__Input {
+      height:2rem;
+      width:11rem;
+      background-color: #57534e9e;
+      color:#fff
+    }
   }
-  
-
 }
+
 
 .traffic{
   display: flex;
@@ -38,4 +46,39 @@
   input:checked +label ion-icon{
     color:#fff
   }
+}
+
+.area__input{
+  &:first-of-type{
+    margin-right: 2rem;
+  }
+    height:2rem;
+    width:9rem;
+    background-color: #57534e9e;
+    color:#fff
+}
+
+.subbmit{
+  display:flex;
+  justify-content: center;
+  &__btn{
+  margin-top:3.5rem;
+  background-color: #60a5faa5;
+  color:#fff;
+  border: none;
+  border-radius:5rem;
+  width: 50%;
+  height: 3rem;
+  cursor: pointer;
+  //shadow
+  box-shadow: 0 7px 10px rgba(0,0,0,.2);
+  &:hover{
+    background-color: #418de9a5;
+  }
+  &:active{
+   transform: translateY(3px);
+   box-shadow: 0 4px 10px rgba(0,0,0,.2);
+  }
+  }
+  
 }
