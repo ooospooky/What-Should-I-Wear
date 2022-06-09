@@ -33,7 +33,7 @@
 .Home .setTime__Input {
   height: 2rem;
   width: 11rem;
-  background-color: #57534e9e;
+  background-color: #57534f9e;
   color: #fff;
 }
 
@@ -63,6 +63,7 @@
   width: 9rem;
   background-color: #57534e9e;
   color: #fff;
+  border-radius: 7px;
 }
 
 .area__input:first-of-type {
@@ -100,5 +101,46 @@
           transform: translateY(3px);
   -webkit-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.date {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+}
+
+.date input {
+  display: none;
+}
+
+.date input:checked + label {
+  background-color: #57534e9e;
+}
+
+.date__btn, .date__btn:visited {
+  border: none;
+  width: 5rem;
+  height: 5rem;
+  background-color: rgba(144, 143, 143, 0.449);
+  color: #fff;
+  border-radius: 20%;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 /*# sourceMappingURL=Home.css.map */

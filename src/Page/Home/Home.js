@@ -2,19 +2,20 @@ import React, { useState } from 'react'
 import './Home.scss';
 import CitySelect from '../../Components/CitySelect'
 import { city, districts } from '../../Assets/rawData'
-import {TimeOption} from '../../Components/TimeOption'
+import { TimeOption } from '../../Components/TimeOption'
 import moment from 'moment';
 ////////
 // set font size and font family
 ////
 function Home() {
+  const [date, setDate] = useState('today')
   const [goOutTime, setGoOutTime] = useState('09:00');
   const [goHomeTime, setGoHomeTime] = useState('18:00');
   const [traffic, setTraffic] = useState('moto');
   const [region, setRegion] = useState('基隆市')
   const [district, setDistrict] = useState(districts[region][0])
   const handleSubmit = (event) => {
-    console.log('t',goOutTime, goHomeTime)
+    console.log(goOutTime, goHomeTime)
     console.log(traffic)
     console.log(region)
     console.log(district)
@@ -24,22 +25,51 @@ function Home() {
     setTraffic(event.target.value);
   }
   const changeArea = (e) => {
-    console.log('e', e.target.value)
     setRegion(e.target.value);
     setDistrict(districts[e.target.value][0][0]);
   }
-  console.log('Today',moment().format("MMM Do"));
-  console.log('Tomorrow',moment().add(1, 'days').format("MMM Do"))
+  console.log('Today', moment().format("MMM Do"));
+  console.log('Tomorrow', moment().add(1, 'days').format("MMM Do"))
 
   return (
     <div className="Home">
+
       <form onSubmit={handleSubmit} className="Home__form">
+        <div className="date">
+        <input type="radio"  id="today"  onChange={()=>setDate('today')} checked={date === "today"} ></input>
+          <label htmlFor="today" className="date__btn">
+          <span>{moment().format("MMM Do")}</span>
+            <span>今天</span>
+          </label>
+          <input type="radio"  id="tomorrow"  onChange={()=>setDate('tomorrow')} checked={date === "tomorrow"} ></input>
+          <label htmlFor="tomorrow" className="date__btn">
+          <span>{moment().format("MMM Do")}</span>
+            <span>明天</span>
+          </label>
+          <input type="radio"  id="afterTomorrow"  onChange={()=>setDate('afterTomorrow')} checked={date === "afterTomorrow"} ></input>
+          <label htmlFor="afterTomorrow" className="date__btn">
+          <span>{moment().format("MMM Do")}</span>
+            <span>後天</span>
+          </label>
+          {/* <button className="date__btn" onClick={()=>setDate('today ')}>
+            <span>{moment().format("MMM Do")}</span>
+            <span>今天</span>
+          </button> */}
+          {/* <button className="date__btn">
+            <span>{moment().add(1, 'days').format("MMM Do")}</span>
+            <span>明天</span>
+          </button>
+          <button className="date__btn">
+            <span>{moment().add(2, 'days').format("MMM Do")}</span>
+            <span>後天</span>
+          </button> */}
+        </div>
         {/* 出門&回家 */}
         <div className="setTime">
           <label htmlFor="go-out-time" className="setTime__outLabel">出門時間</label>
           <label htmlFor="go-home-time" className="setTime__backLabel">回家時間</label>
           <TimeOption onChange={(e) => { setGoOutTime(e.target.value) }} defaultTime={goOutTime} />
-          <TimeOption onChange={(e) => { setGoHomeTime(e.target.value)}} defaultTime={goHomeTime}/>
+          <TimeOption onChange={(e) => { setGoHomeTime(e.target.value) }} defaultTime={goHomeTime} />
           {/* <input type="text" id="go-out-time" className="setTime__outInput" onChange={(e) => { setGoOutTime(e.target.value) }} ></input> */}
           {/* <input type="text" id="go-home-time" className="setTime__backInput" onChange={(e) => { setGoHomeTime(e.target.value) }}></input> */}
         </div>
@@ -70,27 +100,27 @@ function Home() {
         </div>
         {/*  */}
         <div>
-        <h3>地區</h3>
-        <select className="area__input" default={region} value={region} onChange={(e) => changeArea(e)}>
-          {city.map((data) => {
-            return (
-              <option value={data}>{data}</option>
-            )
-          })}
-        </select>
-        {/* {console.log(districts[region],'teset',region)} */}
-        <select className="area__input" default={district} value={district} onChange={(e) => setDistrict(e.target.value)}>
-          {districts[region].map((data, num) => {
-            return (
-              <option value={data[0]}>{data[0]}</option>
-            )
-          })}
-        </select>
+          <h3>地區</h3>
+          <select className="area__input" default={region} value={region} onChange={(e) => changeArea(e)}>
+            {city.map((data) => {
+              return (
+                <option value={data}>{data}</option>
+              )
+            })}
+          </select>
+          {/* {console.log(districts[region],'teset',region)} */}
+          <select className="area__input" default={district} value={district} onChange={(e) => setDistrict(e.target.value)}>
+            {districts[region].map((data, num) => {
+              return (
+                <option value={data[0]}>{data[0]}</option>
+              )
+            })}
+          </select>
         </div>
 
         {/* <input type="submit" value="What Should I Wear?" /> */}
         <div className="subbmit">
-        <button  className="subbmit__btn" onClick={handleSubmit}> What Should I Wear? </button>
+          <button className="subbmit__btn" onClick={handleSubmit}> What Should I Wear? </button>
         </div>
       </form>
     </div>
