@@ -1,7 +1,7 @@
 .Home {
   // set div's container
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   // div 置中
   display: flex;
   justify-content: center;
@@ -9,6 +9,7 @@
 
   background-image: linear-gradient(to right, #373b44, #4286f4);
   color: #fff;
+
 
   &__form {
     width: 30%;
@@ -18,13 +19,14 @@
     display: grid;
     grid-template-rows: min-content min-content;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 20px;
+    grid-gap: 15px;
 
     &__Input {
       height: 2rem;
-      width: 11rem;
+      width: 9rem;
       background-color: #57534f9e;
-      color: #fff
+      color: #fff;
+      font-size: 1rem;
     }
   }
 }
@@ -50,25 +52,35 @@
     color: #fff
   }
 }
+.area{
+  // display:flex;
+  // justify-content:flex-start;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 15px;
+  &__input {
+    // &:first-child{
+    //   margin-right: 2rem;
+    // }
 
-.area__input {
-  &:first-of-type {
-    margin-right: 2rem;
+    height:2rem;
+    width:9rem;
+    background-color: #57534e9e;
+    color:#fff;
+    border-radius:7px;
+    font-size: 1rem;
   }
-
-  height:2rem;
-  width:9rem;
-  background-color: #57534e9e;
-  color:#fff;
-  border-radius:7px;
 }
+
 
 .subbmit {
   display: flex;
   justify-content: center;
-
   &__btn {
-    
+    font-size: 1rem;
+    font-family :-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: bold;
+
     margin-top: 3.5rem;
     background-color: #60a5faa5;
     color: #fff;
@@ -92,6 +104,9 @@
 
 }
 .date{
+  font-size: .9rem;
+  font-weight:500;
+
   display:flex;
   justify-content:space-evenly;
   input {
@@ -117,8 +132,5 @@
     flex-direction: column;
     justify-content:space-evenly;
     align-items: center;
-    
-  
-  
   }
 }

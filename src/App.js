@@ -1,7 +1,12 @@
 import axios from "axios";
-import { getWeather } from "./Helper/GetWeather";
+import {useState} from 'react'
 import Home from "./Page/Home/Home";
+import Result from "./Page/Result/Result";
+
+import { WeatherContext } from './Contexts/WeatherContext'
+
 function App() {
+
   // const options = {
   //   // method: 'GET',
   //   // url: 'api.openweathermap.org/data/2.5/forecast?lat=25.0358303&lon=121.4367535&appid=a79b0a9c2c6898fe5fc6189047bd9a9e',
@@ -22,10 +27,15 @@ function App() {
   //   // console.log(data)
   //   console.log(123)
   // }
+  //create global data for weatherContext
+  const [weatherTemp,setWeatherTemp] = useState()
+  //
   return (
     <div className="App">
-      {/* {getWeather()} */}
-      < Home />
+      <WeatherContext.Provider value={{weatherTemp,setWeatherTemp}}>
+        < Home />
+        < Result />
+      </WeatherContext.Provider>
     </div>
   );
 }
