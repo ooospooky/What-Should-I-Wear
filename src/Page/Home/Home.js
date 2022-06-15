@@ -11,6 +11,8 @@ import {WeatherContext} from '../../Contexts/WeatherContext'
 import {GetWeather} from '../../Helper/GetWeather'
 
 function Home() {
+  // console.log(moment().get('year'),moment().get('month'),moment().get('date'),'DATTTTT')
+  console.log(`&timeFrom=${moment().format().slice(0,11)}00:00:00&timeTo=${moment().add(1, 'days').format().slice(0,11)}00:00:01`); 
   const selectOption = useRef({value:"09:00"});
   console.log('ref',selectOption.current.style)
   const {weatherTemp,setWeatherTemp} = useContext(WeatherContext)
@@ -42,14 +44,19 @@ let msg=""
   console.log('ww',weatherTemp)
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    let dateRange;
+    //dateRange be like this, &timeFrom=2022-06-17T00:00:00&timeTo=2022-06-18T00:00:01
+    if(date==="today") dateRange=`&timeFrom=${moment().format().slice(0,11)}00:00:00&timeTo=${moment().add(1, 'days').format().slice(0,11)}00:00:01`;
+    if(date==="tomorrow") dateRange=`&timeFrom=${moment().add(1, 'days').format().slice(0,11)}00:00:00&timeTo=${moment().add(2, 'days').format().slice(0,11)}00:00:01`;
+    if(date==="afterTomorrow") dateRange=`&timeFrom=${moment().add(2, 'days').format().slice(0,11)}00:00:00&timeTo=${moment().add(3, 'days').format().slice(0,11)}00:00:01`;
+    console.log('dateRange',dateRange);
     console.log(date)
     console.log(goOutTime, goHomeTime)
     console.log(traffic)
     console.log(region) 
     console.log(district)
     // GetWeather(setDatas)
-    GetWeather({setWeatherTemp})
+    GetWeather({setWeatherTemp,dateRange})
     console.log('w',weatherTemp)
     
     // console.log('d',data)
