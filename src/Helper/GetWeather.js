@@ -10,8 +10,8 @@ export const GetWeather = ({ setWeatherTemp,dateRange }) => {
    // })
    console.log(dateRange,'weather')
    //https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-069?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&locationName=泰山區&timeFrom=2022-06-16T00:00:00&timeTo=2022-06-17T00:00:01
-   const data = axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-069?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&locationName=泰山區${dateRange}`)
    // const data = axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-069?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&locationName=泰山區&timeFrom=2022-06-16T00:00:00&timeTo=2022-06-17T00:00:01`)
+   const data = axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-069?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&locationName=泰山區${dateRange}`)
       .then((res) => {
          //temp = 溫度（array）
          let temp = res.data['records']['locations'][0].location[0]['weatherElement'][3].time;
