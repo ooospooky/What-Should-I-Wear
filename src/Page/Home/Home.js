@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react'
+import React, { useState,useContext, useRef} from 'react'
 import './Home.scss';
 import CitySelect from '../../Components/CitySelect'
 import { city, districts } from '../../Assets/rawData'
@@ -11,14 +11,33 @@ import {WeatherContext} from '../../Contexts/WeatherContext'
 import {GetWeather} from '../../Helper/GetWeather'
 
 function Home() {
+  const selectOption = useRef({value:"09:00"});
+  console.log('ref',selectOption.current.style)
   const {weatherTemp,setWeatherTemp} = useContext(WeatherContext)
-  
+
   const [date, setDate] = useState('today')
-  const [goOutTime, setGoOutTime] = useState('09:00');
+  const [goOutTime, setGoOutTime] = useState("09:00");
   const [goHomeTime, setGoHomeTime] = useState('18:00');
   const [traffic, setTraffic] = useState('moto');
   const [region, setRegion] = useState('基隆市')
   const [district, setDistrict] = useState(districts[region][0][0])
+  const [validateMsg,setValidateMsg] = useState('')
+
+  let selectStyle="";
+  let initGoOutTime="09:00";
+let msg=""
+  if(goOutTime > goHomeTime){
+    setGoHomeTime(Number(goOutTime.slice(0,2) ) +1 + ":00")
+  }
+  if (goOutTime < moment().hour() + ":00" && date==='today') {
+    // selectStyle='1px solid red'
+    // console.log("selectStyle={border: '1px solid red'}")
+    // selectOption.current.style.border=selectStyle;
+    // setGoOutTime(moment().hour()+":00")
+      msg="出門時間要大於目前時間"
+  } 
+
+
   // const [datas,setDatas] = useState()
   console.log('ww',weatherTemp)
   const handleSubmit = (event) => {
@@ -27,7 +46,7 @@ function Home() {
     console.log(date)
     console.log(goOutTime, goHomeTime)
     console.log(traffic)
-    console.log(region)
+    console.log(region) 
     console.log(district)
     // GetWeather(setDatas)
     GetWeather({setWeatherTemp})
@@ -44,7 +63,6 @@ function Home() {
   }
   // console.log('Today', moment().format("MMM Do"));
   // console.log('Tomorrow', moment().add(1, 'days').format("MMM Do"))
-
   return (
     <div className="Home">
 
@@ -71,10 +89,14 @@ function Home() {
         <div className="setTime">
           <label htmlFor="go-out-time" className="setTime__outLabel"><h3>出門時間</h3></label>
           <label htmlFor="go-home-time" className="setTime__backLabel"><h3>回家時間</h3></label>
-          <TimeOption onChange={(e) => { setGoOutTime(e.target.value) }} defaultTime={goOutTime} />
-          <TimeOption onChange={(e) => { setGoHomeTime(e.target.value) }} defaultTime={goHomeTime} />
+          <TimeOption  selectRef={selectOption} onChange={(e) => { setGoOutTime(e.target.value) }}   date={date} defaultTime={goOutTime} />
+          <TimeOption onChange={(e) => { setGoHomeTime(e.target.value) }}   date={date} defaultTime={goHomeTime}  />
           {/* <input type="text" id="go-out-time" className="setTime__outInput" onChange={(e) => { setGoOutTime(e.target.value) }} ></input> */}
           {/* <input type="text" id="go-home-time" className="setTime__backInput" onChange={(e) => { setGoHomeTime(e.target.value) }}></input> */}
+
+          {/* Validate Massage */}
+          <span className="setTime__validateText">{msg}</span>
+          {/* <span>{msg}</span> */}
         </div>
         {/*  */}
         {/*  交通工具 */}
@@ -124,7 +146,7 @@ function Home() {
 
         {/* <input type="submit" value="What Should I Wear?" /> */}
         <div className="subbmit">
-          <button className="subbmit__btn" onClick={handleSubmit}> What Should I Wear? </button>
+          <button disabled={msg && true}  className="subbmit__btn" onClick={handleSubmit}> What Should I Wear? </button>
         </div>
       </form>
     </div>

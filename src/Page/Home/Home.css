@@ -16,15 +16,15 @@
 }
 
 .Home__form {
-  width: 30%;
+  width: 40%;
 }
 
 .Home .setTime {
   display: -ms-grid;
   display: grid;
-  -ms-grid-rows: min-content min-content;
-      grid-template-rows: -webkit-min-content -webkit-min-content;
-      grid-template-rows: min-content min-content;
+  -ms-grid-rows: min-content min-content min-content;
+      grid-template-rows: -webkit-min-content -webkit-min-content -webkit-min-content;
+      grid-template-rows: min-content min-content min-content;
   -ms-grid-columns: 1fr 1fr;
       grid-template-columns: 1fr 1fr;
   grid-gap: 15px;
@@ -36,6 +36,11 @@
   background-color: #57534f9e;
   color: #fff;
   font-size: 1rem;
+}
+
+.Home .setTime__validateText {
+  grid-column: 1 / -1;
+  color: #890b0b;
 }
 
 .traffic {
@@ -110,6 +115,13 @@
           transform: translateY(3px);
   -webkit-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
           box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.subbmit__btn:disabled {
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
 }
 
 .date {

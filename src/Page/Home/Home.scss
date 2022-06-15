@@ -12,15 +12,14 @@
 
 
   &__form {
-    width: 30%;
+    width: 40%;
   }
 
   .setTime {
     display: grid;
-    grid-template-rows: min-content min-content;
+    grid-template-rows: min-content min-content min-content;
     grid-template-columns: 1fr 1fr;
     grid-gap: 15px;
-
     &__Input {
       height: 2rem;
       width: 9rem;
@@ -28,6 +27,13 @@
       color: #fff;
       font-size: 1rem;
     }
+    &__validateText{
+      grid-column: 1 / -1;
+      //error color still need change
+      color:rgb(137, 11, 11);  
+      
+    }
+    
   }
 }
 
@@ -99,6 +105,12 @@
     &:active {
       transform: translateY(3px);
       box-shadow: 0 4px 10px rgba(0, 0, 0, .2);
+    }
+    &:disabled{
+      border: 1px solid #999999;
+      background-color: #cccccc;
+      color: #666666;
+      cursor:not-allowed;
     }
   }
 
