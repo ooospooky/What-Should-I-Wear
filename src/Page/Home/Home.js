@@ -14,6 +14,8 @@ function Home() {
   // console.log(moment().get('year'),moment().get('month'),moment().get('date'),'DATTTTT')
   console.log(`&timeFrom=${moment().format().slice(0,11)}00:00:00&timeTo=${moment().add(1, 'days').format().slice(0,11)}00:00:01`); 
   const selectOption = useRef({value:"09:00"});
+  console.log(city[0],'city')
+  console.log(districts[city[0][0]][0],'dis')
   console.log('ref',selectOption.current.style)
   const {weatherTemp,setWeatherTemp} = useContext(WeatherContext)
 
@@ -21,10 +23,9 @@ function Home() {
   const [goOutTime, setGoOutTime] = useState("09:00");
   const [goHomeTime, setGoHomeTime] = useState('18:00');
   const [traffic, setTraffic] = useState('moto');
-  const [region, setRegion] = useState('基隆市')
-  const [district, setDistrict] = useState(districts[region][0][0])
+  const [region, setRegion] = useState(city[0])  //['宜蘭縣', 'F-D0047-001']
+  const [district, setDistrict] = useState(districts[region[0]][0])    // '宜蘭市'
   const [validateMsg,setValidateMsg] = useState('')
-
   let selectStyle="";
   let initGoOutTime="09:00";
 let msg=""
@@ -56,7 +57,7 @@ let msg=""
     console.log(region) 
     console.log(district)
     // GetWeather(setDatas)
-    GetWeather({setWeatherTemp,dateRange})
+    // GetWeather({setWeatherTemp,dateRange,locationId:region[1],locationName:district})
     console.log('w',weatherTemp)
     
     // console.log('d',data)
@@ -64,9 +65,13 @@ let msg=""
   const onChangeValue = (event) => {
     setTraffic(event.target.value);
   }
-  const changeArea = (e) => {
-    setRegion(e.target.value);
-    setDistrict(districts[e.target.value][0][0]);
+  const changeArea = (e) => { 
+    //e.target.value  = '基隆市,F-D0047-049';
+    //use .split(',') --> ['基隆市', 'F-D0047-049']
+    // console.log(typeof(e.target.value));
+    // console.log(e.target.value.split(','));
+    setRegion(e.target.value.split(','));
+    setDistrict(districts[e.target.value.split(',')[0]][0]);
   }
   // console.log('Today', moment().format("MMM Do"));
   // console.log('Tomorrow', moment().add(1, 'days').format("MMM Do"))
@@ -134,18 +139,18 @@ let msg=""
         <h3>地區</h3>
 
         <div className="area">
-          <select className="area__input" default={region} value={region} onChange={(e) => changeArea(e)}>
+          <select className="area__input" value={region}  onChange={(e) => changeArea(e)}>
             {city.map((data) => {
               return (
-                <option value={data}>{data}</option>
+                <option value={data}>{data[0]}</option>
               )
             })}
           </select>
           {/* {console.log(districts[region],'teset',region)} */}
-          <select className="area__input" default={district} value={district} onChange={(e) => setDistrict(e.target.value)}>
-            {districts[region].map((data, num) => {
+          <select className="area__input"  value={district} onChange={(e) => setDistrict(e.target.value)}>
+            {districts[region[0]].map((data, num) => {
               return (
-                <option value={data[0]}>{data[0]}</option>
+                <option value={data}>{data}</option>
               )
             })}
           </select>

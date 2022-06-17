@@ -2,18 +2,23 @@ import axios from "axios"
 import { useState, useContext } from "react";
 import { WeatherContext } from '../Contexts/WeatherContext'
 
-export const GetWeather = ({ setWeatherTemp,dateRange }) => {
+export const GetWeather = ({ setWeatherTemp,dateRange,locationId,locationName}) => {
    
    // const data = axios.get('https://api.openweathermap.org/data/2.5/forecast?lat=25.05549774&lon=121.4162785&appid=a79b0a9c2c6898fe5fc6189047bd9a9e')
    // .then((res)=>{
    //  console.log(res.data)
    // })
    console.log(dateRange,'weather')
+   console.log(locationId,'locationID')
+   console.log(locationName,'locationName')
    //https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-069?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&locationName=泰山區&timeFrom=2022-06-16T00:00:00&timeTo=2022-06-17T00:00:01
    // const data = axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-069?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&locationName=泰山區&timeFrom=2022-06-16T00:00:00&timeTo=2022-06-17T00:00:01`)
-   const data = axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-069?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&locationName=泰山區${dateRange}`)
+   // const data = axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-D0047-069?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&locationName=泰山區${dateRange}`)
+   //add loction Id & location Name
+   const data = axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/${locationId}?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&locationName=${locationName}${dateRange}`)
       .then((res) => {
          //temp = 溫度（array）
+         console.log('All dagta',res.data)
          let temp = res.data['records']['locations'][0].location[0]['weatherElement'][3].time;
          console.log('temp', temp);
          let data = {};
