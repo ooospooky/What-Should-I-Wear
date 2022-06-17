@@ -28,11 +28,14 @@ function App() {
   //   console.log(123)
   // }
   //create global data for weatherContext
+  //溫度 -> object
   const [weatherTemp,setWeatherTemp] = useState()
+  //降雨機率 --> object
+  const [pop,setPop] = useState()
   //
   return (
     <div className="App">
-      <WeatherContext.Provider value={{weatherTemp,setWeatherTemp}}>
+      <WeatherContext.Provider value={{weatherTemp,setWeatherTemp,pop,setPop}}>
         < Home />
         < Result />
       </WeatherContext.Provider>

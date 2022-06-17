@@ -57,8 +57,11 @@ let msg=""
     console.log(region) 
     console.log(district)
     // GetWeather(setDatas)
-    // GetWeather({setWeatherTemp,dateRange,locationId:region[1],locationName:district})
+    GetWeather({setWeatherTemp,dateRange,locationId:region[1],locationName:district})
     console.log('w',weatherTemp)
+    
+    //天氣描述："短暫陣雨。降雨機率 70%。溫度攝氏27度。舒適。西南風 平均風速4-5級(每秒9公尺)。相對濕度84%。"
+    //不確定當降雨機率是100%時呈現是 "降雨機率 100%" 還是 "降雨機率100%"
     
     // console.log('d',data)
   }
@@ -139,7 +142,7 @@ let msg=""
         <h3>地區</h3>
 
         <div className="area">
-          <select className="area__input" value={region}  onChange={(e) => changeArea(e)}>
+          <select className="area__input"   onChange={(e) => changeArea(e)}>
             {city.map((data) => {
               return (
                 <option value={data}>{data[0]}</option>
