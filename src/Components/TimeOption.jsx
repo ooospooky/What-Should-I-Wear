@@ -1,11 +1,8 @@
-import { useRef} from 'react';
-import moment from 'moment';
 export const TimeOption = (props) => {
-
   return (
     <>
+              {/* value從Home.js傳入，為出門時間或回家時間   props.onChange設定出門或回家時間*/}  
     <select id="go-out-time"  className="setTime__Input" value={props.defaultTime} onChange={(e) => { props.onChange(e) }} >
-
       <option value="00:00">00:00</option>
       <option value="00:30">00:30</option>
       <option value="01:00">01:00</option>
