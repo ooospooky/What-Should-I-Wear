@@ -2,7 +2,7 @@ import axios from "axios"
 import { useState, useContext } from "react";
 import { WeatherContext } from '../Contexts/WeatherContext'
 
-export const GetWeather = ({ setWeatherTemp,dateRange,locationId,locationName}) => {
+export const GetWeather = ({ setWeatherTemp,setPop,dateRange,locationId,locationName}) => {
    
    // const data = axios.get('https://api.openweathermap.org/data/2.5/forecast?lat=25.05549774&lon=121.4162785&appid=a79b0a9c2c6898fe5fc6189047bd9a9e')
    // .then((res)=>{
@@ -50,6 +50,8 @@ export const GetWeather = ({ setWeatherTemp,dateRange,locationId,locationName}) 
                pop[objKeyName] =  percentageOfPop;
             }
          }
+         setWeatherTemp(temp)
+         setPop(pop)
          console.log('TheTemp',temp,"POP",pop)
          // let temp = res.data['records']['locations'][0].location[0]['weatherElement'][3].time;
          // console.log('temp', temp);

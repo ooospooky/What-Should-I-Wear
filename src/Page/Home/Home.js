@@ -12,12 +12,11 @@ import {GetWeather} from '../../Helper/GetWeather'
 
 function Home() {
   // console.log(moment().get('year'),moment().get('month'),moment().get('date'),'DATTTTT')
-  console.log(`&timeFrom=${moment().format().slice(0,11)}00:00:00&timeTo=${moment().add(1, 'days').format().slice(0,11)}00:00:01`); 
   const selectOption = useRef({value:"09:00"});
   console.log(city[0],'city')
   console.log(districts[city[0][0]][0],'dis')
   console.log('ref',selectOption.current.style)
-  const {weatherTemp,setWeatherTemp} = useContext(WeatherContext)
+  const {weatherTemp,setWeatherTemp,pop,setPop} = useContext(WeatherContext)
 
   const [date, setDate] = useState('today')
   const [goOutTime, setGoOutTime] = useState("09:00");
@@ -57,7 +56,7 @@ let msg=""
     console.log(region) 
     console.log(district)
     // GetWeather(setDatas)
-    GetWeather({setWeatherTemp,dateRange,locationId:region[1],locationName:district})
+    GetWeather({setWeatherTemp, setPop, dateRange,locationId:region[1],locationName:district})
     console.log('w',weatherTemp)
     
     //天氣描述："短暫陣雨。降雨機率 70%。溫度攝氏27度。舒適。西南風 平均風速4-5級(每秒9公尺)。相對濕度84%。"
