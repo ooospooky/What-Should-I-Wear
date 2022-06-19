@@ -1,16 +1,10 @@
 import { useRef} from 'react';
 import moment from 'moment';
 export const TimeOption = (props) => {
-  let selectStyle;
-  const select = useRef({ value: props.defaultTime });
-  // console.log(select.current.style,'select')
-  // console.log(moment().hour()+":00")
-  // if (select.current.value < moment().hour() + ":00" && props.date==='today') {
-  //   selectStyle={border: '1px solid red'}
-  // } 
+
   return (
     <>
-    <select ref={props.selectRef} id="go-out-time" style={selectStyle} className="setTime__Input" value={props.defaultTime} onChange={(e) => { props.onChange(e) }} >
+    <select id="go-out-time"  className="setTime__Input" value={props.defaultTime} onChange={(e) => { props.onChange(e) }} >
 
       <option value="00:00">00:00</option>
       <option value="00:30">00:30</option>
