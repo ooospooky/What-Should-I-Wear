@@ -1,12 +1,16 @@
 import React,{useContext} from 'react'
 import './Result.scss'
 import {WeatherContext} from  '../../Contexts/WeatherContext'
+
+import CalculateOutnBackTemp from '../../Helper/CalculateOutnBackTemp'
 export default function Result() {
-  const {weatherTemp,pop} = useContext(WeatherContext)
+  const {weatherTemp,pop,formData} = useContext(WeatherContext)
   return (
     <div className="result">
-      {weatherTemp && weatherTemp['00']}
-      {pop && pop['00']}
+      <CalculateOutnBackTemp />
+      {weatherTemp && weatherTemp['Nextday00']}
+      {pop && pop['Nextday00']}
+      {console.log('formdata',formData)}
     </div>
   )
 }

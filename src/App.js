@@ -32,10 +32,12 @@ function App() {
   const [weatherTemp,setWeatherTemp] = useState()
   //降雨機率 --> object
   const [pop,setPop] = useState()
+  //Form資料整理 --> object
+  const [formData,setFormData] = useState()
   //
   return (
     <div className="App">
-      <WeatherContext.Provider value={{weatherTemp,setWeatherTemp,pop,setPop}}>
+      <WeatherContext.Provider value={{weatherTemp,setWeatherTemp,pop,setPop,formData,setFormData}}>
         < Home />
         < Result />
       </WeatherContext.Provider>

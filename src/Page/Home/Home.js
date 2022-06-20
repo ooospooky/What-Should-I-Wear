@@ -8,7 +8,7 @@ import { GetWeather } from '../../Helper/GetWeather'
 
 function Home() {
   //import context variable from App.js
-  const { weatherTemp, setWeatherTemp, pop, setPop } = useContext(WeatherContext)
+  const { weatherTemp, setWeatherTemp, pop, setPop,setFormData} = useContext(WeatherContext)
 
   const [date, setDate] = useState('today')
   const [goOutTime, setGoOutTime] = useState("09:00");
@@ -43,6 +43,7 @@ function Home() {
     console.log(traffic)
     console.log(region)
     console.log(district)
+    setFormData({date,goOutTime,goHomeTime,traffic,region,district})
     //呼叫getweather API call，傳入context variable & API 參數
     GetWeather({ setWeatherTemp, setPop, dateRange, locationId: region[1], locationName: district })
   }
