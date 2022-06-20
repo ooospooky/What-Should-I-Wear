@@ -39,7 +39,7 @@ function App() {
     <div className="App">
       <WeatherContext.Provider value={{weatherTemp,setWeatherTemp,pop,setPop,formData,setFormData}}>
         < Home />
-        < Result />
+        {weatherTemp && < Result />}
       </WeatherContext.Provider>
     </div>
   );

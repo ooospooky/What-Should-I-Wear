@@ -26,7 +26,7 @@ export const GetWeather = ({ setWeatherTemp,setPop,dateRange,locationId,location
             let objKeyName = allData[3].time[i].dataTime.slice(11, 13)
 
             //找到溫度的資料，型態為Number
-            let tempData = allData[3].time[i].elementValue[0].value
+            let tempData = Number(allData[3].time[i].elementValue[0].value)
 
             //整段天氣描述: 短暫陣雨。降雨機率 30%。溫度攝氏27度。舒適。東南風 平均風速1-2級(每秒2公尺)。相對濕度94%。
             let weatherDescription = allData[6].time[i].elementValue[0].value;
