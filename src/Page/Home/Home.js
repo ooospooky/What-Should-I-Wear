@@ -15,13 +15,14 @@ function Home() {
   const { weatherTemp, setWeatherTemp, pop, setPop, setFormData } = useContext(WeatherContext)
 
   const [date, setDate] = useState('today')
-  const [goOutTime, setGoOutTime] = useState("09:00");
+  const [goOutTime, setGoOutTime] = useState(moment().format('HH:00'));
   const [goHomeTime, setGoHomeTime] = useState('18:00');
   const [traffic, setTraffic] = useState('moto');
   const [region, setRegion] = useState(city[0])  //['宜蘭縣', 'F-D0047-001']
   const [district, setDistrict] = useState(districts[region[0]][0])    // '宜蘭市'
   const [showTransition, setShowTransition] = useState(false)
   const navigate = useNavigate();
+  // if(date === 'today') setGoOutTime(moment().format('HH:00'))
   let msg = ""
   //若出門時間大於回家時間，將回家時間調整至出門時間加一小時
   if (goOutTime > goHomeTime) {
@@ -51,7 +52,7 @@ function Home() {
     setFormData({ date, goOutTime, goHomeTime, traffic, region, district })
     //呼叫getweather API call，傳入context variable & API 參數
     GetWeather({ setWeatherTemp, setPop, dateRange, locationId: region[1], locationName: district })
-    
+
     setTimeout(() => { navigate('/result') }, 700)
     // navigate('/result')
 
@@ -93,7 +94,7 @@ function Home() {
         {/* 日期選擇 */}
         <div className="date">
           <div className="today">
-            <input type="radio" id="today" onChange={() => setDate('today')} checked={date === "today"} ></input>
+            <input type="radio" id="today" onChange={() => {setDate('today');setGoOutTime(moment().format('HH:00'))}} checked={date === "today"} ></input>
             <label htmlFor="today" className="date__btn">
               {/* moment().format("MMM Do") 顯示當天月份與日期 -->e.g. Jun 19th */}
               <span className="dateSpan">TODAY</span>
@@ -105,7 +106,7 @@ function Home() {
             </label>
           </div>
           <div className="tomorrow">
-            <input type="radio" id="tomorrow" onChange={() => setDate('tomorrow')} checked={date === "tomorrow"} ></input>
+            <input type="radio" id="tomorrow" onChange={() => {setDate('tomorrow');setGoOutTime("09:00")}} checked={date === "tomorrow"} ></input>
             <label htmlFor="tomorrow" className="date__btn">
               {/* moment().add(1, 'days').format("MMM Do") 顯示當天+1天的月份與日期 -->e.g. Jun 20th */}
               {/* <span>{moment().add(1, 'days').format("MMM Do")}</span> */}
@@ -117,7 +118,7 @@ function Home() {
             </label>
           </div>
           <div className="afterTomorrow">
-            <input type="radio" id="afterTomorrow" onChange={() => setDate('afterTomorrow')} checked={date === "afterTomorrow"} ></input>
+            <input type="radio" id="afterTomorrow" onChange={() => {setDate('afterTomorrow');setGoOutTime("09:00")}} checked={date === "afterTomorrow"} ></input>
             <label htmlFor="afterTomorrow" className="date__btn" >
               {/* moment().add(2, 'days').format("MMM Do") 顯示當天+2天的月份與日期 -->e.g. Jun 21th */}
               {/* <span>{moment().add(2, 'days').format("MMM Do")}</span> */}
