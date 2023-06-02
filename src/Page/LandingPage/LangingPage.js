@@ -26,8 +26,12 @@ function LangingPage() {
         />
       </div> : <></>}
       <div className='left' style={showTransition ? { display: 'none' } : {}}>
-        <h1 className='left__h1'>Make your app the best it can be</h1>
-        <h3 className='left__h3'>Firebase is an app development platform that helps you build and grow apps  and games users love. Backed by Google and trusted by millions of businesses around the world.</h3>
+        {/* Alleviate Your Worries: Dress Suggestions for Any Weather */}
+        {/* Ease Your Concerns: Outfit Recommendations for Any Weather */}
+        {/* Weather-Based Dress Suggestions, Prepare for Every Day */}
+        <h1 className='left__h1'>Alleviate Your Worries: Dress Suggestions for Any Weather</h1>
+        <h3 className='left__h3'>Whether you're heading to work, going out for activities, our service provides accurate weather-based dress suggestions to help you effortlessly adapt to different climate conditions. Forget the hassle of deciding what to wear!</h3>
+        {/* Experience our service now. */}
         <button  onClick={()=>{handleClick()}} className='left__btn'>Get started</button>
       </div>
       <div className='right' style={showTransition ? { display: 'none' } : {}}>
