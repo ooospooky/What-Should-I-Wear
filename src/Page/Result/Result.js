@@ -37,147 +37,93 @@ export default function Result() {
   console.log('doff', tempDiff)
   console.log('formDataaaa', formData)
 
-  
-
+  const renderClothingSuggestion = (imageSrc, altText, description) => {
+    return (
+      <div>
+        <img src={imageSrc} alt={altText} />
+        <span>{description}</span>
+      </div>
+    );
+  };
+  const motoOrNot = () => {
+    if (formData.traffic === 'moto') {
+      if (averageTemp < 12) renderClothingSuggestion(gloves, '手套', '騎車時可以戴上手套保暖')
+      return (
+        renderClothingSuggestion(thinJacket, '薄外套', '建議在騎車時穿上薄外套擋風')
+      );
+    }
+    return null; //若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
+  };
+  const needRaincoat = () => {
+    return averagePop > 30 ? (
+      renderClothingSuggestion(raincoat, '雨衣', `降雨機率為${averagePop}%建議帶上雨衣或雨傘`)
+    ) : null;//若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
+  };
   const suggestion = () => {
-    const motoOrNot = () => {
-      if (formData.traffic === 'moto') {
-        if(averageTemp < 12 ) return (
-          <div>
-          <img src={gloves} alt="手套" />
-          <span>騎車時可以戴上手套保暖</span>
-        </div>
-        )
-        return (
-          <div>
-            <img src={thinJacket} alt="薄外套" />
-            <span>建議在騎車時穿上薄外套擋風</span>
-          </div>
-        );
-      }
-      return null; //若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
-    };
-  
-    const needRaincoat = () => {
-      if (averagePop > 10) {
-        return (
-          <div>
-            <img src={raincoat} alt="雨衣" />
-            <span>降雨機率為{averagePop}％建議帶上雨衣或雨傘</span>
-          </div>
-        );
-      }
-      return null; //若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
-    };
-  
     if (averageTemp >= 25) {
       return (
         <>
-          <div>
-            <img src={shirt} alt="短袖" />
-            <span>短袖</span>
-          </div>
-          <div>
-            <img src={shortpants} alt="短褲" />
-            <span>短褲</span>
-          </div>
+          {renderClothingSuggestion(shirt, '短袖', '短袖')}
+          {renderClothingSuggestion(shortpants, '短褲', '短褲')}
           {needRaincoat()}
         </>
       );
     }
-  
+
     if (averageTemp < 25 && averageTemp >= 22) {
       return (
         <>
-          <div>
-            <img src={shirt} alt="短袖" />
-            <span>短袖</span>
-          </div>
-          <div>
-            <img src={longpants} alt="長褲" />
-            <span>長褲優先，不怕冷的話短褲也不錯</span>
-          </div>
-          {needRaincoat()}
+          {renderClothingSuggestion(shirt, '短袖', '短袖')}
+          {renderClothingSuggestion(longpants, '長褲', '長褲優先，不怕冷的話短褲也不錯')}
           {motoOrNot()}
+          {needRaincoat()}
+
         </>
       );
     }
-  
+
     if (averageTemp < 22 && averageTemp >= 20) {
       return (
         <>
-          <div>
-            <img src={longshirt} alt="薄長袖" />
-            <span>薄長袖</span>
-          </div>
-          <div>
-            <img src={longpants} alt="長褲" />
-            <span>長褲</span>
-          </div>
-          {needRaincoat()}
+          {renderClothingSuggestion(longshirt, '薄長袖', '薄長袖')}
+          {renderClothingSuggestion(longpants, '長褲', '長褲')}
           {motoOrNot()}
+          {needRaincoat()}
+          
         </>
       );
     }
-  
+
     if (averageTemp < 20 && averageTemp >= 16) {
       return (
         <>
-          <div>
-            <img src={hoodie} alt="大學t或帽t" />
-            <span>大學T或帽T</span>
-          </div>
-          <div>
-            <img src={longpants} alt="長褲" />
-            <span>長褲</span>
-          </div>
-          {needRaincoat()}
+          {renderClothingSuggestion(hoodie, '大學t或帽t', '大學T或帽T')}
+          {renderClothingSuggestion(longpants, '長褲', '長褲')}
           {motoOrNot()}
+          {needRaincoat()}
         </>
       );
     }
-  
+
     if (averageTemp < 16 && averageTemp >= 12) {
       return (
         <>
-          <div>
-            <img src={hoodie} alt="大學t或帽t" />
-            <span>大學T或帽T</span>
-          </div>
-          <div>
-            <img src={insideshirt} alt="發熱衣" />
-            <span>加上一件發熱衣保暖</span>
-          </div>
-          <div>
-            <img src={longpants} alt="長褲" />
-            <span>長褲</span>
-          </div>
+          {renderClothingSuggestion(hoodie, '大學t或帽t', '大學T或帽T')}
+          {renderClothingSuggestion(insideshirt, '發熱衣', '加上一件發熱衣保暖')}
+          {renderClothingSuggestion(longpants, '長褲', '長褲')}
           {needRaincoat()}
-          {motoOrNot()}
         </>
       );
     }
-  
+
     if (averageTemp < 12) {
+      {/* <div><img src={beanie}></img><span>也可以考慮帶上毛帽不讓頭著涼</span></div> */ }
       return (
         <>
-          <div>
-            <img src={hoodie} alt="大學t或帽t" />
-            <span>大學T或帽T</span>
-          </div>
-          <div>
-            <img src={insideshirt} alt="發熱衣" />
-            <span>加上一件發熱衣保暖</span>
-          </div>
-          <div>
-            <img src={longpants} alt="長褲" />
-            <span>長褲</span>
-          </div>
-          <div>
-            <img src={pufferjacket} alt="厚外套" />
-            <span>厚外套</span>
-          </div>
-          {/* <div><img src={beanie}></img><span>也可以考慮帶上毛帽不讓頭著涼</span></div> */}
+          {renderClothingSuggestion(hoodie, '大學t', '大學t或帽t')}
+          {renderClothingSuggestion(insideshirt, '發熱衣', '加上一件發熱衣保暖')}
+          {renderClothingSuggestion(longpants, '長褲', '長褲')}
+          {renderClothingSuggestion(pufferjacket, '厚外套', '厚外套')}
           {motoOrNot()}
           {needRaincoat()}
         </>
@@ -240,7 +186,7 @@ export default function Result() {
         <div className="description">
           <h3>衣著建議</h3>
           {suggestion()}
-
+     
           {/* <img src={beanie}></img>
           <img src={shirt}></img>
           <img  src={jacket} ></img> */}
