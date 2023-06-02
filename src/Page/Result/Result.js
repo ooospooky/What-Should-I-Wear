@@ -55,7 +55,7 @@ export default function Result() {
     return null; //若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
   };
   const needRaincoat = () => {
-    return averagePop > 30 ? (
+    return averagePop > 10 ? (
       renderClothingSuggestion(raincoat, '雨衣', `降雨機率為${averagePop}%建議帶上雨衣或雨傘`)
     ) : null;//若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
   };
