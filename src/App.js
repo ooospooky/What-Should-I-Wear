@@ -1,8 +1,9 @@
 import axios from "axios";
-import {useState} from 'react'
+import { useState } from 'react'
 import Home from "./Page/Home/Home";
 import Result from "./Page/Result/Result";
-
+import LandingPage from "./Page/LandingPage/LangingPage"
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { WeatherContext } from './Contexts/WeatherContext'
 
 function App() {
@@ -29,18 +30,29 @@ function App() {
   // }
   //create global data for weatherContext
   //溫度 -> object
-  const [weatherTemp,setWeatherTemp] = useState()
+  const [weatherTemp, setWeatherTemp] = useState()
   //降雨機率 --> object
-  const [pop,setPop] = useState()
+  const [pop, setPop] = useState()
   //Form資料整理 --> object
-  const [formData,setFormData] = useState()
+  const [formData, setFormData] = useState()
   //
   return (
     <div className="App">
-      <WeatherContext.Provider value={{weatherTemp,setWeatherTemp,pop,setPop,formData,setFormData}}>
-        < Home />
-        {weatherTemp && < Result />}
+      <WeatherContext.Provider value={{ weatherTemp, setWeatherTemp, pop, setPop, formData, setFormData }}>
+      <Router>
+        <Routes>
+          <Route path='/' element={<LandingPage/>}></Route>
+          <Route path='/home' element={<Home/>}></Route>
+          <Route path='/result' element={weatherTemp && < Result />}></Route>
+          <Route path='*' element={<h1>PAGE NOT FOUND</h1>}></Route>
+        </Routes>
+      </Router>
       </WeatherContext.Provider>
+      {/* // <WeatherContext.Provider value={{ weatherTemp, setWeatherTemp, pop, setPop, formData, setFormData }}>
+      //   < LandingPage />
+      //   < Home />
+      //   {weatherTemp && < Result />}
+      // </WeatherContext.Provider> */}
     </div>
   );
 }

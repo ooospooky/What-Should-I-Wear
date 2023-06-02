@@ -1,5 +1,127 @@
-
-.result{
-  height:100vh;
+.result {
+  height: 100vh;
   width: 100%;
+  background: linear-gradient(141.11deg, rgba(7, 51, 88, 0.4) 9.39%, #073358 70.4%);
+  background-blend-mode: darken;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__left {
+    // background-color: aqua;
+    color: white;
+    text-align: center;
+
+    width: 30%;
+    height: 85%;
+    display: grid;
+    grid-template-rows: 30% 20% 16% 16% 16%;
+    grid-template-columns: 50% 50%;
+    grid-template-areas:
+      "sun sun"
+      "outTemp backTemp"
+      "avgTemp avgTemp"
+      "avgTempDiff avgTempDiff"
+      "pop pop";
+
+    .sun {
+      grid-area: sun;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+      // flex-wrap: wrap ;
+
+      &__up {
+        display: flex;
+        // flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+
+        &__temp {
+          color: white;
+          font-size: 2rem;
+        }
+      }
+
+      &__down {
+        color: white;
+        display: flex;
+        // flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+      }
+    }
+
+    .outTemp {
+      grid-area: outTemp;
+
+
+    }
+
+    .backTemp {
+      grid-area: backTemp;
+    }
+
+    .avgTemp {
+      grid-area: avgTemp;
+    }
+
+    .avgTempDiff {
+      grid-area: avgTempDiff;
+    }
+
+    .pop {
+      grid-area: pop;
+    }
+
+  }
+
+  .lilcontainer {
+    display: table; //搭配display:tabel-cell使span置中
+    background: rgba(7, 51, 88, 0.4);
+    border-radius: 20px;
+    margin: .6rem;
+
+    &>* {
+      display: table-cell; //搭配display:table 使lilcontainer內的span置中
+      vertical-align: middle;
+    }
+
+    &:nth-child(-n + 3) {
+      //https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child
+      font-size: 1.3rem; //選擇前兩個字體放大
+    }
+  }
+
+  &__right {
+    // background-color: darkgray;
+    width: 60%;
+    height: 85%;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.description {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  // align-items: space-between;
+  &>div {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin:.3rem;
+    // &>span{
+    //   display:flex;
+    // }
+    img{
+      width:80px;
+      height:80px;
+    }
+  }
+
 }
