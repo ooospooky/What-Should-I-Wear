@@ -14,6 +14,8 @@ import resultCloudy from '../../Assets/animation/resultCloudy.json'
 //https://lottiefiles.com/4806-weather-windy
 import resultRain from '../../Assets/animation/resultRain.json'
 // src="https://assets10.lottiefiles.com/temp/lf20_VAmWRg.json"
+import resultMoon from '../../Assets/animation/resultMoon.json'
+//https://lottiefiles.com/10686-the-moon
 
 import shirt from '../../Assets/svg/shirt.svg'
 // import {ReactComponent as ShortPanst} from '../../Assets/svg/pants.svg'
@@ -137,11 +139,16 @@ export default function Result() {
       );
     }
   };
+  const outAtNightCondition= formData.goOutTime.slice(0, 2) >= 18 || formData.goOutTime.slice(0, 2) < 6 && formData.goHomeTime.slice(0, 2) <= 6
+  // if (formData.goOutTime.slice(0, 2) >= 18)
   //降雨率小於20將設為sun, 大於20小於40設為cloud, 大於40設為raining
   const getresultAnimation = () => {
-    if (averagePop <= 20) return resultSun
+    if (averagePop <= 20) {
+      if (outAtNightCondition) return resultMoon;
+      return resultSun
+    };
     if (averagePop > 20 && averagePop <= 40) return resultCloudy
-    if (averagePop > 40)  return resultRain
+    if (averagePop > 40) return resultRain
   };
 
   const weatherAnimation = <Player
