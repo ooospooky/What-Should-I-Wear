@@ -8,7 +8,8 @@ import { GetWeather } from '../../Helper/GetWeather'
 import { Link, useNavigate } from 'react-router-dom'
 import salesman from '../../Assets/animation/salesman.json'
 import { Player, Controls } from '@lottiefiles/react-lottie-player';
-
+import sunNcloudAnimation from "../../Assets/animation/sunNcloud.json"
+//https://lottiefiles.com/61302-weather-icon
 function Home() {
   //import context variable from App.js
   const { weatherTemp, setWeatherTemp, pop, setPop, setFormData } = useContext(WeatherContext)
@@ -70,7 +71,7 @@ function Home() {
     className='sunAnimation'
     autoplay
     loop
-    src="https://assets3.lottiefiles.com/private_files/lf30_jmgekfqg.json"
+    src={sunNcloudAnimation}
     style={{ height: '300px', width: '300px' }}
   >
   </Player>

@@ -2,7 +2,8 @@ import React,{useState} from 'react'
 import './LandingPage.scss'
 import { Player, Controls } from '@lottiefiles/react-lottie-player';
 import {useNavigate} from 'react-router-dom'
-import salesman from '../../Assets/animation/salesman.json'
+import salesman from '../../Assets/animation/salesman.json' //https://lottiefiles.com/99745-sales-man
+import landingpageMan from '../../Assets/animation/landingpageMan.json' //https://lottiefiles.com/97387-digital-designer
 
 function LangingPage() {
   const [showTransition, setShowTransition] = useState(false)
@@ -33,9 +34,9 @@ function LangingPage() {
       <Player
     className='landingAnimation'
     autoplay
-    direction= "-1"
     loop
-    src="https://assets2.lottiefiles.com/private_files/lf30_ecnepkno.json"
+    src={landingpageMan}
+    // src="https://assets2.lottiefiles.com/private_files/lf30_ecnepkno.json"
     style={{ height: '500px', width: '500px' }}
   />
       </div>

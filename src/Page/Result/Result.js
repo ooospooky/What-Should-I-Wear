@@ -8,6 +8,13 @@ import CalculatePop from '../../Helper/CalculatePop'
 import moment from 'moment'; //https://momentjs.com/
 import { Player, Controls } from '@lottiefiles/react-lottie-player';
 import { Link, useNavigate } from 'react-router-dom'
+import resultSun from '../../Assets/animation/resultSun.json'
+//https://assets7.lottiefiles.com/packages/lf20_64okjrr7.json
+import resultCloudy from '../../Assets/animation/resultCloudy.json'
+//https://lottiefiles.com/4806-weather-windy
+import resultRain from '../../Assets/animation/resultRain.json'
+// src="https://assets10.lottiefiles.com/temp/lf20_VAmWRg.json"
+
 import shirt from '../../Assets/svg/shirt.svg'
 // import {ReactComponent as ShortPanst} from '../../Assets/svg/pants.svg'
 import beanie from '../../Assets/svg/beanie.svg'
@@ -55,7 +62,7 @@ export default function Result() {
     return null; //若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
   };
   const needRaincoat = () => {
-    return averagePop > 10 ? (
+    return averagePop > 30 ? (
       renderClothingSuggestion(raincoat, '雨衣', `降雨機率為${averagePop}%建議帶上雨衣或雨傘`)
     ) : null;//若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
   };
@@ -89,7 +96,7 @@ export default function Result() {
           {renderClothingSuggestion(longpants, '長褲', '長褲')}
           {motoOrNot()}
           {needRaincoat()}
-          
+
         </>
       );
     }
@@ -130,18 +137,19 @@ export default function Result() {
       );
     }
   };
-  let weatherUrl;
-  //降雨率小於10將url設為sun, 大於10小於40設為cloud, 大於40設為raining
-  if (averagePop <= 10) weatherUrl = 'https://assets2.lottiefiles.com/packages/lf20_64okjrr7.json'
-  if (averagePop > 10 && averagePop <= 40) weatherUrl = "https://assets10.lottiefiles.com/temp/lf20_VAmWRg.json"
-  if (averagePop > 40) weatherUrl = "https://assets6.lottiefiles.com/packages/lf20_SD9JLdoyv2.json"
-  ////////////////
+  //降雨率小於20將設為sun, 大於20小於40設為cloud, 大於40設為raining
+  const getresultAnimation = () => {
+    if (averagePop <= 20) return resultSun
+    if (averagePop > 20 && averagePop <= 40) return resultCloudy
+    if (averagePop > 40)  return resultRain
+  };
+
   const weatherAnimation = <Player
     className='resultAnimation'
     autoplay
-    // speed={3}
     loop
-    src={weatherUrl}
+    src={getresultAnimation()}
+
     style={{ height: '100px', width: '100px' }}
   />
   return (
@@ -186,7 +194,7 @@ export default function Result() {
         <div className="description">
           <h3>衣著建議</h3>
           {suggestion()}
-     
+
           {/* <img src={beanie}></img>
           <img src={shirt}></img>
           <img  src={jacket} ></img> */}
