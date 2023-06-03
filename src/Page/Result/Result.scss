@@ -102,6 +102,26 @@
     display: flex;
     align-items: center;
   }
+
+  .backBtn {
+    align-self: flex-end;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 25px;
+    border: 0;
+    width: 6rem;
+    height: 2.5rem;
+    color:white;
+    font-size: 18px;
+    font-weight: 500;
+    &:hover{
+      cursor: pointer;
+      background: rgba(184, 182, 182, 0.5);
+    }
+  }
 }
 
 .description {
@@ -111,17 +131,19 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+
   &>div {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin:.3rem;
+    margin: .3rem;
+
     // &>span{
     //   display:flex;
     // }
-    img{
-      width:80px;
-      height:80px;
+    img {
+      width: 80px;
+      height: 80px;
     }
   }
 

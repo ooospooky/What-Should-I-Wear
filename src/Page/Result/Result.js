@@ -197,7 +197,6 @@ export default function Result() {
 
         <img src="https://blush.design/api/download?shareUri=TB2kPDYjP1wD2zwz&c=Hair_0%7E030067_Skin_0%7Ee7915c_Top_0%7Eff7475&w=800&h=800&fm=png" alt="Grapefruit slice atop a pile of other slices" width="220" height="450" />
         <img src="https://blush.design/api/download?shareUri=Tb5zkiYr7&c=Hair_0%7E030067_Skin_0%7Ee7915c_Top_0%7Effa200&w=800&h=800&fm=png" alt="Grapefruit slice atop a pile of other slices" width="220" height="450" />
-        {/* <button onClick={() => { navigate('/home') }}>back</button> */}
         <div className="description">
           <h3>衣著建議</h3>
           {suggestion()}
@@ -207,6 +206,8 @@ export default function Result() {
           <img  src={jacket} ></img> */}
           {/* style={{ width: '30px', height: '30px' }} */}
         </div>
+        <button className='backBtn' onClick={() => { navigate('/home') }}>&larr;&nbsp;返回</button>
+
       </div>
     </div>
   )
