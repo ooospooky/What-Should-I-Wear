@@ -83,7 +83,7 @@ export default function Result() {
     ) : null;//若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
   };
   const suggestion = () => {
-    if (averageTemp > 26) {
+    if (averageTemp >= 26) {
       return (
         <>
           <img className='result__right__img' src={womanShortPants} alt="womanShortPants" />
