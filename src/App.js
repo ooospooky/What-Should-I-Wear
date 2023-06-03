@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Home from "./Page/Home/Home";
 import Result from "./Page/Result/Result";
 import LandingPage from "./Page/LandingPage/LangingPage"
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { WeatherContext } from './Contexts/WeatherContext'
 import logo from "./Assets/img/logo.png"
 
@@ -20,7 +20,7 @@ function App() {
   // //   'X-RapidAPI-Key': 'ac56f0d3c6msh4b58a9d8fd21cb2p1f0c50jsnd12c1e922848'
   // //   }
   // };
-  // const getWeather = async()=>{
+  // const getWeather = async()=>{=
   //   // const weatherData = await axios.get("https://opendata.cwb.gov.tw/api/v1/rest/datastore/C-B0074-002?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC")
   //   // console.log(weatherData.data)
   //   // const data = await axios(options).then((res)=>console.log(res.data))
@@ -39,14 +39,15 @@ function App() {
   //
   return (
     <div className="App" style={{position:"relative"}}>
-      <div className="logoDiv"  >
-      <img className="logoDiv__img" src={logo} />
-      <span className="logoDiv__span">WHAT SHOULD I WEAR?</span>
-      </div>
+     
       
 
       <WeatherContext.Provider value={{ weatherTemp, setWeatherTemp, pop, setPop, formData, setFormData }}>
       <Router>
+      <div className="logoDiv"  >
+      <Link to='/'><img className="logoDiv__img" src={logo}  /></Link>
+      <span className="logoDiv__span">WHAT SHOULD I WEAR?</span>
+      </div>
         <Routes>
           <Route path='/' element={<LandingPage/>}></Route>
           <Route path='/home' element={<Home/>}></Route>
