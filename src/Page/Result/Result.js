@@ -30,6 +30,20 @@ import pufferjacket from '../../Assets/svg/puffer-jacket.svg'
 import raincoat from '../../Assets/svg/raincoat.svg'
 import thinJacket from '../../Assets/svg/thinJacket.svg'
 import insideshirt from '../../Assets/svg/insideshirt.svg'
+
+import manShortPants from '../../Assets/img/manShortPants.png'
+import womanShortPants from '../../Assets/img/womanShortPants.png'
+import manTshirtLognPants from '../../Assets/img/manTshirtLognPants.png'
+import womanTshirtLongPants1 from '../../Assets/img/womanTshirtLongPants2.png'
+import manLongShirtPants from '../../Assets/img/manLongShirtPants2.png'
+import womanLongShirtPants from '../../Assets/img/womanLongShirtPants.png'
+import manHoodie from '../../Assets/img/manHoodie2.png'
+import womanSweater from '../../Assets/img/womanSweater.png'
+import manJacket from '../../Assets/img/manJacket.png'
+import womanJacket from '../../Assets/img/womanJacket.png'
+import manPufferJacket from '../../Assets/img/manPufferJacket.png'
+import womanPufferJacket from '../../Assets/img/womanPufferJacket.png'
+
 export default function Result() {
   const { weatherTemp, pop, formData } = useContext(WeatherContext)
   // if(!weatherTemp) return (<div>123</div>)
@@ -69,58 +83,91 @@ export default function Result() {
     ) : null;//若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
   };
   const suggestion = () => {
-    if (averageTemp >= 25) {
+    if (averageTemp > 26) {
       return (
         <>
-          {renderClothingSuggestion(shirt, '短袖', '短袖')}
-          {renderClothingSuggestion(shortpants, '短褲', '短褲')}
-          {needRaincoat()}
+          <img className='result__right__img' src={womanShortPants} alt="womanShortPants" />
+          <img className='result__right__img' src={manShortPants} alt="manShortPants" />
+          <div className="description">
+            <h3>衣著建議</h3>
+            <>
+              {renderClothingSuggestion(shirt, '短袖', '短袖')}
+              {renderClothingSuggestion(shortpants, '短褲', '短褲')}
+              {needRaincoat()}
+            </>
+          </div>
         </>
       );
     }
 
-    if (averageTemp < 25 && averageTemp >= 22) {
+    if (averageTemp < 26 && averageTemp >= 22) {
       return (
         <>
-          {renderClothingSuggestion(shirt, '短袖', '短袖')}
-          {renderClothingSuggestion(longpants, '長褲', '長褲優先，不怕冷的話短褲也不錯')}
-          {motoOrNot()}
-          {needRaincoat()}
-
+          <img className='result__right__img' src={womanTshirtLongPants1} alt="womanTshirtLongPants1" />
+          <img className='result__right__img' src={manTshirtLognPants} alt="manTshirtLognPants" />
+          <div className="description">
+            <h3>衣著建議</h3>
+            <>
+              {renderClothingSuggestion(shirt, '短袖', '短袖')}
+              {renderClothingSuggestion(longpants, '長褲', '長褲優先，怕熱的話短褲也不錯')}
+              {motoOrNot()}
+              {needRaincoat()}
+            </>
+          </div>
         </>
       );
     }
 
     if (averageTemp < 22 && averageTemp >= 20) {
-      return (
-        <>
-          {renderClothingSuggestion(longshirt, '薄長袖', '薄長袖')}
-          {renderClothingSuggestion(longpants, '長褲', '長褲')}
-          {motoOrNot()}
-          {needRaincoat()}
-
-        </>
-      );
+    return (
+      <>
+        <img className='result__right__img' src={womanLongShirtPants} alt="womanLongShirtPants" />
+        <img className='result__right__img' src={manLongShirtPants} alt="manLongShirtPants" />
+        <div className="description">
+          <h3>衣著建議</h3>
+          <>
+            {renderClothingSuggestion(longshirt, '薄長袖', '薄長袖')}
+            {renderClothingSuggestion(longpants, '長褲', '長褲')}
+            {motoOrNot()}
+            {needRaincoat()}
+          </>
+        </div>
+      </>
+    );
     }
 
     if (averageTemp < 20 && averageTemp >= 16) {
-      return (
-        <>
-          {renderClothingSuggestion(hoodie, '大學t或帽t', '大學T或帽T')}
-          {renderClothingSuggestion(longpants, '長褲', '長褲')}
-          {motoOrNot()}
-          {needRaincoat()}
-        </>
-      );
+    return (
+      <>
+        <img className='result__right__img' src={womanSweater} alt="womanSweater" />
+        <img className='result__right__img' style={{ marginLeft: '-5px' }} src={manHoodie} alt="manHoddie" />
+        <div className="description">
+          <h3>衣著建議</h3>
+          <>
+            {renderClothingSuggestion(hoodie, '大學t或帽t', '大學T或帽T')}
+            {renderClothingSuggestion(longpants, '長褲', '長褲')}
+            {motoOrNot()}
+            {needRaincoat()}
+          </>
+        </div>
+      </>
+    );
     }
 
     if (averageTemp < 16 && averageTemp >= 12) {
       return (
         <>
-          {renderClothingSuggestion(hoodie, '大學t或帽t', '大學T或帽T')}
-          {renderClothingSuggestion(insideshirt, '發熱衣', '加上一件發熱衣保暖')}
-          {renderClothingSuggestion(longpants, '長褲', '長褲')}
-          {needRaincoat()}
+          <img className='result__right__img' src={womanJacket} alt="womanJacket" />
+          <img className='result__right__img' style={{ marginLeft: '-5px' }} src={manJacket} alt="manJacket" />
+          <div className="description">
+            <h3>衣著建議</h3>
+            <>
+              {renderClothingSuggestion(hoodie, '大學t或帽t', '大學T或帽T')}
+              {renderClothingSuggestion(insideshirt, '發熱衣', '加上一件發熱衣保暖')}
+              {renderClothingSuggestion(longpants, '長褲', '長褲')}
+              {needRaincoat()}
+            </>
+          </div>
         </>
       );
     }
@@ -129,6 +176,11 @@ export default function Result() {
       {/* <div><img src={beanie}></img><span>也可以考慮帶上毛帽不讓頭著涼</span></div> */ }
       return (
         <>
+        <img className='result__right__img' src={womanPufferJacket} alt="womanJacket" />
+        <img className='result__right__img' style={{ marginLeft: '-5px' }} src={manPufferJacket} alt="manPufferJacket" />
+        <div className="description">
+          <h3>衣著建議</h3>
+        <>
           {renderClothingSuggestion(hoodie, '大學t', '大學t或帽t')}
           {renderClothingSuggestion(insideshirt, '發熱衣', '加上一件發熱衣保暖')}
           {renderClothingSuggestion(longpants, '長褲', '長褲')}
@@ -136,10 +188,12 @@ export default function Result() {
           {motoOrNot()}
           {needRaincoat()}
         </>
+        </div>
+        </>
       );
     }
   };
-  const outAtNightCondition= formData.goOutTime.slice(0, 2) >= 18 || formData.goOutTime.slice(0, 2) < 6 && formData.goHomeTime.slice(0, 2) <= 6
+  const outAtNightCondition = formData.goOutTime.slice(0, 2) >= 18 || formData.goOutTime.slice(0, 2) < 6 && formData.goHomeTime.slice(0, 2) <= 6
   // if (formData.goOutTime.slice(0, 2) >= 18)
   //降雨率小於20將設為sun, 大於20小於40設為cloud, 大於40設為raining
   const getresultAnimation = () => {
@@ -194,18 +248,12 @@ export default function Result() {
 
       </div>
       <div className="result__right">
-
-        <img src="https://blush.design/api/download?shareUri=TB2kPDYjP1wD2zwz&c=Hair_0%7E030067_Skin_0%7Ee7915c_Top_0%7Eff7475&w=800&h=800&fm=png" alt="Grapefruit slice atop a pile of other slices" width="220" height="450" />
-        <img src="https://blush.design/api/download?shareUri=Tb5zkiYr7&c=Hair_0%7E030067_Skin_0%7Ee7915c_Top_0%7Effa200&w=800&h=800&fm=png" alt="Grapefruit slice atop a pile of other slices" width="220" height="450" />
+        {/* <img src="https://blush.design/api/download?shareUri=dadIlchTR6kL_o3p&c=Hair_0%7Eff7475_Skin_0%7Effcba7_Top_0%7Eff7475&w=800&h=800&fm=png" alt="Grapefruit slice atop a pile of other slices" width="220" height="450" />
+        <img className='result__right__img' src={standingMan2} alt="Grapefruit slice atop a pile of other slices" width="220" height="450" />
         <div className="description">
-          <h3>衣著建議</h3>
-          {suggestion()}
-
-          {/* <img src={beanie}></img>
-          <img src={shirt}></img>
-          <img  src={jacket} ></img> */}
-          {/* style={{ width: '30px', height: '30px' }} */}
-        </div>
+          <h3>衣著建議</h3> */}
+        {suggestion()}
+        {/* </div> */}
         <button className='backBtn' onClick={() => { navigate('/home') }}>&larr;&nbsp;返回</button>
 
       </div>

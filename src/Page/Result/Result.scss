@@ -101,6 +101,21 @@
     height: 85%;
     display: flex;
     align-items: center;
+    &__img{
+      width:230px;
+      height:450px;
+
+      &:nth-child(2n){
+      margin-left: -15px;
+      margin-right:10px;
+      // width:200px;
+      }
+    }
+    
+    // &__img2{
+    //   margin-left: -20px;
+    //   margin-right:10px;
+    // }
   }
 
   .backBtn {
@@ -144,6 +159,7 @@
     img {
       width: 80px;
       height: 80px;
+      margin-right: 10px;
     }
   }
 
