@@ -4,6 +4,7 @@ import { Player, Controls } from '@lottiefiles/react-lottie-player';
 import {useNavigate} from 'react-router-dom'
 import salesman from '../../Assets/animation/salesman.json' //https://lottiefiles.com/99745-sales-man
 import landingpageMan from '../../Assets/animation/landingpageMan.json' //https://lottiefiles.com/97387-digital-designer
+import logo from '../../Assets/img/logo.png'
 
 function LangingPage() {
   const [showTransition, setShowTransition] = useState(false)
@@ -14,7 +15,7 @@ function LangingPage() {
   }
   return (
     
-    <div className='landingPage'>
+    <div className='landingPage' style={{position:"relative"}}>
          {showTransition ? <div style={{ height: '100vh', width: '100vw', background: "linear-gradient(141.11deg, rgba(7, 51, 88, 0.4) 9.39%, #073358 70.4%)" }}>
         <Player
           className='transitionAnimation'
@@ -26,6 +27,7 @@ function LangingPage() {
         />
       </div> : <></>}
       <div className='left' style={showTransition ? { display: 'none' } : {}}>
+      
         {/* Alleviate Your Worries: Dress Suggestions for Any Weather */}
         {/* Ease Your Concerns: Outfit Recommendations for Any Weather */}
         {/* Weather-Based Dress Suggestions, Prepare for Every Day */}

@@ -1,10 +1,11 @@
-import axios from "axios";
+import "./App.scss"
 import { useState } from 'react'
 import Home from "./Page/Home/Home";
 import Result from "./Page/Result/Result";
 import LandingPage from "./Page/LandingPage/LangingPage"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { WeatherContext } from './Contexts/WeatherContext'
+import logo from "./Assets/img/logo.png"
 
 function App() {
 
@@ -37,7 +38,13 @@ function App() {
   const [formData, setFormData] = useState()
   //
   return (
-    <div className="App">
+    <div className="App" style={{position:"relative"}}>
+      <div className="logoDiv"  >
+      <img className="logoDiv__img" src={logo} />
+      <span className="logoDiv__span">WHAT SHOULD I WEAR?</span>
+      </div>
+      
+
       <WeatherContext.Provider value={{ weatherTemp, setWeatherTemp, pop, setPop, formData, setFormData }}>
       <Router>
         <Routes>
