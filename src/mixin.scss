@@ -1,12 +1,24 @@
 @mixin respond($breakpoint){
-  @if $breakpoint == phone{               // width < 600?   
-    @media (max-width: 600px) { @content};    //600px   600 / 16px = 37.5em
+  @if $breakpoint == iphoneSE{              
+    @media (max-width: 375px) { @content};   
+  }
+  @if $breakpoint == iphoneXR{               // width < 600?   
+    @media (max-width: 414px) { @content};    
+  }
+  @if $breakpoint == ipad{          // width < 900?     
+    @media (max-width: 768px) { @content};  //900px
+  }
+  @if $breakpoint == small-tab-port{          // width < 900?     
+    @media (max-width: 800px) { @content};  //900px
   }
   @if $breakpoint == tab-port{          // width < 900?     
     @media (max-width: 900px) { @content};  //900px
   }
-  @if $breakpoint == tab-land{              // width < 1200  ?
-    @media (max-width: 1200px) { @content};   //1200px
+  @if $breakpoint == small-desktop{              // width < 1200  ?
+    @media (max-width: 1028px) { @content};   
+  }
+  @if $breakpoint == desktop{              // width < 1200  ?
+    @media (max-width: 1230px) { @content};   //1200px
   }
   @if $breakpoint == big-desktop{            // width > 1800 ?
     @media (min-width: 1800px) { @content}; //1800px

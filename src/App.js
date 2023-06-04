@@ -45,8 +45,8 @@ function App() {
       <WeatherContext.Provider value={{ weatherTemp, setWeatherTemp, pop, setPop, formData, setFormData }}>
       <Router>
       <div className="logoDiv"  >
-      <Link to='/'><img className="logoDiv__img" src={logo}  /></Link>
-      <span className="logoDiv__span">WHAT SHOULD I WEAR?</span>
+      {/* <Link to='/'><img className="logoDiv__img" src={logo}  /></Link> */}
+      {/* <span className="logoDiv__span">WHAT SHOULD I WEAR?</span> */}
       </div>
         <Routes>
           <Route path='/' element={<LandingPage/>}></Route>
