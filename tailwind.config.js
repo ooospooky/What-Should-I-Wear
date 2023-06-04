@@ -5,6 +5,8 @@ module.exports = {
     extend: {
       colors: {
         'langingPageBgc':'#083359',
+        'landingPageBtnColor':'#105794',
+        'landingPageBtnHoverBcg':'#d9ecfe'
       },
     },
   },
