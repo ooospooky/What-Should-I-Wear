@@ -73,7 +73,6 @@ function Home() {
     autoplay
     loop
     src={sunNcloudAnimation}
-    style={{ height: '300px', width: '300px' }}
   >
   </Player>
   return (
@@ -94,13 +93,13 @@ function Home() {
         {/* 日期選擇 */}
         <div className="date">
           <div className="today">
-            <input type="radio" id="today" onChange={() => {setDate('today');setGoOutTime(moment().format('HH:00'))}} checked={date === "today"} ></input>
+            <input  type="radio" id="today" onChange={() => {setDate('today');setGoOutTime(moment().format('HH:00'))}} checked={date === "today"} ></input>
             <label htmlFor="today" className="date__btn">
               {/* moment().format("MMM Do") 顯示當天月份與日期 -->e.g. Jun 19th */}
-              <span className="dateSpan">TODAY</span>
+              <span className="dateSpan dateSpan__today">TODAY</span>
               {/* <span className="dateSpan">{moment().format("MMM Do")}</span> */}
 
-              {date === "today" ? <> <span className="dateSpan__num">{moment().format("M/D")}</span>{sunNcloud}</>
+              {date === "today" ? <> <span className="dateSpan__num ">{moment().format("M/D")}</span>{sunNcloud}</>
                 : <></>}
 
             </label>
@@ -123,7 +122,7 @@ function Home() {
               {/* moment().add(2, 'days').format("MMM Do") 顯示當天+2天的月份與日期 -->e.g. Jun 21th */}
               {/* <span>{moment().add(2, 'days').format("MMM Do")}</span> */}
 
-              <span className="dateSpan">AFTER TOMORROW</span>
+              <span className="dateSpan dateSpan__AT">AFTER TOMORROW</span>
 
               {date === "afterTomorrow" ? <><span className="dateSpan__num">{moment().add(2, 'days').format("M/D")}</span>{sunNcloud}</> : <></>}
             </label>
@@ -162,18 +161,23 @@ function Home() {
           {/* 出門&回家時間選擇 */}
           <div className="inbox">
             <div className="setTime">
-              <label htmlFor="go-out-time" className="setTime__outLabel"><h3>出門時間</h3></label>
+              <div className="setTime__div">
+              <label htmlFor="go-out-time" className="setTime__text"><h3>出門時間</h3></label>
 
               {/* //將選擇的日期、出門或回家時間，傳入TimeOption */}
-              <TimeOption onChange={(e) => { setGoOutTime(e.target.value) }} date={date} defaultTime={goOutTime} />
-              <label htmlFor="go-home-time" className="setTime__backLabel"><h3>回家時間</h3></label>
+              <TimeOption onChange={(e) => { setGoOutTime(e.target.value) }} date={date} defaultTime={goOutTime} className="setTime__option"/>
+              </div>
+              <div className="setTime__div">
+              <label htmlFor="go-home-time" className="setTime__text"><h3>回家時間</h3></label>
               <TimeOption onChange={(e) => { setGoHomeTime(e.target.value) }} date={date} defaultTime={goHomeTime} />
+              </div>
               {/* 預設msg為""，但若當Out & back time validate成立的話msg = "出門時間要大於目前時間" */}
+              <span className="TimeValidateText">{msg}</span>
             </div>
-            <span className="TimeValidateText">{msg}</span>
+            
 
             {/*  交通工具 */}
-            <h3>交通工具</h3>
+            <h3 className="trafficText">交通工具</h3>
             <div className="traffic">
               {/* walk */}
               <input type="radio" id="walk" value="walk" className="traffic__walkinput" onChange={(event) => setTraffic(event.target.value)} checked={traffic === "walk"}></input>

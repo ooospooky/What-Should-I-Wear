@@ -1,3 +1,5 @@
+@import '../../mixin.scss';
+
 .Home {
   // set div's container
   height: 100vh;
@@ -10,26 +12,42 @@
   background-blend-mode: darken;
   // background-image: linear-gradient(to right, #373b44, #4286f4);
   color: #fff;
-
+ 
   &__form {
     width: 70%;
     height: 80%;
     display: grid;
     grid-template-columns: 1fr 2fr;
     grid-column-gap: 2rem;
+    @include respond(iphoneXR) {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      // align-items: flex-start;
+    }
   }
 
   .date {
     width: 100%;
-    height: 100%;
+    
     font-size: .9rem;
     font-weight: 500;
-
+    @include respond(iphoneXR){
+      height: 50%;
+      margin-top:-1rem;
+    }
+    @include respond(iphoneSE){
+      margin-top:2rem;
+    }
     // .dateSpanDiv{
     //   width: 100%;
-    //   display: flex;
-    //   justify-content: space-around;
+
     // }
+    &__btn {
+      // display: flex;
+      // justify-content:flex-start;
+    }
+
     .dateSpan {
       // font-size: .9rem;
       margin-top: 1.7rem;
@@ -38,12 +56,23 @@
 
       font-family: 'EB Garamond', serif;
       font-size: 1.2rem;
-      
-      &__num{
-        @extend .dateSpan;
-        font-size:1.7rem;
-        margin-left:1rem;
+    
+      &__AT {
+        @include respond(tab-port) {
+          margin-top: 1rem;
+        }
       }
+      &__num {
+        @extend .dateSpan;
+        font-size: 1.7rem;
+        margin-left: 1rem;
+        @include respond(tab-port) {
+          font-size: 1.7rem;
+          margin-left: .5rem;
+          margin-top: 1.1rem;
+        }
+      }
+
     }
 
     display: flex;
@@ -65,6 +94,12 @@
       background-image: url(./background.png);
       background-size: cover;
       height: 13rem;
+      @include respond(iphoneXR){
+        height: 10rem;
+      }
+      @include respond(iphoneSE){
+        height: 8rem;
+      }
     }
 
     &__btn,
@@ -80,12 +115,11 @@
       border-radius: 25px;
       cursor: pointer;
       margin-bottom: .5rem;
-
       display: flex;
-      // flex-direction: column;
-      // justify-content: flex-end;
-      // align-items: center;
       position: relative;
+      @include respond(iphoneXR){
+        margin-bottom: 0;
+      }
 
     }
 
@@ -93,6 +127,31 @@
       position: absolute;
       top: -10%;
       left: 0%;
+      height: 300px;
+      width: 300px;
+      @media(max-width:1180px) {
+        // font-size: 12px;
+        top: -5%;
+        height: 250px;
+        width: 250px;
+      }
+      @include respond(small-desktop) {
+        top: 0;
+        left: -5%;
+        height: 220px;
+        width: 220px;
+      }
+      @include respond(small-tab-port) {
+        top: 10%;
+        height: 200px;
+        width: 200px;
+      }
+      @include respond(iphoneXR){
+        top: 0;
+        left:13%;
+        height: 200px;
+        width: 200px;
+      }
     }
   }
 
@@ -100,6 +159,12 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    @include respond(iphoneXR){
+      margin-top:-1.5rem;
+    }
+    @include respond(iphoneSE){
+      margin-top:.5rem;
+    }
   }
 
   .area {
@@ -118,7 +183,6 @@
       &:first-of-type {
         margin-right: 1rem;
       }
-
       height:2rem;
       width:8rem;
       background-color: white;
@@ -134,6 +198,16 @@
     border-radius: 12px;
     padding: 1rem 2rem;
     // background-color: olivedrab;
+    @include respond(tab-port) {
+      padding: 1rem 1.5rem;
+    }
+
+    @include respond(small-tab-port) {
+      padding: 1rem 1rem;
+    }
+    @include respond(iphoneXR){
+      margin-top:1rem;
+    }
   }
 
   .setTime {
@@ -142,8 +216,41 @@
     // grid-template-columns: 1fr 1fr;
     // grid-gap: 15px;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
+    &__div{
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+    @include respond(iphoneXR){
+      display:flex;
+      flex-direction: column;
+      
+    }
+    
+    &__text {
+      margin-right: 1rem;
+      @media(max-width:1165px) {
+        // font-size: 12px;
+      }
+
+      @include respond(small-desktop) {
+        font-size: 14px;
+      }
+
+      @include respond(tab-port) {
+        font-size: 13px;
+      }
+
+      @include respond(ipad) {
+        font-size: 12px;
+      }
+      @include respond(iphoneXR){
+        font-size: 14px;
+      }
+     
+    }
 
     &__Input {
       height: 2rem;
@@ -152,19 +259,47 @@
       color: black;
       border-radius: 12px;
       font-size: 1rem;
+
+      @media(max-width:1165px) {
+        height: 2rem;
+        width: 7rem;
+      }
+
+      @include respond(small-desktop) {
+        height: 2rem;
+        width: 6rem;
+      }
+
+      @include respond(tab-port) {
+        height: 2rem;
+        width: 4.8rem;
+      }
+      @include respond(iphoneXR){
+        height: 2rem;
+        width: 6rem;
+      }
     }
 
 
   }
 }
 
+
+
 .TimeValidateText {
   //error color still need change
   // margin-left: .8rem;
   display: inline-block;
-  color: rgb(137, 17, 17);
+  color: rgb(230, 29, 29);
+  @include respond(iphoneXR){
+    margin-top: -.4rem;
+  }
 }
-
+.trafficText{
+  @include respond(iphoneXR){
+    margin-top: .1rem;
+  }
+}
 .traffic {
   display: flex;
   justify-content: space-evenly;
@@ -197,7 +332,6 @@
     font-size: 1rem;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-weight: bold;
-
     margin-top: 3.5rem;
     background-color: #60a5faa5;
     color: #fff;
@@ -206,9 +340,18 @@
     width: 50%;
     height: 3rem;
     cursor: pointer;
-    //shadow
     box-shadow: 0 7px 10px rgba(0, 0, 0, .2);
-
+    @include respond(small-desktop) {
+      margin-top: 2.8rem;
+      font-size: .8rem;
+    }
+    @include respond(small-tab-port) {
+      width: 60%;
+    }
+    @include respond(iphoneXR){
+      margin-top:.8rem;
+      width: 80%;
+    }
     &:hover {
       background-color: #418de9a5;
     }
@@ -224,6 +367,7 @@
       color: #666666;
       cursor: not-allowed;
     }
+
   }
 
 }
