@@ -45,6 +45,9 @@ import manPufferJacket from '../../Assets/img/manPufferJacket.png'
 import womanPufferJacket from '../../Assets/img/womanPufferJacket.png'
 
 export default function Result() {
+  const containerStyle = {
+    '--view-height':'724px',
+  };
   const { weatherTemp, pop, formData } = useContext(WeatherContext)
   // if(!weatherTemp) return (<div>123</div>)
   const navigate = useNavigate();
@@ -78,7 +81,7 @@ export default function Result() {
     return null; //若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
   };
   const needRaincoat = () => {
-    return averagePop > 30 ? (
+    return averagePop > 10 ? (
       renderClothingSuggestion(raincoat, '雨衣', `降雨機率為${averagePop}%建議帶上雨衣或雨傘`)
     ) : null;//若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
   };
@@ -119,39 +122,39 @@ export default function Result() {
     }
 
     if (averageTemp < 22 && averageTemp >= 20) {
-    return (
-      <>
-        <img className='result__right__img' src={womanLongShirtPants} alt="womanLongShirtPants" />
-        <img className='result__right__img' src={manLongShirtPants} alt="manLongShirtPants" />
-        <div className="description">
-          <h3>衣著建議</h3>
-          <>
-            {renderClothingSuggestion(longshirt, '薄長袖', '薄長袖')}
-            {renderClothingSuggestion(longpants, '長褲', '長褲')}
-            {motoOrNot()}
-            {needRaincoat()}
-          </>
-        </div>
-      </>
-    );
+      return (
+        <>
+          <img className='result__right__img' src={womanLongShirtPants} alt="womanLongShirtPants" />
+          <img className='result__right__img' src={manLongShirtPants} alt="manLongShirtPants" />
+          <div className="description">
+            <h3>衣著建議</h3>
+            <>
+              {renderClothingSuggestion(longshirt, '薄長袖', '薄長袖')}
+              {renderClothingSuggestion(longpants, '長褲', '長褲')}
+              {motoOrNot()}
+              {needRaincoat()}
+            </>
+          </div>
+        </>
+      );
     }
 
     if (averageTemp < 20 && averageTemp >= 16) {
-    return (
-      <>
-        <img className='result__right__img' src={womanSweater} alt="womanSweater" />
-        <img className='result__right__img' style={{ marginLeft: '-5px' }} src={manHoodie} alt="manHoddie" />
-        <div className="description">
-          <h3>衣著建議</h3>
-          <>
-            {renderClothingSuggestion(hoodie, '大學t或帽t', '大學T或帽T')}
-            {renderClothingSuggestion(longpants, '長褲', '長褲')}
-            {motoOrNot()}
-            {needRaincoat()}
-          </>
-        </div>
-      </>
-    );
+      return (
+        <>
+          <img className='result__right__img' src={womanSweater} alt="womanSweater" />
+          <img className='result__right__img' style={{ marginLeft: '-5px' }} src={manHoodie} alt="manHoddie" />
+          <div className="description">
+            <h3>衣著建議</h3>
+            <>
+              {renderClothingSuggestion(hoodie, '大學t或帽t', '大學T或帽T')}
+              {renderClothingSuggestion(longpants, '長褲', '長褲')}
+              {motoOrNot()}
+              {needRaincoat()}
+            </>
+          </div>
+        </>
+      );
     }
 
     if (averageTemp < 16 && averageTemp >= 12) {
@@ -176,19 +179,19 @@ export default function Result() {
       {/* <div><img src={beanie}></img><span>也可以考慮帶上毛帽不讓頭著涼</span></div> */ }
       return (
         <>
-        <img className='result__right__img' src={womanPufferJacket} alt="womanJacket" />
-        <img className='result__right__img' style={{ marginLeft: '-5px' }} src={manPufferJacket} alt="manPufferJacket" />
-        <div className="description">
-          <h3>衣著建議</h3>
-        <>
-          {renderClothingSuggestion(hoodie, '大學t', '大學t或帽t')}
-          {renderClothingSuggestion(insideshirt, '發熱衣', '加上一件發熱衣保暖')}
-          {renderClothingSuggestion(longpants, '長褲', '長褲')}
-          {renderClothingSuggestion(pufferjacket, '厚外套', '厚外套')}
-          {motoOrNot()}
-          {needRaincoat()}
-        </>
-        </div>
+          <img className='result__right__img' src={womanPufferJacket} alt="womanJacket" />
+          <img className='result__right__img' style={{ marginLeft: '-5px' }} src={manPufferJacket} alt="manPufferJacket" />
+          <div className="description">
+            <h3>衣著建議</h3>
+            <>
+              {renderClothingSuggestion(hoodie, '大學t', '大學t或帽t')}
+              {renderClothingSuggestion(insideshirt, '發熱衣', '加上一件發熱衣保暖')}
+              {renderClothingSuggestion(longpants, '長褲', '長褲')}
+              {renderClothingSuggestion(pufferjacket, '厚外套', '厚外套')}
+              {motoOrNot()}
+              {needRaincoat()}
+            </>
+          </div>
         </>
       );
     }
@@ -210,17 +213,16 @@ export default function Result() {
     autoplay
     loop
     src={getresultAnimation()}
-
-    style={{ height: '100px', width: '100px' }}
   />
   return (
-    <div className="result">
+    <div className="result" style={containerStyle} >
 
       <div className="result__left">
         <div className="sun">
           <div className="sun__up">
-            {weatherAnimation}
-
+            <div className='weatherAnimation'>
+              {weatherAnimation}
+            </div>
             <span className='sun__up__temp'>{averageTemp}&deg;C</span>
 
           </div>
@@ -230,20 +232,20 @@ export default function Result() {
           </div>
 
         </div>
-        <div className="lilcontainer outTemp">
-          <span>出門:<br />{goOutTemp}&deg;C</span>
+        <div className="lilcontainer outTemp ">
+          <span className='lilcontainer__bigText'>出門:<br />{goOutTemp}&deg;C</span>
         </div>
-        <div className="lilcontainer ackTemp">
-          <span>回家: <br />{goHomeTemp}&deg;C</span>
+        <div className="lilcontainer backTemp">
+          <span className='lilcontainer__bigText'>回家: <br />{goHomeTemp}&deg;C</span>
         </div>
         <div className="lilcontainer avgTemp">
-          <span>在外時平均溫度: {averageTemp}&deg;C</span>
+          <span className='lilcontainer__smallText'>在外時平均溫度: {averageTemp}&deg;C</span>
         </div>
         <div className="lilcontainer avgTempDiff">
-          <span>在外時最大溫差: {tempDiff}&deg;C</span>
+          <span className='lilcontainer__smallText'>在外時最大溫差: {tempDiff}&deg;C</span>
         </div>
         <div className="lilcontainer pop">
-          <span>在外時降雨率: {averagePop}%</span>
+          <span className='lilcontainer__smallText'>在外時降雨率: {averagePop}%</span>
         </div>
 
       </div>
@@ -252,10 +254,29 @@ export default function Result() {
         <img className='result__right__img' src={standingMan2} alt="Grapefruit slice atop a pile of other slices" width="220" height="450" />
         <div className="description">
           <h3>衣著建議</h3> */}
-        {suggestion()}
+        {/* {suggestion()} */}
+        <>
+        <div className="result__right__imgdiv">
+          <img className='result__right__img' src={womanPufferJacket} alt="womanJacket" />
+          <img className='result__right__img' style={{ marginLeft: '-5px' }} src={manPufferJacket} alt="manPufferJacket" />
+          </div>
+          <div className="description">
+            <h3>衣著建議</h3>
+            {/* <h2>{window.innerHeight * 0.01}</h2> */}
+            <>
+              {renderClothingSuggestion(hoodie, '大學t', '大學t或帽t')}
+              {renderClothingSuggestion(insideshirt, '發熱衣', '加上一件發熱衣保暖')}
+              {renderClothingSuggestion(longpants, '長褲', '長褲')}
+              {renderClothingSuggestion(pufferjacket, '厚外套', '厚外套')}
+              {motoOrNot()}
+              {needRaincoat()}
+
+            </>
+
+          </div>
+        </>
         {/* </div> */}
         <button className='backBtn' onClick={() => { navigate('/home') }}>&larr;&nbsp;返回</button>
-
       </div>
     </div>
   )
