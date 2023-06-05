@@ -37,17 +37,12 @@
       margin-top:-1rem;
     }
     @include respond(iphoneSE){
-      margin-top:2rem;
+      margin-top:1.3rem;
     }
     // .dateSpanDiv{
     //   width: 100%;
 
     // }
-    &__btn {
-      // display: flex;
-      // justify-content:flex-start;
-    }
-
     .dateSpan {
       // font-size: .9rem;
       margin-top: 1.7rem;
@@ -60,6 +55,9 @@
       &__AT {
         @include respond(tab-port) {
           margin-top: 1rem;
+        }
+        @include respond(iphoneSE) {
+          margin-top: 1.5rem;
         }
       }
       &__num {
@@ -98,7 +96,7 @@
         height: 10rem;
       }
       @include respond(iphoneSE){
-        height: 8rem;
+        // height: 8rem;
       }
     }
 
@@ -120,6 +118,7 @@
       @include respond(iphoneXR){
         margin-bottom: 0;
       }
+      
 
     }
 
@@ -161,6 +160,7 @@
     justify-content: center;
     @include respond(iphoneXR){
       margin-top:-1.5rem;
+      z-index: 2; //ater tomorrow's animation too large, so when you pick location might click on animation.
     }
     @include respond(iphoneSE){
       margin-top:.5rem;
@@ -222,12 +222,15 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
+      @include respond(iphoneSE){
+       margin-top:-1rem;
+      }
     }
     @include respond(iphoneXR){
       display:flex;
       flex-direction: column;
-      
     }
+   
     
     &__text {
       margin-right: 1rem;
@@ -303,7 +306,9 @@
 .traffic {
   display: flex;
   justify-content: space-evenly;
-
+   @include respond(iphoneSE){
+    margin-top: -.8rem;
+  }
   //icon's default setting
   ion-icon {
     // color: rgb(144, 143, 143);
