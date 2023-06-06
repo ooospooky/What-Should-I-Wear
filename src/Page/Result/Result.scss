@@ -18,6 +18,7 @@
   }
   @include respond(iphoneSE) {
     // height: 100vh;
+    height:var(--view-height);
   }
   
 
@@ -87,7 +88,9 @@
         &__temp {
           color: white;
           font-size: 2rem;
-
+          @include respond(small-tab-port){
+            font-size: 1.5rem;
+          }
           @include respond(ipad) {
             font-size: 1.5rem;
           }
@@ -103,7 +106,7 @@
         // flex-direction: column;
         justify-content: center;
         align-items: center;
-
+        font-size: 1.3rem;
         @media(max-width:685px) {
           flex-direction: column;
         }
@@ -219,6 +222,7 @@
 
       @media(max-width:650px) {
         flex-direction: column;
+
         margin: 0 2rem;
       }
 
@@ -226,6 +230,7 @@
         margin: 0 .5rem;
       }
       @include respond(iphoneXR) {
+        
         margin:0 1.5rem;
       }
     
@@ -265,16 +270,21 @@
       }
       @include respond(iphoneSE) {
         width: 120px;
-        height: 220px;
+        height: 210px;
       }
 
       &:nth-child(2n) {
-        margin-left: -15px;
+        margin-left: -5px;
         margin-right: 10px;
         // width:200px;
+        @media(max-width:650px) {
+          margin-left:0;
+        margin-right: 0;
+        margin-top:.5rem;
+        }
       }
-
     }
+  
 
     // &__img2{
     //   margin-left: -20px;
@@ -302,6 +312,7 @@
       width: 4.5rem;
       height: 2.5rem;
       font-size: 15px;
+      margin-left: -2rem;
     }
 
     @include respond(ipad) {
