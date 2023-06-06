@@ -8,7 +8,7 @@ export const GetWeather = ({ setWeatherTemp,setPop,dateRange,locationId,location
    //   //設置一天的範圍dataRange =  &timeFrom=2022-06-17T00:00:00&timeTo=2022-06-18T00:00:01
    const data = axios.get(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/${locationId}?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&locationName=${locationName}${dateRange}`)
       .then((res) => {
-         console.log('All result',res.data)
+         // console.log('All result',res.data)
 
          //allData 為Array，包含溫度、降雨率、舒適度等等 ////溫度在[3] 天氣綜合描述在(每三小時溫度)[6]
          let allData = res.data['records']['locations'][0].location[0]['weatherElement']
@@ -48,7 +48,7 @@ export const GetWeather = ({ setWeatherTemp,setPop,dateRange,locationId,location
          //將資料傳到global state（in App.js)
          setWeatherTemp(temp)
          setPop(pop)
-         console.log('TheTemp',temp,"POP",pop)
+         // console.log('TheTemp',temp,"POP",pop)
       })
 }
 

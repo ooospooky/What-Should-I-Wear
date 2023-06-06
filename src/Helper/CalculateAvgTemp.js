@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { WeatherContext } from '../Contexts/WeatherContext'
 export default function CalculateAvgTemp() {
   const { weatherTemp, pop, formData } = useContext(WeatherContext)
@@ -14,7 +14,7 @@ export default function CalculateAvgTemp() {
     if (goOutTime < 10) goOutTime = `0${goOutTime}`
   }
   // if(goOutTime % 3 === 0 && goOutTime < 10) goOutTime = `0${goOutTime}`
-  console.log('ouTTTT', goOutTime)
+  // console.log('ouTTTT', goOutTime)
 
   if (goHomeTime % 3 === 1) {
     goHomeTime += 2;
@@ -25,7 +25,7 @@ export default function CalculateAvgTemp() {
     if (goHomeTime < 10) goHomeTime = `0${goHomeTime}`
   }
   // if(goHomeTime % 3 === 0 && goHomeTime < 10) goHomeTime = `0${goHomeTime}`
-  console.log(goHomeTime,'hooo')
+  // console.log(goHomeTime,'hooo')
   let max = 0;
   let min = 100;
   let avgTemp = 0;
@@ -44,6 +44,6 @@ export default function CalculateAvgTemp() {
     }
     
   }
-  console.log("avgTemp",{avgTemp:Math.round(avgTemp/counter),max})
+  // console.log("avgTemp",{avgTemp:Math.round(avgTemp/counter),max})
   return {averageTemp:Math.round(avgTemp/counter),tempDiff:max-min}
 }

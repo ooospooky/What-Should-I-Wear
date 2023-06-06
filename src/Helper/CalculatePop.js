@@ -14,7 +14,7 @@ export default function CalculatePop() {
     if (goOutTime < 10) goOutTime = `0${goOutTime}`
   }
   // if(goOutTime % 3 === 0 && goOutTime < 10) goOutTime = `0${goOutTime}`
-  console.log('ouTTTT', goOutTime)
+  // console.log('ouTTTT', goOutTime)
 
   if (goHomeTime % 3 === 1) {
     goHomeTime += 2;
