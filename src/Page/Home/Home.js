@@ -81,7 +81,7 @@ function Home() {
   return (
     <div className="Home" style={containerStyle}>
       {/* <div style={showTransition?{ height: '100vh', width: '100vw',backgroundColor:"black", display:'none', opacity:0}:{}}>123</div> */}
-      {showTransition ? <div style={{ height: '100vh', width: '100vw', background: "linear-gradient(141.11deg, rgba(7, 51, 88, 0.4) 9.39%, #073358 70.4%)" }}>
+      {showTransition ? <div transitionDiv>
         <Player
           className='transitionAnimation'
           autoplay

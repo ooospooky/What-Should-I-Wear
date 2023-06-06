@@ -341,7 +341,7 @@
   align-items: flex-start;
   @include respond(iphoneXR) {
     justify-content: flex-start;
-    // align-items: flex-start;
+        // align-items: flex-start;
   }
   &>div {
     display: flex;

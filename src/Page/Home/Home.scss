@@ -24,7 +24,15 @@
     display: grid;
     grid-template-columns: 1fr 2fr;
     grid-column-gap: 2rem;
+    @include respond(ipad){
+      width: 90%;
+      grid-column-gap: .5rem;
+    }
+    @media(max-width:550px) {
+      width: 100%;
+    }
     @include respond(iphoneXR) {
+      width: 70%;
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -37,6 +45,7 @@
     
     font-size: .9rem;
     font-weight: 500;
+   
     @include respond(iphoneXR){
       height: 50%;
       margin-top:.4rem;
@@ -163,7 +172,14 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    @media(max-width:550px) {
+      width:90%
+    }
+    @media(max-width:480px) {
+      width: 70%;
+    }
     @include respond(iphoneXR){
+      width:100%;
       margin-top:.5rem;
       z-index: 2; //ater tomorrow's animation too large, so when you pick location might click on animation.
     }
@@ -230,6 +246,10 @@
       @include respond(iphoneSE){
        margin-top:-1rem;
       }
+    }
+    @include respond(ipad){
+      display:flex;
+      flex-direction: column;
     }
     @include respond(iphoneXR){
       display:flex;
