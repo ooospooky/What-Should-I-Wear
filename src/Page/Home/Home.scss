@@ -12,7 +12,12 @@
   background-blend-mode: darken;
   // background-image: linear-gradient(to right, #373b44, #4286f4);
   color: #fff;
- 
+  @include respond(iphoneXR) {
+    height:var(--view-height);
+  }
+  @include respond(iphoneSE) {
+    height:var(--view-height);
+  }
   &__form {
     width: 70%;
     height: 80%;
@@ -34,10 +39,10 @@
     font-weight: 500;
     @include respond(iphoneXR){
       height: 50%;
-      margin-top:-1rem;
+      margin-top:.4rem;
     }
     @include respond(iphoneSE){
-      margin-top:1.3rem;
+      margin-top:.4rem;
     }
     // .dateSpanDiv{
     //   width: 100%;
@@ -159,11 +164,11 @@
     flex-direction: column;
     justify-content: center;
     @include respond(iphoneXR){
-      margin-top:-1.5rem;
+      margin-top:.5rem;
       z-index: 2; //ater tomorrow's animation too large, so when you pick location might click on animation.
     }
     @include respond(iphoneSE){
-      margin-top:.5rem;
+      margin-top:-.5rem;
     }
   }
 

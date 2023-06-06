@@ -24,6 +24,9 @@ function Home() {
   const navigate = useNavigate();
   // if(date === 'today') setGoOutTime(moment().format('HH:00'))
   let msg = ""
+  const containerStyle = {
+    '--view-height': '724px',
+  };
   //若出門時間大於回家時間，將回家時間調整至出門時間加一小時
   if (goOutTime > goHomeTime) {
     setGoHomeTime(Number(goOutTime.slice(0, 2)) + 1 + ":00")
@@ -76,7 +79,7 @@ function Home() {
   >
   </Player>
   return (
-    <div className="Home">
+    <div className="Home" style={containerStyle}>
       {/* <div style={showTransition?{ height: '100vh', width: '100vw',backgroundColor:"black", display:'none', opacity:0}:{}}>123</div> */}
       {showTransition ? <div style={{ height: '100vh', width: '100vw', background: "linear-gradient(141.11deg, rgba(7, 51, 88, 0.4) 9.39%, #073358 70.4%)" }}>
         <Player

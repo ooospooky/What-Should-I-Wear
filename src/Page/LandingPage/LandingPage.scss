@@ -29,10 +29,13 @@
   height: 100vh;
   // background-color: #5B9ED9;
   background-color: #083359;
-
+  position: relative;
   // display:flex;
   // justify-content: center;
   // align-items: center;
+  @include respond(iphoneXR) {
+    height:var(--view-height);
+  }
   &__container {
     padding: 4rem;
     display: flex;
@@ -45,6 +48,9 @@
     }
     @include respond(ipad) {
       padding:2rem;
+    }
+    @include respond(iphoneXR) {
+      padding:0 2rem 2rem 2rem;
     }
 
   }

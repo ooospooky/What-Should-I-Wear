@@ -7,6 +7,9 @@ import landingpageMan from '../../Assets/animation/landingpageMan.json' //https:
 import logo from '../../Assets/img/logo.png'
 
 function LangingPage() {
+  const containerStyle = {
+    '--view-height': '724px',
+  };
   const [showTransition, setShowTransition] = useState(false)
   const navigate = useNavigate();
   const handleClick = () => {
@@ -15,7 +18,7 @@ function LangingPage() {
   }
   return (
 
-    <div className='landingPage' style={{ position: "relative" }}>
+    <div className='landingPage' style={containerStyle}>
       <div className="landingPage__container">
         {showTransition ? <div style={{ height: '100vh', width: '100vw', background: "linear-gradient(141.11deg, rgba(7, 51, 88, 0.4) 9.39%, #073358 70.4%)" }}>
           <Player
