@@ -94,7 +94,7 @@ export default function Result() {
           <img className='result__right__img' src={manShortPants} alt="manShortPants" style={{marginLeft:"1rem"}} />
         </div>
         <div className="description">
-          <h3>衣著建議</h3>
+          <h3 style={{marginLeft:"1rem"}}>衣著建議</h3>
           <>
             {renderClothingSuggestion(shirt, '短袖', '短袖')}
             {renderClothingSuggestion(shortpants, '短褲', '短褲')}

@@ -125,7 +125,7 @@
     }
 
     @include respond(iphoneSE) {
-      font-size: 25px;
+      font-size: 28px;
       margin-top: -2rem;
       margin-bottom: 1rem;
     }
@@ -166,10 +166,12 @@
 
     @include respond(iphoneXR) {
       margin-top: -1rem;
+      margin-bottom: 1.5rem;
       font-size: 21px;
     }
 
     @include respond(iphoneSE) {
+      margin-top: 0rem;
       margin-bottom: 1rem;
     }
 
@@ -222,7 +224,11 @@
   }
 
   @include respond(iphoneXR) {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
+    margin-left: 1rem;
+  }
+  @include respond(iphoneSE) {
+    margin-top: -.5rem;
     margin-left: 1rem;
   }
 
