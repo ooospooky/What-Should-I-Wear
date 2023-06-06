@@ -46,7 +46,7 @@ import womanPufferJacket from '../../Assets/img/womanPufferJacket.png'
 
 export default function Result() {
   const containerStyle = {
-    '--view-height': '724px',
+    '--view-height': `${window.innerHeight}px`  
   };
   const { weatherTemp, pop, formData } = useContext(WeatherContext)
   // if(!weatherTemp) return (<div>123</div>)

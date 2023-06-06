@@ -25,7 +25,7 @@ function Home() {
   // if(date === 'today') setGoOutTime(moment().format('HH:00'))
   let msg = ""
   const containerStyle = {
-    '--view-height': '724px',
+    '--view-height': `${window.innerHeight}px`  
   };
   //若出門時間大於回家時間，將回家時間調整至出門時間加一小時
   if (goOutTime > goHomeTime) {

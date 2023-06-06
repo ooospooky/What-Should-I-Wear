@@ -307,6 +307,7 @@
     font-size: 18px;
     font-weight: 500;
     min-width: 80px;
+    margin-right: .5rem;
 
     @include respond(desktop) {
       width: 4.5rem;

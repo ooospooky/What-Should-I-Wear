@@ -8,7 +8,7 @@ import logo from '../../Assets/img/logo.png'
 
 function LangingPage() {
   const containerStyle = {
-    '--view-height': '724px',
+    '--view-height': `${window.innerHeight}px`  
   };
   const [showTransition, setShowTransition] = useState(false)
   const navigate = useNavigate();
