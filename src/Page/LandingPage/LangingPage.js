@@ -23,7 +23,7 @@ function LangingPage() {
 
     <div className='landingPage' style={containerStyle}>
       <div className="landingPage__container">
-        {showTransition ? <div className='transitionDiv'>
+        {showTransition ? <div className='transition__div'>
           <Player
             className='transitionAnimation'
             autoplay

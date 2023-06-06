@@ -72,7 +72,7 @@ function Home() {
   </Player>
   return (
     <div className="Home" style={containerStyle}>
-      {showTransition ? <div transitionDiv>
+      {showTransition ? <div className="transition__div">
         <Player
           className='transitionAnimation'
           autoplay
@@ -80,7 +80,7 @@ function Home() {
           src={salesman}
           style={{ height: '500px', width: '500px' }}
         />
-      </div> : <></>}
+      </div> : null}
       <form onSubmit={handleSubmit} className="Home__form" style={showTransition ? { display: 'none' } : {}}>
 
         {/* 日期選擇 */}
