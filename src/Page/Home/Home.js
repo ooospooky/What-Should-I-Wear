@@ -5,9 +5,9 @@ import { TimeOption } from '../../Components/TimeOption'
 import moment from 'moment'; //https://momentjs.com/
 import { WeatherContext } from '../../Contexts/WeatherContext'
 import { GetWeather } from '../../Helper/GetWeather'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import salesman from '../../Assets/animation/salesman.json'
-import { Player, Controls } from '@lottiefiles/react-lottie-player';
+import { Player } from '@lottiefiles/react-lottie-player';
 import sunNcloudAnimation from "../../Assets/animation/sunNcloud.json"
 //https://lottiefiles.com/61302-weather-icon
 function Home() {
@@ -22,10 +22,9 @@ function Home() {
   const [district, setDistrict] = useState(districts[region[0]][0])    // '宜蘭市'
   const [showTransition, setShowTransition] = useState(false)
   const navigate = useNavigate();
-  // if(date === 'today') setGoOutTime(moment().format('HH:00'))
-  let msg = ""
+  let errorMessage = ""
   const containerStyle = {
-    '--view-height': `${window.innerHeight}px`  
+    '--view-height': `${window.innerHeight}px`
   };
   //若出門時間大於回家時間，將回家時間調整至出門時間加一小時
   if (goOutTime > goHomeTime) {
@@ -33,7 +32,7 @@ function Home() {
   }
   //Out & back time validate: 若日期選擇當天，且出門時間大於目前時間，設定error message 
   if (goOutTime < moment().hour() + ":00" && date === 'today') {
-    msg = "出門時間要大於目前時間"
+    errorMessage = "出門時間要大於目前時間"
   }
 
   const handleSubmit = (event) => {
@@ -42,23 +41,16 @@ function Home() {
     setShowTransition(prev => !prev)
     //dateRange be like this, &timeFrom=2022-06-17T00:00:00&timeTo=2022-06-18T00:00:01
     //依照user選擇的日期去做一天的範圍
-    let dateRange;
+
+    let dateRange; // Create date range based on the selected date
     if (date === "today") dateRange = `&timeFrom=${moment().format().slice(0, 11)}00:00:00&timeTo=${moment().add(1, 'days').format().slice(0, 11)}00:00:01`;
     if (date === "tomorrow") dateRange = `&timeFrom=${moment().add(1, 'days').format().slice(0, 11)}00:00:00&timeTo=${moment().add(2, 'days').format().slice(0, 11)}00:00:01`;
     if (date === "afterTomorrow") dateRange = `&timeFrom=${moment().add(2, 'days').format().slice(0, 11)}00:00:00&timeTo=${moment().add(3, 'days').format().slice(0, 11)}00:00:01`;
-    console.log('dateRange', dateRange);
-    console.log(date)
-    console.log(goOutTime, goHomeTime)
-    console.log(traffic)
-    console.log(region)
-    console.log(district)
     setFormData({ date, goOutTime, goHomeTime, traffic, region, district })
     //呼叫getweather API call，傳入context variable & API 參數
     GetWeather({ setWeatherTemp, setPop, dateRange, locationId: region[1], locationName: district })
 
     setTimeout(() => { navigate('/result') }, 700)
-    // navigate('/result')
-
   }
 
   const changeArea = (e) => {
@@ -80,12 +72,10 @@ function Home() {
   </Player>
   return (
     <div className="Home" style={containerStyle}>
-      {/* <div style={showTransition?{ height: '100vh', width: '100vw',backgroundColor:"black", display:'none', opacity:0}:{}}>123</div> */}
       {showTransition ? <div transitionDiv>
         <Player
           className='transitionAnimation'
           autoplay
-          // speed={2}
           loop
           src={salesman}
           style={{ height: '500px', width: '500px' }}
@@ -96,37 +86,30 @@ function Home() {
         {/* 日期選擇 */}
         <div className="date">
           <div className="today">
-            <input  type="radio" id="today" onChange={() => {setDate('today');setGoOutTime(moment().format('HH:00'))}} checked={date === "today"} ></input>
+            <input type="radio" id="today" onChange={() => { setDate('today'); setGoOutTime(moment().format('HH:00')) }} checked={date === "today"} ></input>
             <label htmlFor="today" className="date__btn">
               {/* moment().format("MMM Do") 顯示當天月份與日期 -->e.g. Jun 19th */}
               <span className="dateSpan dateSpan__today">TODAY</span>
-              {/* <span className="dateSpan">{moment().format("MMM Do")}</span> */}
-
               {date === "today" ? <> <span className="dateSpan__num ">{moment().format("M/D")}</span>{sunNcloud}</>
                 : <></>}
 
             </label>
           </div>
           <div className="tomorrow">
-            <input type="radio" id="tomorrow" onChange={() => {setDate('tomorrow');setGoOutTime("09:00")}} checked={date === "tomorrow"} ></input>
+            <input type="radio" id="tomorrow" onChange={() => { setDate('tomorrow'); setGoOutTime("09:00") }} checked={date === "tomorrow"} ></input>
             <label htmlFor="tomorrow" className="date__btn">
               {/* moment().add(1, 'days').format("MMM Do") 顯示當天+1天的月份與日期 -->e.g. Jun 20th */}
-              {/* <span>{moment().add(1, 'days').format("MMM Do")}</span> */}
               <span className="dateSpan">TOMORROW</span>
-              {/* <span className="dateSpan__num">{moment().add(1, 'days').format("M/D")}</span> */}
               {date === "tomorrow" ?
                 <><span className="dateSpan__num">{moment().add(1, 'days').format("M/D")}</span> {sunNcloud} </>
                 : <></>}
             </label>
           </div>
           <div className="afterTomorrow">
-            <input type="radio" id="afterTomorrow" onChange={() => {setDate('afterTomorrow');setGoOutTime("09:00")}} checked={date === "afterTomorrow"} ></input>
+            <input type="radio" id="afterTomorrow" onChange={() => { setDate('afterTomorrow'); setGoOutTime("09:00") }} checked={date === "afterTomorrow"} ></input>
             <label htmlFor="afterTomorrow" className="date__btn" >
               {/* moment().add(2, 'days').format("MMM Do") 顯示當天+2天的月份與日期 -->e.g. Jun 21th */}
-              {/* <span>{moment().add(2, 'days').format("MMM Do")}</span> */}
-
               <span className="dateSpan dateSpan__AT">AFTER TOMORROW</span>
-
               {date === "afterTomorrow" ? <><span className="dateSpan__num">{moment().add(2, 'days').format("M/D")}</span>{sunNcloud}</> : <></>}
             </label>
           </div>
@@ -165,19 +148,19 @@ function Home() {
           <div className="inbox">
             <div className="setTime">
               <div className="setTime__div">
-              <label htmlFor="go-out-time" className="setTime__text"><h3>出門時間</h3></label>
+                <label htmlFor="go-out-time" className="setTime__text"><h3>出門時間</h3></label>
 
-              {/* //將選擇的日期、出門或回家時間，傳入TimeOption */}
-              <TimeOption onChange={(e) => { setGoOutTime(e.target.value) }} date={date} defaultTime={goOutTime} className="setTime__option"/>
+                {/* //將選擇的日期、出門或回家時間，傳入TimeOption */}
+                <TimeOption onChange={(e) => { setGoOutTime(e.target.value) }} date={date} defaultTime={goOutTime} className="setTime__option" />
               </div>
               <div className="setTime__div">
-              <label htmlFor="go-home-time" className="setTime__text"><h3>回家時間</h3></label>
-              <TimeOption onChange={(e) => { setGoHomeTime(e.target.value) }} date={date} defaultTime={goHomeTime} />
+                <label htmlFor="go-home-time" className="setTime__text"><h3>回家時間</h3></label>
+                <TimeOption onChange={(e) => { setGoHomeTime(e.target.value) }} date={date} defaultTime={goHomeTime} />
               </div>
-              {/* 預設msg為""，但若當Out & back time validate成立的話msg = "出門時間要大於目前時間" */}
-              <span className="TimeValidateText">{msg}</span>
+              {/* 預設errorMessage為""，但若當Out & back time validate成立的話errorMessage = "出門時間要大於目前時間" */}
             </div>
-            
+            <span className="TimeValidateText">{errorMessage}</span>
+
 
             {/*  交通工具 */}
             <h3 className="trafficText">交通工具</h3>
@@ -205,14 +188,10 @@ function Home() {
                 <ion-icon name="bus"></ion-icon>
               </label>
             </div>
-
-
             {/* Subbit Button */}
             <div className="subbmit">
-              {/* 當msg不會空或null時，將button設定成disable */}
-              <button disabled={msg && true} className="subbmit__btn" onClick={handleSubmit}> What Should I Wear? </button>
-              {/* <Link to='/result'><button disabled={msg && true} className="subbmit__btn" onClick={handleSubmit}> What Should I Wear? </button></Link> */}
-
+              {/* 當errorMessage不會空或null時，將button設定成disable */}
+              <button disabled={errorMessage && true} className="subbmit__btn" onClick={handleSubmit}> What Should I Wear? </button>
             </div>
           </div>
         </div>
