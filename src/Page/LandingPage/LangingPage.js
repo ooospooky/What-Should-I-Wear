@@ -1,20 +1,23 @@
-import React, { useState } from 'react'
 import './LandingPage.scss'
-import { Player, Controls } from '@lottiefiles/react-lottie-player';
+
+import React, { useState } from 'react'
+import { Player} from '@lottiefiles/react-lottie-player';
 import { useNavigate } from 'react-router-dom'
-import salesman from '../../Assets/animation/salesman.json' //https://lottiefiles.com/99745-sales-man
-import landingpageMan from '../../Assets/animation/landingpageMan.json' //https://lottiefiles.com/97387-digital-designer
-import logo from '../../Assets/img/logo.png'
+
+import salesman from '../../Assets/animation/salesman.json'
+//Lottie animation: https://lottiefiles.com/99745-sales-man
+import landingpageMan from '../../Assets/animation/landingpageMan.json'
+//Lottie animation: https://lottiefiles.com/97387-digital-designer
 
 function LangingPage() {
   const containerStyle = {
-    '--view-height': `${window.innerHeight}px`  
+    '--view-height': `${window.innerHeight}px`  //Style variable to set the view height dynamically
   };
-  const [showTransition, setShowTransition] = useState(false)
-  const navigate = useNavigate();
+  const [showTransition, setShowTransition] = useState(false) // State to control the transition animation visibility
+  const navigate = useNavigate(); // Navigation function from react-router-dom
   const handleClick = () => {
-    setShowTransition(prev => !prev)
-    setTimeout(() => { navigate('/home') }, 700)
+    setShowTransition(prev => !prev) // Toggle the showTransition state
+    setTimeout(() => { navigate('/home') }, 700) // Delay navigation to '/home' after 700ms
   }
   return (
 
@@ -24,14 +27,12 @@ function LangingPage() {
           <Player
             className='transitionAnimation'
             autoplay
-            // speed={2}
             loop
             src={salesman}
             style={{ height: '500px', width: '500px' }}
           />
-        </div> : <></>}
+        </div> : null}
         <div className='left' style={showTransition ? { display: 'none' } : {}}>
-
           {/* Alleviate Your Worries: Dress Suggestions for Any Weather */}
           {/* Ease Your Concerns: Outfit Recommendations for Any Weather */}
           {/* Weather-Based Dress Suggestions, Prepare for Every Day */}
@@ -46,8 +47,7 @@ function LangingPage() {
             autoplay
             loop
             src={landingpageMan}
-            // src="https://assets2.lottiefiles.com/private_files/lf30_ecnepkno.json"
-            // style={{ height: '500px', width: '500px' }}
+          // src="https://assets2.lottiefiles.com/private_files/lf30_ecnepkno.json"
           />
         </div>
       </div>
