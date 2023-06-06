@@ -3,30 +3,25 @@
 .result {
   height: 100vh;
   width: 100%;
-  
+
   background: linear-gradient(141.11deg, rgba(7, 51, 88, 0.4) 9.39%, #073358 70.4%);
   background-blend-mode: darken;
   display: flex;
   justify-content: center;
   align-items: center;
- 
+
   @include respond(iphoneXR) {
     flex-direction: column;
-    //height:724px; //prevent extra space at bottom
-    // overflow: hidden;
-    height:var(--view-height);
+    height: var(--view-height);
   }
+
   @include respond(iphoneSE) {
-    // height: 100vh;
-    height:var(--view-height);
+    height: var(--view-height);
   }
-  
 
   &__left {
-    // background-color: aqua;
     color: white;
     text-align: center;
-
     width: 30%;
     height: 85%;
     display: grid;
@@ -44,29 +39,17 @@
     }
 
     @include respond(iphoneXR) {
-      margin-top:1rem;
+      margin-top: 1rem;
       width: 90%;
       height: 30%;
-      grid-template-rows: repeat(5,20%);
-      // grid-template-rows: repeat(5,16%);
+      grid-template-rows: repeat(5, 20%);
       grid-template-columns: 25% 25% 25% 25%;
-      // grid-template-areas:
-      // "sun sun avgTemp"
-      // "sun sun avgTempDiff"
-      // "outTemp backTemp pop"
       grid-template-areas:
-      "sun sun avgTemp avgTemp"
-      "sun sun avgTempDiff avgTempDiff"
-      "sun sun pop pop"
-      "outTemp outTemp backTemp backTemp"
-      "outTemp outTemp backTemp backTemp"
-      // grid-template-areas:
-      //   "sun sun avgTemp"
-      //   "sun sun avgTemp"
-      //   "sun sun avgTempDiff"
-      //   "sun sun avgTempDiff"
-      //   "outTemp backTemp pop"
-      //   "outTemp backTemp pop"
+        "sun sun avgTemp avgTemp"
+        "sun sun avgTempDiff avgTempDiff"
+        "sun sun pop pop"
+        "outTemp outTemp backTemp backTemp"
+        "outTemp outTemp backTemp backTemp"
     }
 
 
@@ -77,25 +60,26 @@
       flex-direction: column;
       justify-content: center;
       align-content: center;
-      // flex-wrap: wrap ;
 
       &__up {
         display: flex;
-        // flex-direction: column;
         justify-content: space-evenly;
         align-items: center;
 
         &__temp {
           color: white;
           font-size: 2rem;
-          @include respond(small-tab-port){
+
+          @include respond(small-tab-port) {
             font-size: 1.5rem;
           }
+
           @include respond(ipad) {
             font-size: 1.5rem;
           }
+
           @include respond(iphoneXR) {
-            font-size: 1.7rem; 
+            font-size: 1.7rem;
           }
         }
       }
@@ -103,15 +87,16 @@
       &__down {
         color: white;
         display: flex;
-        // flex-direction: column;
         justify-content: center;
         align-items: center;
         font-size: 1.3rem;
+
         @media(max-width:685px) {
           flex-direction: column;
         }
+
         @include respond(iphoneXR) {
-          font-size: 1rem; 
+          font-size: 1rem;
         }
 
       }
@@ -155,9 +140,11 @@
     background: rgba(7, 51, 88, 0.4);
     border-radius: 20px;
     margin: .6rem;
+
     @include respond(iphoneXR) {
       margin: .3rem;
     }
+
     &__smallText {
       @include respond(ipad) {
         font-size: .9rem;
@@ -166,13 +153,13 @@
       @media(max-width:550px) {
         font-size: .8rem;
       }
+
       @include respond(iphoneXR) {
-        font-size: .9rem; 
+        font-size: .9rem;
       }
     }
 
     &__bigText {
-      //https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child
       font-size: 1.3rem; //選擇前兩個字體放大
 
       @include respond(ipad) {
@@ -182,10 +169,11 @@
       @media(max-width:550px) {
         font-size: 1rem;
       }
+
       @include respond(iphoneXR) {
-        font-size: 1.3rem; 
+        font-size: 1.3rem;
       }
-      
+
     }
 
     &>* {
@@ -197,7 +185,6 @@
   }
 
   &__right {
-    // background-color: darkgray;
     width: 60%;
     height: 85%;
     display: flex;
@@ -206,13 +193,15 @@
     @include respond(desktop) {
       width: 70%;
     }
+
     @include respond(iphoneXR) {
       width: 90%;
-      height:70%;
+      height: 70%;
       margin-top: 1rem;
       justify-content: flex-start;
       align-items: flex-start;
     }
+
     @include respond(iphoneSE) {
       margin-top: 0;
     }
@@ -229,11 +218,11 @@
       @media(max-width:550px) {
         margin: 0 .5rem;
       }
+
       @include respond(iphoneXR) {
-        
-        margin:0 1.5rem;
+
+        margin: 0 1.5rem;
       }
-    
     }
 
     &__img {
@@ -264,10 +253,12 @@
         width: 120px;
         height: 220px;
       }
+
       @include respond(iphoneXR) {
         width: 130px;
         height: 230px;
       }
+
       @include respond(iphoneSE) {
         width: 120px;
         height: 210px;
@@ -276,20 +267,14 @@
       &:nth-child(2n) {
         margin-left: -5px;
         margin-right: 10px;
-        // width:200px;
+
         @media(max-width:650px) {
-          margin-left:0;
-        margin-right: 0;
-        margin-top:.5rem;
+          margin-left: 0;
+          margin-right: 0;
+          margin-top: .5rem;
         }
       }
     }
-  
-
-    // &__img2{
-    //   margin-left: -20px;
-    //   margin-right:10px;
-    // }
   }
 
   .backBtn {
@@ -322,8 +307,9 @@
       height: 2.5rem;
       font-size: 14px;
     }
+
     @media(max-width:500px) {
-      display:none;
+      display: none;
     }
 
     &:hover {
@@ -340,10 +326,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+
   @include respond(iphoneXR) {
     justify-content: flex-start;
-        // align-items: flex-start;
   }
+
   &>div {
     display: flex;
     justify-content: flex-start;
@@ -357,21 +344,14 @@
     @include respond(ipad) {
       min-width: 121px;
     }
-    
 
-    // &>span{
-    //   display:flex;
-    // }
     span {
-      @include respond(desktop) {
-        // font-size: 15px;
-      }
-
       @include respond(tab-port) {
         font-size: 14px;
       }
+
       @include respond(iphoneXR) {
-        font-size: 15dpx;
+        font-size: 15px;
       }
     }
 
@@ -394,13 +374,11 @@
         width: 45px;
         height: 45px;
       }
+
       @include respond(iphoneXR) {
         width: 50px;
         height: 50px;
       }
-    
-
     }
   }
-
 }
