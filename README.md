@@ -15,12 +15,12 @@ Whether you're heading to work, going out for activities, our service provides a
 * Multiple transportation options are available.
 
 ## 🛠 Tools
-<img src=https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png?20220125121207 height="50px" width="50px"> <img/>
-<img src=https://cdn.worldvectorlogo.com/logos/javascript-1.svg height="50px" width="50px"> <img/>
-<img src=https://cdn-icons-png.flaticon.com/512/5968/5968358.png height="50px" width="50px"> <img/>
-<img src=https://icons-for-free.com/iconfiles/png/512/svg+developer+firebase+google+programming+icon-1320183319887802192.png height="50px" width="50px"> <img/>
-<img src=https://forum.bubble.io/uploads/default/original/3X/8/4/84c1f5c09eddc477a4cebd29b44604cc13f6208e.png height="50px" width="50px"> <img/>
-<img src=https://www.svgrepo.com/show/354262/react-router.svg height="50px" width="50px"> <img/>
+<picture><img src=https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png?20220125121207 height="50px" width="50px"> <img/></picture>
+<picture><img src=https://cdn.worldvectorlogo.com/logos/javascript-1.svg height="50px" width="50px"> <img/></picture>
+<picture><img src=https://cdn-icons-png.flaticon.com/512/5968/5968358.png height="50px" width="50px"> <img/></picture>
+<picture><img src=https://icons-for-free.com/iconfiles/png/512/svg+developer+firebase+google+programming+icon-1320183319887802192.png height="50px" width="50px"> <img/></picture>
+<picture><img src=https://forum.bubble.io/uploads/default/original/3X/8/4/84c1f5c09eddc477a4cebd29b44604cc13f6208e.png height="50px" width="50px"> <img/></picture>
+<picture><img src=https://www.svgrepo.com/show/354262/react-router.svg height="50px" width="50px"> <img/></picture>
 
 
 ## 💻 Screenshots
