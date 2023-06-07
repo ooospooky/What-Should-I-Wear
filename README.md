@@ -1,70 +1,37 @@
-# Getting Started with Create React App
+## 🔥 What Should I Wear?
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Alleviate Your Worries: Dress Suggestions for Any Weather
+***
+Whether you're heading to work, going out for activities, our service provides accurate weather-based dress suggestions to help you effortlessly adapt to different climate conditions. Forget the hassle of deciding what to wear!
 
-## Available Scripts
+## 🏁 Current Features
 
-In the project directory, you can run:
+* Ability to check the weather conditions for the next three days.
+* Calculate the temperature for when you leave and return home.
+* Calculate the probability of rainfall, maximum temperature difference, and average temperature during outdoor activities.
+* Clothing recommendations based on the weather.
+* Reminder to bring a raincoat or umbrella when necessary.
+* All regions in Taiwan are applicable.
+* Multiple transportation options are available.
 
-### `npm start`
+## 🛠 Tools
+<img src=https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png?20220125121207 height="50px" width="50px"> <img/>
+<img src=https://cdn.worldvectorlogo.com/logos/javascript-1.svg height="50px" width="50px"> <img/>
+<img src=https://cdn-icons-png.flaticon.com/512/5968/5968358.png height="50px" width="50px"> <img/>
+<img src=https://icons-for-free.com/iconfiles/png/512/svg+developer+firebase+google+programming+icon-1320183319887802192.png height="50px" width="50px"> <img/>
+<img src=https://forum.bubble.io/uploads/default/original/3X/8/4/84c1f5c09eddc477a4cebd29b44604cc13f6208e.png height="50px" width="50px"> <img/>
+<img src=https://www.svgrepo.com/show/354262/react-router.svg height="50px" width="50px"> <img/>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 💻 Screenshots
 
-### `npm test`
+<img src=https://i.ibb.co/frRrQpD/2023-06-07-2-48-10.png > <img/>
+<img src=https://i.ibb.co/5s6PrR8/2023-06-07-3-04-16.png > <img/>
+<img src=https://i.ibb.co/ZKf7fBC/2023-06-07-3-04-27.png > <img/>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 👩‍💻Contributors
+Special thanks to my friend Jena, an excellent UI/UX designer, who has provided me with valuable UI suggestions throughout this project. It has been my first time collaborating with a UI/UX designer, and it has taught me how to effectively communicate and coordinate with designers, resulting in the creation of outstanding work.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<p align="center"><a href="https://github.com/ooospooky/What-Should-I-Wear"><img src="https://superagi.com/wp-content/uploads/2023/05/backToTopButton.png" alt="Back to top" height="29"/></a></p>
