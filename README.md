@@ -58,7 +58,7 @@ The main purpose of this project is to make your life easier and more comfortabl
 
 ## 👩‍💻  Contributors
 
-Special thanks to my friend Jena, an excellent UI/UX designer, who has provided me with valuable UI suggestions throughout this project. This collaboration with a UI/UX designer has been a great learning experience, teaching me effective communication and coordination skills, resulting in the creation of outstanding work.
+Special thanks to my friend Jenna, an excellent UI/UX designer, who has provided me with valuable UI suggestions throughout this project. This collaboration with a UI/UX designer has been a great learning experience, teaching me effective communication and coordination skills, resulting in the creation of outstanding work.
 
 <p align="center">
   <a href="https://github.com/ooospooky/What-Should-I-Wear">
