@@ -25,9 +25,9 @@ Whether you're heading to work, going out for activities, our service provides a
 
 ## 💻 Screenshots
 
-<img src=https://i.ibb.co/frRrQpD/2023-06-07-2-48-10.png > <img/>
-<img src=https://i.ibb.co/5s6PrR8/2023-06-07-3-04-16.png > <img/>
-<img src=https://i.ibb.co/ZKf7fBC/2023-06-07-3-04-27.png > <img/>
+<picture><img src=https://i.ibb.co/frRrQpD/2023-06-07-2-48-10.png > <img/></picture>
+<picture><img src=https://i.ibb.co/5s6PrR8/2023-06-07-3-04-16.png > <img/></picture>
+<picture><img src=https://i.ibb.co/ZKf7fBC/2023-06-07-3-04-27.png > <img/></picture>
 
 ## 👩‍💻Contributors
 Special thanks to my friend Jena, an excellent UI/UX designer, who has provided me with valuable UI suggestions throughout this project. It has been my first time collaborating with a UI/UX designer, and it has taught me how to effectively communicate and coordinate with designers, resulting in the creation of outstanding work.
