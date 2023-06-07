@@ -52,7 +52,7 @@ function App() {
           <Route path='/' element={<LandingPage/>}></Route>
           <Route path='/home' element={<Home/>}></Route>
           <Route path='/result' element={weatherTemp && < Result />}></Route>
-          <Route path='*' element={<h1>PAGE NOT FOUND</h1>}></Route>
+          <Route path='*' element={<h1 style={{display:"flex",justifyContent: "center",alignContent:"center"}}>PAGE NOT FOUND</h1>}></Route>
         </Routes>
       </Router>
       </WeatherContext.Provider>
