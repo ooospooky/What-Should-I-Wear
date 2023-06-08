@@ -96,7 +96,7 @@ function Home() {
             </label>
           </div>
           <div className="tomorrow">
-            <input type="radio" id="tomorrow" onChange={() => { setDate('tomorrow'); setGoOutTime("09:00") }} checked={date === "tomorrow"} ></input>
+            <input type="radio" id="tomorrow" onChange={() => { setDate('tomorrow'); setGoOutTime("09:00");setGoHomeTime("18:00") }} checked={date === "tomorrow"} ></input>
             <label htmlFor="tomorrow" className="date__btn">
               {/* moment().add(1, 'days').format("MMM Do") 顯示當天+1天的月份與日期 -->e.g. Jun 20th */}
               <span className="dateSpan">TOMORROW</span>
@@ -106,7 +106,7 @@ function Home() {
             </label>
           </div>
           <div className="afterTomorrow">
-            <input type="radio" id="afterTomorrow" onChange={() => { setDate('afterTomorrow'); setGoOutTime("09:00") }} checked={date === "afterTomorrow"} ></input>
+            <input type="radio" id="afterTomorrow" onChange={() => { setDate('afterTomorrow'); setGoOutTime("09:00"); ;setGoHomeTime("18:00") }} checked={date === "afterTomorrow"} ></input>
             <label htmlFor="afterTomorrow" className="date__btn" >
               {/* moment().add(2, 'days').format("MMM Do") 顯示當天+2天的月份與日期 -->e.g. Jun 21th */}
               <span className="dateSpan dateSpan__AT">AFTER TOMORROW</span>
