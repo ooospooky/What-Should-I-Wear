@@ -53,7 +53,7 @@ The main purpose of this project is to make your life easier and more comfortabl
   <img src="https://i.ibb.co/5s6PrR8/2023-06-07-3-04-16.png">
 </picture>
 <picture>
-  <img src="https://i.ibb.co/ZKf7fBC/2023-06-07-3-04-27.png">
+  <img src="https://i.ibb.co/zr5ykVR/2023-06-20-2-45-19.png">
 </picture>
 
 ## 👩‍💻  Contributors
