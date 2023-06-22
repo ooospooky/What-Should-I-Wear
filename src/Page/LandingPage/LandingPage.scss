@@ -20,6 +20,8 @@
   }
 
   &__container {
+    box-sizing: border-box;
+    height:100%;
     padding: 4rem;
     display: flex;
     justify-content: center;
@@ -193,9 +195,17 @@
   }
 
   &__landingAnimation {
-    height: 500px;
-    width: 500px;
+    height: 600px;
+    width: 600px;
 
+    @include respond(desktop) {
+      height: 550px;
+      width: 550px;
+    }
+    @media(max-width:1120px) {
+      height: 500px;
+      width: 500px;
+    }
     @include respond(small-desktop) {
       height: 450px;
       width: 450px;
