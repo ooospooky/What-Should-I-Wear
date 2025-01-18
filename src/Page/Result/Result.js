@@ -65,9 +65,6 @@ export default function Result() {
   // Add 1 day to current date
   if (formData.date === 'afterTomorrow') { date = moment().add(2, 'days').format("MMM Do"); }
   // Add 2 day to current date
-
-  console.log('formData', formData)
-
   
   const renderClothingSuggestion = (imageSrc, altText, description) => {
     return (

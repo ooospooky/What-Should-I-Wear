@@ -2,11 +2,8 @@ import React,{useContext} from 'react'
 import {WeatherContext} from  '../Contexts/WeatherContext'
 export default function CalculateOutnBackTemp(opt) {
   const {weatherTemp,pop,formData} = useContext(WeatherContext)
-  // if(!weatherTemp) return <h3>Loading...</h3>
-  // console.log("formData[opt]",formData[opt])
+  if(!weatherTemp) return <h3>Loading...</h3>
   let outTime  = Number(formData[opt].slice(0,2));
-  // console.log(outTime,'out')
-
   let up;
   let down;
 

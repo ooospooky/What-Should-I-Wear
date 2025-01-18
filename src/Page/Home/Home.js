@@ -11,8 +11,7 @@ import { Player } from '@lottiefiles/react-lottie-player';
 import sunNcloudAnimation from "../../Assets/animation/sunNcloud.json"
 //https://lottiefiles.com/61302-weather-icon
 function Home() {
-  //import context variable from App.js
-  const { weatherTemp, setWeatherTemp, pop, setPop, setFormData } = useContext(WeatherContext)
+  const {  setWeatherTemp, setPop, setFormData } = useContext(WeatherContext)
 
   const [date, setDate] = useState('today')
   const [goOutTime, setGoOutTime] = useState(moment().format('HH:00'));
@@ -31,11 +30,11 @@ function Home() {
     setGoHomeTime(Number(goOutTime.slice(0, 2)) + 1 + ":00")
   }
   //Out & back time validate: 若日期選擇當天，且出門時間大於目前時間，設定error message 
-  if (goOutTime < moment().hour() + ":00" && date === 'today') {
+  if (goOutTime < moment().hour() + ":00" && date === 'today') {  
     errorMessage = "出門時間要大於目前時間"
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     //   防止頁面跳轉
     event.preventDefault();
     setShowTransition(prev => !prev)
@@ -48,10 +47,10 @@ function Home() {
     if (date === "afterTomorrow") dateRange = `&timeFrom=${moment().add(2, 'days').format().slice(0, 11)}00:00:00&timeTo=${moment().add(3, 'days').format().slice(0, 11)}00:00:01`;
     setFormData({ date, goOutTime, goHomeTime, traffic, region, district })
     //呼叫getweather API call，傳入context variable & API 參數
-    GetWeather({ setWeatherTemp, setPop, dateRange, locationId: region[1], locationName: district })
+    await GetWeather({ setWeatherTemp, setPop, dateRange, locationId: region[1], locationName: district })
 
     setTimeout(() => { navigate('/result') }, 700)
-  }
+    }
 
   const changeArea = (e) => {
     //原資料型態為String:e.target.value = '基隆市,F-D0047-049';
