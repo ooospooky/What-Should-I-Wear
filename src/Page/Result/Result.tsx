@@ -1,31 +1,29 @@
-import { useContext } from "react";
+// 🌤️ Result 頁面 - Suspense 版本
+
 import "./Result.scss";
-import { useWeatherContext } from "../../Contexts/WeatherContext";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { URLParamsUtils } from "../../types/url";
+import {
+  useWeatherSuspenseQuery,
+  createUserScheduleFromURLSuspense,
+} from "../../hooks/useWeatherSuspenseQuery";
 import {
   useWeatherCalculation,
   useTemperatureAtTime,
 } from "../../hooks/useWeatherCalculation";
-import moment from "moment"; //https://momentjs.com/
-import { Player, Controls } from "@lottiefiles/react-lottie-player";
-import { Link, useNavigate } from "react-router-dom";
-import resultSun from "../../Assets/animation/resultSun.json";
-// Animation for sunny weather: //https://assets7.lottiefiles.com/packages/lf20_64okjrr7.json
-import resultCloudy from "../../Assets/animation/resultCloudy.json";
-// Animation for cloudy weather
-//https://lottiefiles.com/4806-weather-windy
-import resultRain from "../../Assets/animation/resultRain.json";
-// Animation for rainy weather
-// src="https://assets10.lottiefiles.com/temp/lf20_VAmWRg.json"
-import resultMoon from "../../Assets/animation/resultMoon.json";
-// Animation for nighttime
-//https://lottiefiles.com/10686-the-moon
+import moment from "moment";
+import { Player } from "@lottiefiles/react-lottie-player";
 
-// Clothing item SVGs
+// Animations
+import resultSun from "../../Assets/animation/resultSun.json";
+import resultCloudy from "../../Assets/animation/resultCloudy.json";
+import resultRain from "../../Assets/animation/resultRain.json";
+import resultMoon from "../../Assets/animation/resultMoon.json";
+
+// Clothing SVGs
 import shirt from "../../Assets/svg/shirt.svg";
-import beanie from "../../Assets/svg/beanie.svg";
 import gloves from "../../Assets/svg/gloves.svg";
 import hoodie from "../../Assets/svg/hoodie.svg";
-import jacket from "../../Assets/svg/jacket.svg";
 import longpants from "../../Assets/svg/longpants.svg";
 import longshirt from "../../Assets/svg/longshirt.svg";
 import shortpants from "../../Assets/svg/pants.svg";
@@ -34,7 +32,7 @@ import raincoat from "../../Assets/svg/raincoat.svg";
 import thinJacket from "../../Assets/svg/thinJacket.svg";
 import insideshirt from "../../Assets/svg/insideshirt.svg";
 
-// Clothing item images
+// Clothing images
 import manShortPants from "../../Assets/img/manShortPants.png";
 import womanShortPants from "../../Assets/img/womanShortPants.png";
 import manTshirtLognPants from "../../Assets/img/manTshirtLognPants.png";
@@ -48,36 +46,31 @@ import womanJacket from "../../Assets/img/womanJacket.png";
 import manPufferJacket from "../../Assets/img/manPufferJacket.png";
 import womanPufferJacket from "../../Assets/img/womanPufferJacket.png";
 
-export default function Result() {
+function ResultSuspense() {
   const containerStyle = {
     "--view-height": `${window.innerHeight}px`,
   };
-  const { weatherData, userSchedule, isLoading, error } = useWeatherContext();
-  console.log({ weatherData, userSchedule, isLoading, error });
+
+  const [searchParams] = useSearchParams();
+  const urlParams = URLParamsUtils.fromURLSearchParams(searchParams);
+
+  // 檢查參數完整性，如果不完整則導向首頁
+  if (!URLParamsUtils.isComplete(urlParams)) {
+    return <InvalidParamsRedirect />;
+  }
+
+  const { data: weatherData } = useWeatherSuspenseQuery(urlParams);
+
+  const userSchedule = createUserScheduleFromURLSuspense(urlParams);
+
   const navigate = useNavigate();
 
-  // 使用新的計算邏輯
   const calculation = useWeatherCalculation(weatherData, userSchedule);
-  const goOutTemp = useTemperatureAtTime(
-    weatherData,
-    userSchedule?.goOutTime || null
-  );
-  const goHomeTemp = useTemperatureAtTime(
-    weatherData,
-    userSchedule?.goHomeTime || null
-  );
+  const goOutTemp = useTemperatureAtTime(weatherData, userSchedule.goOutTime);
+  const goHomeTemp = useTemperatureAtTime(weatherData, userSchedule.goHomeTime);
 
-  // 如果正在載入或有錯誤，顯示對應狀態
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!weatherData || !userSchedule || !calculation) {
-    return <div>No weather data available</div>;
+  if (!calculation) {
+    throw new Error("無法計算天氣數據");
   }
 
   const {
@@ -86,29 +79,38 @@ export default function Result() {
     averageRainProbability: averagePop,
   } = calculation;
 
-  // 格式化日期 (暫時使用今天，之後可以從 weatherData 取得)
+  // 格式化日期
   const date = moment().format("MMM Do");
 
-  const renderClothingSuggestion = (imageSrc, altText, description) => {
-    return (
-      <div>
-        <img src={imageSrc} alt={altText} />
-        <span>{description}</span>
-      </div>
-    );
-  };
+  // 衣物建議渲染函數
+  const renderClothingSuggestion = (
+    imageSrc: string,
+    altText: string,
+    description: string
+  ) => (
+    <div>
+      <img src={imageSrc} alt={altText} />
+      <span>{description}</span>
+    </div>
+  );
+
   const motoOrNot = () => {
     if (userSchedule.transportation === "cycling") {
       if (averageTemp < 12)
-        renderClothingSuggestion(gloves, "手套", "騎車時可以戴上手套保暖");
+        return renderClothingSuggestion(
+          gloves,
+          "手套",
+          "騎車時可以戴上手套保暖"
+        );
       return renderClothingSuggestion(
         thinJacket,
         "薄外套",
         "建議在騎車時穿上薄外套擋風"
       );
     }
-    return null; //若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
+    return null;
   };
+
   const needRaincoat = () => {
     return averagePop > 10
       ? renderClothingSuggestion(
@@ -116,11 +118,10 @@ export default function Result() {
           "雨衣",
           `降雨機率為${averagePop}%建議帶上雨衣或雨傘`
         )
-      : null; //若有不符合條件的情況，會return undefined，並render null，可能有潛在問題，加上return null確保明確的return null
+      : null;
   };
 
   const suggestion = () => {
-    // Clothing suggestions based on weather conditions
     if (averageTemp >= 26) {
       return (
         <>
@@ -271,7 +272,6 @@ export default function Result() {
     }
 
     if (averageTemp < 12) {
-      //  <div><img src={beanie}></img><span>也可以考慮帶上毛帽不讓頭著涼</span></div>
       return (
         <>
           <div className="result__right__imgdiv">
@@ -305,11 +305,12 @@ export default function Result() {
       );
     }
   };
+
   const outAtNightCondition =
     parseInt(userSchedule.goOutTime.slice(0, 2)) >= 18 ||
     (parseInt(userSchedule.goOutTime.slice(0, 2)) < 6 &&
       parseInt(userSchedule.goHomeTime.slice(0, 2)) <= 6);
-  //降雨率小於20將設為sun, 大於20小於40設為cloud, 大於40設為raining
+
   const getresultAnimation = () => {
     if (averagePop <= 20) {
       if (outAtNightCondition) return resultMoon;
@@ -343,15 +344,14 @@ export default function Result() {
         </div>
         <div className="lilcontainer outTemp ">
           <span className="lilcontainer__bigText">
-            出門:
-            <br />
-            {goOutTemp}&deg;C
+            出門: <br />
+            {goOutTemp ?? "--"}&deg;C
           </span>
         </div>
         <div className="lilcontainer backTemp">
           <span className="lilcontainer__bigText">
             回家: <br />
-            {goHomeTemp}&deg;C
+            {goHomeTemp ?? "--"}&deg;C
           </span>
         </div>
         <div className="lilcontainer avgTemp">
@@ -372,15 +372,36 @@ export default function Result() {
       </div>
       <div className="result__right">
         {suggestion()}
-        <button
-          className="backBtn"
-          onClick={() => {
-            navigate("/home");
-          }}
-        >
+        <button className="backBtn" onClick={() => navigate("/home")}>
           &larr;&nbsp;返回
         </button>
       </div>
     </div>
   );
 }
+
+/**
+ * 參數不完整時的重導向組件
+ * TODO: refactor when change to Tailwind
+ */
+const InvalidParamsRedirect = () => {
+  const navigate = useNavigate();
+
+  const containerStyle = {
+    "--view-height": `${window.innerHeight}px`,
+  };
+
+  return (
+    <div className="result" style={containerStyle}>
+      <div style={{ textAlign: "center", padding: "2rem" }}>
+        <h2>參數不完整</h2>
+        <p>請重新選擇天氣查詢條件</p>
+        <button className="backBtn" onClick={() => navigate("/home")}>
+          &larr;&nbsp;返回首頁
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ResultSuspense;

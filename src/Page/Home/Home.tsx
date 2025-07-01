@@ -3,17 +3,14 @@ import "./Home.scss";
 import { city, districts } from "../../Assets/rawData";
 import { TimeOption } from "../../Components/TimeOption";
 import moment from "moment"; //https://momentjs.com/
-import { useWeatherContext } from "../../Contexts/WeatherContext";
-import { fetchWeatherData } from "../../services/weatherService";
 import { useNavigate } from "react-router-dom";
+import { WeatherURLParams, URLParamsUtils } from "../../types/url";
 import salesman from "../../Assets/animation/salesman.json";
 import { Player } from "@lottiefiles/react-lottie-player";
 import sunNcloudAnimation from "../../Assets/animation/sunNcloud.json";
+
 //https://lottiefiles.com/61302-weather-icon
 function Home() {
-  const { setWeatherData, setUserSchedule, setIsLoading, setError } =
-    useWeatherContext();
-
   const [date, setDate] = useState("today");
   const [goOutTime, setGoOutTime] = useState(moment().format("HH:00"));
   const [goHomeTime, setGoHomeTime] = useState("18:00");
@@ -35,63 +32,29 @@ function Home() {
     errorMessage = "出門時間要大於目前時間";
   }
 
-  const handleSubmit = async (event) => {
-    //   防止頁面跳轉
+  const handleSubmit = (event) => {
+    // 防止頁面跳轉
     event.preventDefault();
     setShowTransition((prev) => !prev);
-    //dateRange be like this, &timeFrom=2022-06-17T00:00:00&timeTo=2022-06-18T00:00:01
-    //依照user選擇的日期去做一天的範圍
 
-    let dateRange; // Create date range based on the selected date
-    if (date === "today")
-      dateRange = `&timeFrom=${moment()
-        .format()
-        .slice(0, 11)}00:00:00&timeTo=${moment()
-        .add(1, "days")
-        .format()
-        .slice(0, 11)}00:00:01`;
-    if (date === "tomorrow")
-      dateRange = `&timeFrom=${moment()
-        .add(1, "days")
-        .format()
-        .slice(0, 11)}00:00:00&timeTo=${moment()
-        .add(2, "days")
-        .format()
-        .slice(0, 11)}00:00:01`;
-    if (date === "afterTomorrow")
-      dateRange = `&timeFrom=${moment()
-        .add(2, "days")
-        .format()
-        .slice(0, 11)}00:00:00&timeTo=${moment()
-        .add(3, "days")
-        .format()
-        .slice(0, 11)}00:00:01`;
-    // 設置使用者行程
-    setUserSchedule({
+    // 構建 URL 參數
+    const urlParams: WeatherURLParams = {
+      locationId: region[1],
+      locationName: region[0], // 縣市名稱
+      district: district,      // 區域名稱
+      date: date as WeatherURLParams['date'],
       goOutTime,
       goHomeTime,
-      transportation: traffic as "walking" | "cycling" | "driving" | "public",
-    });
+      transportation: traffic as WeatherURLParams['transportation']
+    };
 
-    try {
-      setIsLoading(true);
-      // 呼叫新的 weather API
-      const weatherData = await fetchWeatherData({
-        dateRange,
-        locationId: region[1],
-        locationName: district,
-      });
+    // 轉換為 URL 搜尋參數
+    const searchParams = URLParamsUtils.toURLSearchParams(urlParams);
 
-      setWeatherData(weatherData);
-      setIsLoading(false);
-      setTimeout(() => {
-        navigate("/result");
-      }, 700);
-    } catch (error) {
-      console.error("Failed to fetch weather data:", error);
-      setError("無法獲取天氣資料，請稍後再試");
-      setIsLoading(false);
-    }
+    // 延遲導航以顯示過渡動畫
+    setTimeout(() => {
+      navigate(`/result?${searchParams.toString()}`);
+    }, 700);
   };
 
   const changeArea = (e) => {

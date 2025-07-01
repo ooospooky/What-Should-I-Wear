@@ -35,6 +35,8 @@ export interface WeatherForecast {
   };
 }
 
+export type TransportationType = "walking" | "cycling" | "driving" | "public";
+
 /**
  * 使用者行程資料
  */
@@ -44,7 +46,7 @@ export interface UserSchedule {
   /** 回家時間 (24小時制，如: "18:00") */
   goHomeTime: string;
   /** 交通方式 */
-  transportation?: 'walking' | 'cycling' | 'driving' | 'public';
+  transportation: TransportationType;
 }
 
 /**
@@ -72,7 +74,7 @@ export interface ClothingItem {
   /** 衣物名稱 */
   name: string;
   /** 衣物類型 */
-  type: 'top' | 'bottom' | 'outerwear' | 'accessories' | 'footwear';
+  type: "top" | "bottom" | "outerwear" | "accessories" | "footwear";
   /** 適用溫度範圍 */
   temperatureRange: {
     min: number;
