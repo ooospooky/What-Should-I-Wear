@@ -1,115 +1,213 @@
-import React, { useState, useContext } from 'react'
-import './Home.scss';
-import { city, districts } from '../../Assets/rawData'
-import { TimeOption } from '../../Components/TimeOption'
-import moment from 'moment'; //https://momentjs.com/
-import { WeatherContext } from '../../Contexts/WeatherContext'
-import { GetWeather } from '../../Helper/GetWeather'
-import { useNavigate } from 'react-router-dom'
-import salesman from '../../Assets/animation/salesman.json'
-import { Player } from '@lottiefiles/react-lottie-player';
-import sunNcloudAnimation from "../../Assets/animation/sunNcloud.json"
+import { useState } from "react";
+import "./Home.scss";
+import { city, districts } from "../../Assets/rawData";
+import { TimeOption } from "../../Components/TimeOption";
+import moment from "moment"; //https://momentjs.com/
+import { useWeatherContext } from "../../Contexts/WeatherContext";
+import { fetchWeatherData } from "../../services/weatherService";
+import { useNavigate } from "react-router-dom";
+import salesman from "../../Assets/animation/salesman.json";
+import { Player } from "@lottiefiles/react-lottie-player";
+import sunNcloudAnimation from "../../Assets/animation/sunNcloud.json";
 //https://lottiefiles.com/61302-weather-icon
 function Home() {
-  const {  setWeatherTemp, setPop, setFormData } = useContext(WeatherContext)
+  const { setWeatherData, setUserSchedule, setIsLoading, setError } =
+    useWeatherContext();
 
-  const [date, setDate] = useState('today')
-  const [goOutTime, setGoOutTime] = useState(moment().format('HH:00'));
-  const [goHomeTime, setGoHomeTime] = useState('18:00');
-  const [traffic, setTraffic] = useState('moto');
-  const [region, setRegion] = useState(city[0])  //['宜蘭縣', 'F-D0047-001']
-  const [district, setDistrict] = useState(districts[region[0]][0])    // '宜蘭市'
-  const [showTransition, setShowTransition] = useState(false)
+  const [date, setDate] = useState("today");
+  const [goOutTime, setGoOutTime] = useState(moment().format("HH:00"));
+  const [goHomeTime, setGoHomeTime] = useState("18:00");
+  const [traffic, setTraffic] = useState("cycling");
+  const [region, setRegion] = useState(city[0]); //['宜蘭縣', 'F-D0047-001']
+  const [district, setDistrict] = useState(districts[region[0]][0]); // '宜蘭市'
+  const [showTransition, setShowTransition] = useState(false);
   const navigate = useNavigate();
-  let errorMessage = ""
+  let errorMessage = "";
   const containerStyle = {
-    '--view-height': `${window.innerHeight}px`
+    "--view-height": `${window.innerHeight}px`,
   };
   //若出門時間大於回家時間，將回家時間調整至出門時間加一小時
   if (goOutTime > goHomeTime) {
-    setGoHomeTime(Number(goOutTime.slice(0, 2)) + 1 + ":00")
+    setGoHomeTime(Number(goOutTime.slice(0, 2)) + 1 + ":00");
   }
-  //Out & back time validate: 若日期選擇當天，且出門時間大於目前時間，設定error message 
-  if (goOutTime < moment().hour() + ":00" && date === 'today') {  
-    errorMessage = "出門時間要大於目前時間"
+  //Out & back time validate: 若日期選擇當天，且出門時間大於目前時間，設定error message
+  if (goOutTime < moment().hour() + ":00" && date === "today") {
+    errorMessage = "出門時間要大於目前時間";
   }
 
-  const handleSubmit = async(event) => {
+  const handleSubmit = async (event) => {
     //   防止頁面跳轉
     event.preventDefault();
-    setShowTransition(prev => !prev)
+    setShowTransition((prev) => !prev);
     //dateRange be like this, &timeFrom=2022-06-17T00:00:00&timeTo=2022-06-18T00:00:01
     //依照user選擇的日期去做一天的範圍
 
     let dateRange; // Create date range based on the selected date
-    if (date === "today") dateRange = `&timeFrom=${moment().format().slice(0, 11)}00:00:00&timeTo=${moment().add(1, 'days').format().slice(0, 11)}00:00:01`;
-    if (date === "tomorrow") dateRange = `&timeFrom=${moment().add(1, 'days').format().slice(0, 11)}00:00:00&timeTo=${moment().add(2, 'days').format().slice(0, 11)}00:00:01`;
-    if (date === "afterTomorrow") dateRange = `&timeFrom=${moment().add(2, 'days').format().slice(0, 11)}00:00:00&timeTo=${moment().add(3, 'days').format().slice(0, 11)}00:00:01`;
-    setFormData({ date, goOutTime, goHomeTime, traffic, region, district })
-    //呼叫getweather API call，傳入context variable & API 參數
-    await GetWeather({ setWeatherTemp, setPop, dateRange, locationId: region[1], locationName: district })
+    if (date === "today")
+      dateRange = `&timeFrom=${moment()
+        .format()
+        .slice(0, 11)}00:00:00&timeTo=${moment()
+        .add(1, "days")
+        .format()
+        .slice(0, 11)}00:00:01`;
+    if (date === "tomorrow")
+      dateRange = `&timeFrom=${moment()
+        .add(1, "days")
+        .format()
+        .slice(0, 11)}00:00:00&timeTo=${moment()
+        .add(2, "days")
+        .format()
+        .slice(0, 11)}00:00:01`;
+    if (date === "afterTomorrow")
+      dateRange = `&timeFrom=${moment()
+        .add(2, "days")
+        .format()
+        .slice(0, 11)}00:00:00&timeTo=${moment()
+        .add(3, "days")
+        .format()
+        .slice(0, 11)}00:00:01`;
+    // 設置使用者行程
+    setUserSchedule({
+      goOutTime,
+      goHomeTime,
+      transportation: traffic as "walking" | "cycling" | "driving" | "public",
+    });
 
-    setTimeout(() => { navigate('/result') }, 700)
+    try {
+      setIsLoading(true);
+      // 呼叫新的 weather API
+      const weatherData = await fetchWeatherData({
+        dateRange,
+        locationId: region[1],
+        locationName: district,
+      });
+
+      setWeatherData(weatherData);
+      setIsLoading(false);
+      setTimeout(() => {
+        navigate("/result");
+      }, 700);
+    } catch (error) {
+      console.error("Failed to fetch weather data:", error);
+      setError("無法獲取天氣資料，請稍後再試");
+      setIsLoading(false);
     }
+  };
 
   const changeArea = (e) => {
     //原資料型態為String:e.target.value = '基隆市,F-D0047-049';
     //用 .split(',')將資料轉為Array --> ['基隆市', 'F-D0047-049']
-    setRegion(e.target.value.split(',')); //-->['基隆市', 'F-D0047-049']
+    setRegion(e.target.value.split(",")); //-->['基隆市', 'F-D0047-049']
     //在縣市變更時也要同時變更市區資料，將市區資料設為districts中對應之縣市的第一個市區資料
     //e.g'桃園市': [    '中壢區','平鎮區','龍潭區','楊梅區','新屋區', '觀音區'.. ]
     //在user選擇桃園市時將district改為 districts[桃園市]的第一個資料
-    setDistrict(districts[e.target.value.split(',')[0]][0]); //-->'中壢區'
-  }
+    setDistrict(districts[e.target.value.split(",")[0]][0]); //-->'中壢區'
+  };
 
-  const sunNcloud = <Player
-    className='sunAnimation'
-    autoplay
-    loop
-    src={sunNcloudAnimation}
-  >
-  </Player>
+  const sunNcloud = (
+    <Player
+      className="sunAnimation"
+      autoplay
+      loop
+      src={sunNcloudAnimation}
+    ></Player>
+  );
   return (
     <div className="Home" style={containerStyle}>
-      {showTransition ? <div className="transition__div">
-        <Player
-          className='transitionAnimation'
-          autoplay
-          loop
-          src={salesman}
-          style={{ height: '500px', width: '500px' }}
-        />
-      </div> : null}
-      <form onSubmit={handleSubmit} className="Home__form" style={showTransition ? { display: 'none' } : {}}>
-
+      {showTransition ? (
+        <div className="transition__div">
+          <Player
+            className="transitionAnimation"
+            autoplay
+            loop
+            src={salesman}
+            style={{ height: "500px", width: "500px" }}
+          />
+        </div>
+      ) : null}
+      <form
+        onSubmit={handleSubmit}
+        className="Home__form"
+        style={showTransition ? { display: "none" } : {}}
+      >
         {/* 日期選擇 */}
         <div className="date">
           <div className="today">
-            <input type="radio" id="today" onChange={() => { setDate('today'); setGoOutTime(moment().format('HH:00')) }} checked={date === "today"} ></input>
+            <input
+              type="radio"
+              id="today"
+              onChange={() => {
+                setDate("today");
+                setGoOutTime(moment().format("HH:00"));
+              }}
+              checked={date === "today"}
+            ></input>
             <label htmlFor="today" className="date__btn">
               {/* moment().format("MMM Do") 顯示當天月份與日期 -->e.g. Jun 19th */}
               <span className="dateSpan dateSpan__today">TODAY</span>
-              {date === "today" ? <> <span className="dateSpan__num ">{moment().format("M/D")}</span>{sunNcloud}</>
-                : <></>}
-
+              {date === "today" ? (
+                <>
+                  {" "}
+                  <span className="dateSpan__num ">
+                    {moment().format("M/D")}
+                  </span>
+                  {sunNcloud}
+                </>
+              ) : (
+                <></>
+              )}
             </label>
           </div>
           <div className="tomorrow">
-            <input type="radio" id="tomorrow" onChange={() => { setDate('tomorrow'); setGoOutTime("09:00");setGoHomeTime("18:00") }} checked={date === "tomorrow"} ></input>
+            <input
+              type="radio"
+              id="tomorrow"
+              onChange={() => {
+                setDate("tomorrow");
+                setGoOutTime("09:00");
+                setGoHomeTime("18:00");
+              }}
+              checked={date === "tomorrow"}
+            ></input>
             <label htmlFor="tomorrow" className="date__btn">
               {/* moment().add(1, 'days').format("MMM Do") 顯示當天+1天的月份與日期 -->e.g. Jun 20th */}
               <span className="dateSpan">TOMORROW</span>
-              {date === "tomorrow" ?
-                <><span className="dateSpan__num">{moment().add(1, 'days').format("M/D")}</span> {sunNcloud} </>
-                : <></>}
+              {date === "tomorrow" ? (
+                <>
+                  <span className="dateSpan__num">
+                    {moment().add(1, "days").format("M/D")}
+                  </span>{" "}
+                  {sunNcloud}{" "}
+                </>
+              ) : (
+                <></>
+              )}
             </label>
           </div>
           <div className="afterTomorrow">
-            <input type="radio" id="afterTomorrow" onChange={() => { setDate('afterTomorrow'); setGoOutTime("09:00"); ;setGoHomeTime("18:00") }} checked={date === "afterTomorrow"} ></input>
-            <label htmlFor="afterTomorrow" className="date__btn" >
+            <input
+              type="radio"
+              id="afterTomorrow"
+              onChange={() => {
+                setDate("afterTomorrow");
+                setGoOutTime("09:00");
+                setGoHomeTime("18:00");
+              }}
+              checked={date === "afterTomorrow"}
+            ></input>
+            <label htmlFor="afterTomorrow" className="date__btn">
               {/* moment().add(2, 'days').format("MMM Do") 顯示當天+2天的月份與日期 -->e.g. Jun 21th */}
               <span className="dateSpan dateSpan__AT">AFTER TOMORROW</span>
-              {date === "afterTomorrow" ? <><span className="dateSpan__num">{moment().add(2, 'days').format("M/D")}</span>{sunNcloud}</> : <></>}
+              {date === "afterTomorrow" ? (
+                <>
+                  <span className="dateSpan__num">
+                    {moment().add(2, "days").format("M/D")}
+                  </span>
+                  {sunNcloud}
+                </>
+              ) : (
+                <></>
+              )}
             </label>
           </div>
         </div>
@@ -117,7 +215,10 @@ function Home() {
         <div className="right-div">
           {/* 地區 */}
           <div className="area">
-            <ion-icon name="location-outline" className="area__location-outline"></ion-icon>
+            <ion-icon
+              name="location-outline"
+              className="area__location-outline"
+            ></ion-icon>
 
             {/* 縣市選擇 */}
             {/* e為option中的value */}
@@ -127,19 +228,27 @@ function Home() {
               {city.map((data) => {
                 return (
                   // 顯示給user的只有data[0]，但存入的資料為整個Array，因需要data[1]的API參數
-                  <option key={data} value={data}>{data[0]}</option>
-                )
+                  <option key={data} value={data}>
+                    {data[0]}
+                  </option>
+                );
               })}
             </select>
             {/* 市區選擇 */}
             {/* e為option中的value */}
-            <select className="area__input" value={district} onChange={(e) => setDistrict(e.target.value)}>
+            <select
+              className="area__input"
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+            >
               {/* 顯示的資料根據region(縣市資料['桃園市', 'F-D0047-001']) 選取[0]的縣市 */}
               {/* 桃園市': [    '中壢區','平鎮區','龍潭區','楊梅區','新屋區', '觀音區'.. ] */}
               {districts[region[0]].map((data, num) => {
                 return (
-                  <option key={data} value={data}>{data}</option>
-                )
+                  <option key={data} value={data}>
+                    {data}
+                  </option>
+                );
               })}
             </select>
           </div>
@@ -147,42 +256,86 @@ function Home() {
           <div className="inbox">
             <div className="setTime">
               <div className="setTime__div">
-                <label htmlFor="go-out-time" className="setTime__text"><h3>出門時間</h3></label>
+                <label htmlFor="go-out-time" className="setTime__text">
+                  <h3>出門時間</h3>
+                </label>
 
                 {/* //將選擇的日期、出門或回家時間，傳入TimeOption */}
-                <TimeOption onChange={(e) => { setGoOutTime(e.target.value) }} date={date} defaultTime={goOutTime} className="setTime__option" />
+                <TimeOption
+                  onChange={(e) => {
+                    setGoOutTime(e.target.value);
+                  }}
+                  date={date}
+                  defaultTime={goOutTime}
+                  className="setTime__option"
+                />
               </div>
               <div className="setTime__div">
-                <label htmlFor="go-home-time" className="setTime__text"><h3>回家時間</h3></label>
-                <TimeOption onChange={(e) => { setGoHomeTime(e.target.value) }} date={date} defaultTime={goHomeTime} />
+                <label htmlFor="go-home-time" className="setTime__text">
+                  <h3>回家時間</h3>
+                </label>
+                <TimeOption
+                  onChange={(e) => {
+                    setGoHomeTime(e.target.value);
+                  }}
+                  date={date}
+                  defaultTime={goHomeTime}
+                />
               </div>
               {/* 預設errorMessage為""，但若當Out & back time validate成立的話errorMessage = "出門時間要大於目前時間" */}
             </div>
             <span className="TimeValidateText">{errorMessage}</span>
 
-
             {/*  交通工具 */}
             <h3 className="trafficText">交通工具</h3>
             <div className="traffic">
               {/* walk */}
-              <input type="radio" id="walk" value="walk" className="traffic__walkinput" onChange={(event) => setTraffic(event.target.value)} checked={traffic === "walk"}></input>
+              <input
+                type="radio"
+                id="walk"
+                value="walking"
+                className="traffic__walkinput"
+                onChange={(event) => setTraffic(event.target.value)}
+                checked={traffic === "walking"}
+              ></input>
               <label htmlFor="walk" className="traffic__walklabel">
                 {/* icon套件 ion-icon https://ionic.io/ionicons */}
                 {/* name是ion-icon的參數 */}
-                <ion-icon name="walk" className="traffic__walklabel--icon"></ion-icon>
+                <ion-icon
+                  name="walk"
+                  className="traffic__walklabel--icon"
+                ></ion-icon>
               </label>
               {/* bike or moto */}
-              <input type="radio" id="moto" value="moto" onChange={(event) => setTraffic(event.target.value)} checked={traffic === "moto"} ></input>
+              <input
+                type="radio"
+                id="moto"
+                value="cycling"
+                onChange={(event) => setTraffic(event.target.value)}
+                checked={traffic === "cycling"}
+              ></input>
               <label htmlFor="moto">
                 <ion-icon name="bicycle"></ion-icon>
               </label>
               {/* car */}
-              <input type="radio" id="car" value="car" onChange={(event) => setTraffic(event.target.value)} checked={traffic === "car"} ></input>
+              <input
+                type="radio"
+                id="car"
+                value="driving"
+                onChange={(event) => setTraffic(event.target.value)}
+                checked={traffic === "driving"}
+              ></input>
               <label htmlFor="car">
                 <ion-icon name="car-sport"></ion-icon>
               </label>
               {/* car */}
-              <input type="radio" id="bus" value="bus" onChange={(event) => setTraffic(event.target.value)} checked={traffic === "bus"} ></input>
+              <input
+                type="radio"
+                id="bus"
+                value="public"
+                onChange={(event) => setTraffic(event.target.value)}
+                checked={traffic === "public"}
+              ></input>
               <label htmlFor="bus">
                 <ion-icon name="bus"></ion-icon>
               </label>
@@ -190,13 +343,20 @@ function Home() {
             {/* Subbit Button */}
             <div className="subbmit">
               {/* 當errorMessage不會空或null時，將button設定成disable */}
-              <button disabled={errorMessage && true} className="subbmit__btn" onClick={handleSubmit}> What Should I Wear? </button>
+              <button
+                disabled={errorMessage && true}
+                className="subbmit__btn"
+                onClick={handleSubmit}
+              >
+                {" "}
+                What Should I Wear?{" "}
+              </button>
             </div>
           </div>
         </div>
       </form>
     </div>
-  )
+  );
 }
 
-export default Home
+export default Home;
