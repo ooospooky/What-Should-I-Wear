@@ -1,31 +1,15 @@
 import "./App.scss";
-import { useState } from "react";
 import Home from "./Page/Home/Home";
 import Result from "./Page/Result/Result";
 import LandingPage from "./Page/LandingPage/LangingPage";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { WeatherContext } from "./Contexts/WeatherContext";
+import { WeatherProvider } from "./providers/WeatherProvider";
 import logo from "./Assets/img/logo.png";
 
 function App() {
-  //溫度 -> object
-  const [weatherTemp, setWeatherTemp] = useState();
-  //降雨機率 --> object
-  const [pop, setPop] = useState();
-  //Form資料整理 --> object
-  const [formData, setFormData] = useState();
   return (
     <div className="App" style={{ position: "relative" }}>
-      <WeatherContext.Provider
-        value={{
-          weatherTemp,
-          setWeatherTemp,
-          pop,
-          setPop,
-          formData,
-          setFormData,
-        }}
-      >
+      <WeatherProvider>
         <Router>
           <div className="logoDiv">
             <Link to="/">
@@ -36,7 +20,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LandingPage />}></Route>
             <Route path="/home" element={<Home />}></Route>
-            <Route path="/result" element={weatherTemp && <Result />}></Route>
+            <Route path="/result" element={<Result />}></Route>
             <Route
               path="*"
               element={
@@ -53,7 +37,7 @@ function App() {
             ></Route>
           </Routes>
         </Router>
-      </WeatherContext.Provider>
+      </WeatherProvider>
     </div>
   );
 }
