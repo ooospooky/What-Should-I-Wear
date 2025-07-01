@@ -1,14 +1,17 @@
 // 🛠️ 天氣資料處理工具函數
 
-import { WeatherTimePoint, WeatherCalculation, UserSchedule } from '../types/weather';
+import {
+  WeatherTimePoint,
+  WeatherCalculation,
+  UserSchedule,
+} from "../types/weather";
 
-// Constants - 避免 magic numbers
 const WEATHER_INTERVALS = [0, 3, 6, 9, 12, 15, 18, 21] as const;
 const RAIN_GEAR_THRESHOLD = 30; // 30% 以上建議攜帶雨具
 const LAYERED_TEMP_DIFF = 8; // 溫差大於8度建議分層
 const TEMP_THRESHOLDS = {
   LIGHT: 25,
-  MEDIUM: 15
+  MEDIUM: 15,
 } as const;
 
 /**
@@ -16,7 +19,7 @@ const TEMP_THRESHOLDS = {
  * @example "18:30" -> 18, "09:00" -> 9
  */
 export const parseTimeString = (timeString: string): number => {
-  const hour = parseInt(timeString.split(':')[0], 10);
+  const hour = parseInt(timeString.split(":")[0], 10);
   if (isNaN(hour) || hour < 0 || hour > 23) {
     throw new Error(`Invalid time format: ${timeString}`);
   }
@@ -32,13 +35,13 @@ export const findClosestTimePoint = (
   targetHour: number
 ): WeatherTimePoint | null => {
   if (!timePoints.length) return null;
-  
+
   // 找到最接近的3小時間隔點
-  const closestHour = WEATHER_INTERVALS.reduce((prev, curr) => 
+  const closestHour = WEATHER_INTERVALS.reduce((prev, curr) =>
     Math.abs(curr - targetHour) < Math.abs(prev - targetHour) ? curr : prev
   );
-  
-  return timePoints.find(point => point.hour === closestHour) || null;
+
+  return timePoints.find((point) => point.hour === closestHour) || null;
 };
 
 /**
@@ -54,23 +57,24 @@ export const getTimePointsInRange = (
   // Early return for invalid input
   if (!timePoints.length) return [];
   if (startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23) {
-    throw new Error('Invalid hour range');
+    throw new Error("Invalid hour range");
   }
-  
+
   // 處理跨日情況 (例如: 22:00 - 02:00)
   if (startHour > endHour) {
     const todayPoints = timePoints.filter(
-      point => !point.isNextDay && point.hour >= startHour
+      (point) => !point.isNextDay && point.hour >= startHour
     );
     const nextDayPoints = timePoints.filter(
-      point => point.isNextDay && point.hour <= endHour
+      (point) => point.isNextDay && point.hour <= endHour
     );
     return [...todayPoints, ...nextDayPoints];
   }
-  
+
   // 同日時間範圍
   return timePoints.filter(
-    point => !point.isNextDay && point.hour >= startHour && point.hour <= endHour
+    (point) =>
+      !point.isNextDay && point.hour >= startHour && point.hour <= endHour
   );
 };
 
@@ -84,43 +88,46 @@ export const calculateWeatherStats = (
 ): WeatherCalculation => {
   // Early returns for validation
   if (!timePoints.length) {
-    throw new Error('No weather data provided');
+    throw new Error("No weather data provided");
   }
   if (!schedule.goOutTime || !schedule.goHomeTime) {
-    throw new Error('Invalid schedule data');
+    throw new Error("Invalid schedule data");
   }
-  
+
   const startHour = parseTimeString(schedule.goOutTime);
   const endHour = parseTimeString(schedule.goHomeTime);
-  
+
   const relevantPoints = getTimePointsInRange(timePoints, startHour, endHour);
-  
+
   if (!relevantPoints.length) {
-    throw new Error('No weather data available for the specified time range');
+    throw new Error("No weather data available for the specified time range");
   }
-  
-  const temperatures = relevantPoints.map(point => point.temperature);
-  const rainProbabilities = relevantPoints.map(point => point.rainProbability);
-  
+
+  const temperatures = relevantPoints.map((point) => point.temperature);
+  const rainProbabilities = relevantPoints.map(
+    (point) => point.rainProbability
+  );
+
   const averageTemperature = Math.round(
     temperatures.reduce((sum, temp) => sum + temp, 0) / temperatures.length
   );
-  
+
   const maxTemperature = Math.max(...temperatures);
   const minTemperature = Math.min(...temperatures);
   const temperatureDifference = maxTemperature - minTemperature;
-  
+
   const averageRainProbability = Math.round(
-    rainProbabilities.reduce((sum, prob) => sum + prob, 0) / rainProbabilities.length
+    rainProbabilities.reduce((sum, prob) => sum + prob, 0) /
+      rainProbabilities.length
   );
-  
+
   return {
     averageTemperature,
     maxTemperature,
     minTemperature,
     temperatureDifference,
     averageRainProbability,
-    relevantTimePoints: relevantPoints
+    relevantTimePoints: relevantPoints,
   };
 };
 
@@ -135,22 +142,22 @@ export const interpolateTemperature = (
   // Early return for invalid input
   if (!timePoints.length) return 0;
   if (targetHour < 0 || targetHour > 23) {
-    throw new Error('Invalid target hour');
+    throw new Error("Invalid target hour");
   }
-  
+
   const sortedPoints = [...timePoints].sort((a, b) => {
     const aTime = a.isNextDay ? a.hour + 24 : a.hour;
     const bTime = b.isNextDay ? b.hour + 24 : b.hour;
     return aTime - bTime;
   });
-  
+
   for (let i = 0; i < sortedPoints.length - 1; i++) {
     const current = sortedPoints[i];
     const next = sortedPoints[i + 1];
-    
+
     const currentTime = current.isNextDay ? current.hour + 24 : current.hour;
     const nextTime = next.isNextDay ? next.hour + 24 : next.hour;
-    
+
     if (currentTime <= targetHour && targetHour <= nextTime) {
       // 線性內插
       const ratio = (targetHour - currentTime) / (nextTime - currentTime);
@@ -159,7 +166,7 @@ export const interpolateTemperature = (
       );
     }
   }
-  
+
   // 如果找不到範圍，返回最接近的點
   const closest = findClosestTimePoint(timePoints, targetHour);
   return closest?.temperature || 0;
@@ -180,14 +187,14 @@ export const needRainGear = (averageRainProbability: number): boolean => {
  */
 export const getClothingLevel = (averageTemp: number, tempDiff: number) => {
   const layered = tempDiff > LAYERED_TEMP_DIFF;
-  
+
   if (averageTemp >= TEMP_THRESHOLDS.LIGHT) {
-    return { level: 'light' as const, layered };
+    return { level: "light" as const, layered };
   }
-  
+
   if (averageTemp >= TEMP_THRESHOLDS.MEDIUM) {
-    return { level: 'medium' as const, layered };
+    return { level: "medium" as const, layered };
   }
-  
-  return { level: 'heavy' as const, layered };
+
+  return { level: "heavy" as const, layered };
 };
