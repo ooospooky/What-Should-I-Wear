@@ -2,7 +2,6 @@ import "./App.scss";
 import Home from "./Page/Home/Home";
 import LandingPage from "./Page/LandingPage/LangingPage";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { WeatherProvider } from "./providers/WeatherProvider";
 import { QueryProvider } from "./providers/QueryProvider";
 import logo from "./Assets/img/logo.png";
 import ResultWrapper from "./Page/Result/ResultWrapper";
@@ -11,8 +10,7 @@ function App() {
   return (
     <div className="App" style={{ position: "relative" }}>
       <QueryProvider>
-        <WeatherProvider>
-          <Router>
+        <Router>
             <div className="logoDiv">
               <Link to="/">
                 <img className="logoDiv__img" src={logo} />
@@ -38,8 +36,7 @@ function App() {
                 }
               ></Route>
             </Routes>
-          </Router>
-        </WeatherProvider>
+        </Router>
       </QueryProvider>
     </div>
   );
