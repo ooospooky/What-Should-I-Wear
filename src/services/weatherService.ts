@@ -16,8 +16,16 @@ export const fetchWeatherData = async ({
   locationId: string;
   locationName: string;
 }): Promise<WeatherForecast> => {
+  // Cloudflare Worker API
   const response = await axios.get(
-    `https://opendata.cwa.gov.tw/api/v1/rest/datastore/${locationId}?Authorization=CWB-25DEA212-F3AA-4FDB-B05C-30DEF7E737DC&&LocationName=${locationName}${dateRange}`
+    "https://johnny-weather-api.bm414148.workers.dev",
+    {
+      params: {
+        locationId,
+        locationName,
+        dateRange,
+      },
+    }
   );
 
   const locationData = response.data.records.Locations[0].Location[0];
