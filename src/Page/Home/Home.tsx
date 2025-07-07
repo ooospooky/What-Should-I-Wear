@@ -1,320 +1,399 @@
 import { useState } from "react";
-import "./Home.scss";
 import { city, districts } from "../../Assets/rawData";
 import { TimeOption } from "../../Components/TimeOption";
-import moment from "moment"; //https://momentjs.com/
+import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { WeatherURLParams, URLParamsUtils } from "../../types/url";
-import salesman from "../../Assets/animation/salesman.json";
 import { Player } from "@lottiefiles/react-lottie-player";
 import sunNcloudAnimation from "../../Assets/animation/sunNcloud.json";
+import { LoadingSpinner } from "@/components/LoadingSpinner";
 
-//https://lottiefiles.com/61302-weather-icon
+type DateType = "today" | "tomorrow" | "afterTomorrow";
+type TrafficType = "walking" | "cycling" | "driving" | "public";
+
+const SunAnimation = () => (
+  <Player className="sun-animation" autoplay loop src={sunNcloudAnimation} />
+);
+
+// 日期選擇按鈕組件
+interface DateButtonProps {
+  id: string;
+  label: string;
+  date: string;
+  selectedDate: DateType;
+  onDateChange: (
+    date: DateType,
+    goOutTime?: string,
+    goHomeTime?: string
+  ) => void;
+  showAnimation?: boolean;
+  dateValue?: string;
+}
+
+const DateButton = ({
+  id,
+  label,
+  date,
+  selectedDate,
+  onDateChange,
+  showAnimation = false,
+  dateValue,
+}: DateButtonProps) => {
+  const isSelected = selectedDate === date;
+
+  return (
+    <div className="mb-2 w-full">
+      <input
+        type="radio"
+        id={id}
+        checked={isSelected}
+        onChange={() => {
+          if (date === "today") {
+            onDateChange(date as DateType, moment().format("HH:00"));
+          } else {
+            onDateChange(date as DateType, "09:00", "18:00");
+          }
+        }}
+        className="hidden"
+      />
+      <label
+        htmlFor={id}
+        className={`relative m-2 mt-0 block cursor-pointer rounded-3xl border-none text-primary transition-all duration-200 ${isSelected ? "date-btn-bg h-40 md:h-52" : "date-btn-bg"} `}
+      >
+        <div className="flex justify-between p-5">
+          <p className="font-display text-xl sm:text-lg md:text-xl">{label}</p>
+          {isSelected && (
+            <p className="font-display text-xl sm:text-lg md:text-xl">
+              {dateValue}
+            </p>
+          )}
+        </div>
+        {isSelected && showAnimation && <SunAnimation />}
+      </label>
+    </div>
+  );
+};
+
+// 日期選擇區域組件
+interface DateSectionProps {
+  selectedDate: DateType;
+  onDateChange: (
+    date: DateType,
+    goOutTime?: string,
+    goHomeTime?: string
+  ) => void;
+}
+
+const DateSection = ({ selectedDate, onDateChange }: DateSectionProps) => (
+  <div className="flex w-full flex-col justify-center text-sm font-medium sm:mt-2 sm:h-1/2 md:mt-0 md:h-auto">
+    <DateButton
+      id="today"
+      label="TODAY"
+      date="today"
+      selectedDate={selectedDate}
+      onDateChange={onDateChange}
+      showAnimation={true}
+      dateValue={moment().format("M/D")}
+    />
+    <DateButton
+      id="tomorrow"
+      label="TOMORROW"
+      date="tomorrow"
+      selectedDate={selectedDate}
+      onDateChange={onDateChange}
+      showAnimation={true}
+      dateValue={moment().add(1, "days").format("M/D")}
+    />
+    <DateButton
+      id="afterTomorrow"
+      label="AFTER TOMORROW"
+      date="afterTomorrow"
+      selectedDate={selectedDate}
+      onDateChange={onDateChange}
+      showAnimation={true}
+      dateValue={moment().add(2, "days").format("M/D")}
+    />
+  </div>
+);
+
+// 地區選擇組件
+interface LocationSelectorProps {
+  region: string[];
+  district: string;
+  onRegionChange: (value: string) => void;
+  onDistrictChange: (value: string) => void;
+}
+
+const LocationSelector = ({
+  region,
+  district,
+  onRegionChange,
+  onDistrictChange,
+}: LocationSelectorProps) => (
+  <div className="flex items-center">
+    <ion-icon
+      name="location-outline"
+      className="mr-2 text-2xl text-accent-yellow"
+    />
+    <select
+      className="mr-4 h-8 w-28 rounded-xl bg-white text-base text-black sm:mr-3 sm:w-24 md:mr-4 md:w-28"
+      onChange={(e) => onRegionChange(e.target.value)}
+    >
+      {city.map((data) => (
+        <option key={data} value={data}>
+          {data[0]}
+        </option>
+      ))}
+    </select>
+    <select
+      className="h-8 w-28 rounded-xl bg-white text-base text-black sm:w-24 md:w-28"
+      value={district}
+      onChange={(e) => onDistrictChange(e.target.value)}
+    >
+      {districts[region[0]].map((data) => (
+        <option key={data} value={data}>
+          {data}
+        </option>
+      ))}
+    </select>
+  </div>
+);
+
+interface TimeSelectionProps {
+  date: DateType;
+  goOutTime: string;
+  goHomeTime: string;
+  onGoOutTimeChange: (time: string) => void;
+  onGoHomeTimeChange: (time: string) => void;
+  errorMessage: string;
+}
+
+const TimeSelection = ({
+  date,
+  goOutTime,
+  goHomeTime,
+  onGoOutTimeChange,
+  onGoHomeTimeChange,
+  errorMessage,
+}: TimeSelectionProps) => (
+  <div>
+    <div className="flex w-full items-center justify-between sm:flex-col sm:space-y-4 md:flex-row md:space-y-0">
+      <div className="flex items-center">
+        <label className="mr-1 text-sm md:mr-2">
+          <h3>出門時間</h3>
+        </label>
+        <TimeOption
+          onChange={(e) => onGoOutTimeChange(e.target.value)}
+          date={date}
+          defaultTime={goOutTime}
+        />
+      </div>
+      <div className="flex items-center">
+        <label className="mr-1 text-sm md:mr-2">
+          <h3>回家時間</h3>
+        </label>
+        <TimeOption
+          onChange={(e) => onGoHomeTimeChange(e.target.value)}
+          date={date}
+          defaultTime={goHomeTime}
+        />
+      </div>
+    </div>
+    {errorMessage && (
+      <span className="mt-2 inline-block text-sm text-error">
+        {errorMessage}
+      </span>
+    )}
+  </div>
+);
+
+interface TransportationSelectorProps {
+  selectedTraffic: TrafficType;
+  onTrafficChange: (traffic: TrafficType) => void;
+}
+
+const TransportationSelector = ({
+  selectedTraffic,
+  onTrafficChange,
+}: TransportationSelectorProps) => {
+  const transportOptions = [
+    { id: "walk", value: "walking", icon: "walk", label: "步行" },
+    { id: "moto", value: "cycling", icon: "bicycle", label: "騎車" },
+    { id: "car", value: "driving", icon: "car-sport", label: "開車" },
+    { id: "bus", value: "public", icon: "bus", label: "大眾運輸" },
+  ];
+
+  return (
+    <>
+      <h3 className="mb-2 mt-4">交通工具</h3>
+      <div className="flex justify-evenly">
+        {transportOptions.map(({ id, value, icon }) => (
+          <div key={id}>
+            <input
+              type="radio"
+              id={id}
+              value={value}
+              className="hidden"
+              onChange={(event) =>
+                onTrafficChange(event.target.value as TrafficType)
+              }
+              checked={selectedTraffic === value}
+            />
+            <label
+              htmlFor={id}
+              className={`cursor-pointer text-4xl transition-colors duration-200 ${
+                selectedTraffic === value ? "text-accent-yellow" : "text-white"
+              } `}
+            >
+              <ion-icon name={icon} />
+            </label>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
+
+interface SubmitButtonProps {
+  disabled: boolean;
+  onClick: (event: React.FormEvent) => void;
+}
+
+const SubmitButton = ({ disabled, onClick }: SubmitButtonProps) => (
+  <div className="mt-8 flex justify-center">
+    <button
+      disabled={disabled}
+      className="group relative min-w-0 flex-shrink-0 transform-gpu overflow-hidden rounded-full border-0 bg-button-primary px-8 py-4 text-base font-semibold text-white shadow-button transition-all duration-300 ease-out before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/20 before:to-transparent before:opacity-0 before:transition-opacity before:duration-300 hover:-translate-y-1 hover:scale-105 hover:bg-button-hover hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-500/50 active:translate-y-0 active:scale-95 active:shadow-button-active disabled:transform-none disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 disabled:opacity-50 disabled:shadow-none group-hover:before:opacity-100 sm:text-lg"
+      onClick={onClick}
+    >
+      <span className="relative z-10 flex items-center justify-center gap-2 whitespace-nowrap">
+        What Should I Wear?
+      </span>
+    </button>
+  </div>
+);
+
 function Home() {
-  const [date, setDate] = useState("today");
+  const [date, setDate] = useState<DateType>("today");
   const [goOutTime, setGoOutTime] = useState(moment().format("HH:00"));
   const [goHomeTime, setGoHomeTime] = useState("18:00");
-  const [traffic, setTraffic] = useState("cycling");
-  const [region, setRegion] = useState(city[0]); //['宜蘭縣', 'F-D0047-001']
-  const [district, setDistrict] = useState(districts[region[0]][0]); // '宜蘭市'
+  const [traffic, setTraffic] = useState<TrafficType>("cycling");
+  const [region, setRegion] = useState(city[0]);
+  const [district, setDistrict] = useState(districts[region[0]][0]);
   const [showTransition, setShowTransition] = useState(false);
   const navigate = useNavigate();
+
   let errorMessage = "";
-  const containerStyle = {
-    "--view-height": `${window.innerHeight}px`,
-  };
-  //若出門時間大於回家時間，將回家時間調整至出門時間加一小時
+
+  // 時間邏輯修正
   if (goOutTime > goHomeTime) {
-    setGoHomeTime(Number(goOutTime.slice(0, 2)) + 1 + ":00");
+    setGoHomeTime(
+      String(Number(goOutTime.slice(0, 2)) + 1).padStart(2, "0") + ":00"
+    );
   }
-  //Out & back time validate: 若日期選擇當天，且出門時間大於目前時間，設定error message
-  if (goOutTime < moment().hour() + ":00" && date === "today") {
+
+  // 驗證當天出門時間
+  if (
+    goOutTime < String(moment().hour()).padStart(2, "0") + ":00" &&
+    date === "today"
+  ) {
     errorMessage = "出門時間要大於目前時間";
   }
 
-  const handleSubmit = (event) => {
-    // 防止頁面跳轉
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setShowTransition((prev) => !prev);
+    setShowTransition(true);
 
-    // 構建 URL 參數
     const urlParams: WeatherURLParams = {
       locationId: region[1],
-      locationName: region[0], // 縣市名稱
-      district: district,      // 區域名稱
-      date: date as WeatherURLParams['date'],
+      locationName: region[0],
+      district: district,
+      date: date as WeatherURLParams["date"],
       goOutTime,
       goHomeTime,
-      transportation: traffic as WeatherURLParams['transportation']
+      transportation: traffic as WeatherURLParams["transportation"],
     };
 
-    // 轉換為 URL 搜尋參數
     const searchParams = URLParamsUtils.toURLSearchParams(urlParams);
 
-    // 延遲導航以顯示過渡動畫
     setTimeout(() => {
       navigate(`/result?${searchParams.toString()}`);
     }, 700);
   };
 
-  const changeArea = (e) => {
-    //原資料型態為String:e.target.value = '基隆市,F-D0047-049';
-    //用 .split(',')將資料轉為Array --> ['基隆市', 'F-D0047-049']
-    setRegion(e.target.value.split(",")); //-->['基隆市', 'F-D0047-049']
-    //在縣市變更時也要同時變更市區資料，將市區資料設為districts中對應之縣市的第一個市區資料
-    //e.g'桃園市': [    '中壢區','平鎮區','龍潭區','楊梅區','新屋區', '觀音區'.. ]
-    //在user選擇桃園市時將district改為 districts[桃園市]的第一個資料
-    setDistrict(districts[e.target.value.split(",")[0]][0]); //-->'中壢區'
+  const handleRegionChange = (value: string) => {
+    const regionArray = value.split(",");
+    setRegion(regionArray);
+    setDistrict(districts[regionArray[0]][0]);
   };
 
-  const sunNcloud = (
-    <Player
-      className="sunAnimation"
-      autoplay
-      loop
-      src={sunNcloudAnimation}
-    ></Player>
-  );
+  const handleDistrictChange = (value: string) => {
+    setDistrict(value);
+  };
+
+  const handleDateChange = (
+    newDate: DateType,
+    goOutTime?: string,
+    goHomeTime?: string
+  ) => {
+    setDate(newDate);
+    if (goOutTime) setGoOutTime(goOutTime);
+    if (goHomeTime) setGoHomeTime(goHomeTime);
+  };
+
+  const handleGoOutTimeChange = (time: string) => {
+    setGoOutTime(time);
+  };
+
+  const handleGoHomeTimeChange = (time: string) => {
+    setGoHomeTime(time);
+  };
+
+  const handleTrafficChange = (traffic: TrafficType) => {
+    setTraffic(traffic);
+  };
+
+  if (showTransition) {
+    return <LoadingSpinner />;
+  }
+
   return (
-    <div className="Home" style={containerStyle}>
-      {showTransition ? (
-        <div className="transition__div">
-          <Player
-            className="transitionAnimation"
-            autoplay
-            loop
-            src={salesman}
-            style={{ height: "500px", width: "500px" }}
-          />
-        </div>
-      ) : null}
+    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-primary text-white">
       <form
         onSubmit={handleSubmit}
-        className="Home__form"
-        style={showTransition ? { display: "none" } : {}}
+        className="flex h-full w-full flex-col px-4 py-8 sm:w-4/5 sm:px-8 md:grid md:h-4/5 md:w-3/5 md:grid-cols-[1fr_2fr] md:gap-8 md:px-0 md:py-0"
       >
-        {/* 日期選擇 */}
-        <div className="date">
-          <div className="today">
-            <input
-              type="radio"
-              id="today"
-              onChange={() => {
-                setDate("today");
-                setGoOutTime(moment().format("HH:00"));
-              }}
-              checked={date === "today"}
-            ></input>
-            <label htmlFor="today" className="date__btn">
-              {/* moment().format("MMM Do") 顯示當天月份與日期 -->e.g. Jun 19th */}
-              <span className="dateSpan dateSpan__today">TODAY</span>
-              {date === "today" ? (
-                <>
-                  {" "}
-                  <span className="dateSpan__num ">
-                    {moment().format("M/D")}
-                  </span>
-                  {sunNcloud}
-                </>
-              ) : (
-                <></>
-              )}
-            </label>
-          </div>
-          <div className="tomorrow">
-            <input
-              type="radio"
-              id="tomorrow"
-              onChange={() => {
-                setDate("tomorrow");
-                setGoOutTime("09:00");
-                setGoHomeTime("18:00");
-              }}
-              checked={date === "tomorrow"}
-            ></input>
-            <label htmlFor="tomorrow" className="date__btn">
-              {/* moment().add(1, 'days').format("MMM Do") 顯示當天+1天的月份與日期 -->e.g. Jun 20th */}
-              <span className="dateSpan">TOMORROW</span>
-              {date === "tomorrow" ? (
-                <>
-                  <span className="dateSpan__num">
-                    {moment().add(1, "days").format("M/D")}
-                  </span>{" "}
-                  {sunNcloud}{" "}
-                </>
-              ) : (
-                <></>
-              )}
-            </label>
-          </div>
-          <div className="afterTomorrow">
-            <input
-              type="radio"
-              id="afterTomorrow"
-              onChange={() => {
-                setDate("afterTomorrow");
-                setGoOutTime("09:00");
-                setGoHomeTime("18:00");
-              }}
-              checked={date === "afterTomorrow"}
-            ></input>
-            <label htmlFor="afterTomorrow" className="date__btn">
-              {/* moment().add(2, 'days').format("MMM Do") 顯示當天+2天的月份與日期 -->e.g. Jun 21th */}
-              <span className="dateSpan dateSpan__AT">AFTER TOMORROW</span>
-              {date === "afterTomorrow" ? (
-                <>
-                  <span className="dateSpan__num">
-                    {moment().add(2, "days").format("M/D")}
-                  </span>
-                  {sunNcloud}
-                </>
-              ) : (
-                <></>
-              )}
-            </label>
-          </div>
-        </div>
+        {/* 日期選擇區域 */}
+        <DateSection selectedDate={date} onDateChange={handleDateChange} />
 
-        <div className="right-div">
-          {/* 地區 */}
-          <div className="area">
-            <ion-icon
-              name="location-outline"
-              className="area__location-outline"
-            ></ion-icon>
+        {/* 右側控制區域 */}
+        <div className="mt-8 flex flex-col justify-center gap-5 space-y-6 sm:mt-6 sm:space-y-8 md:mt-0 md:justify-center md:space-y-0">
+          {/* 地區選擇 */}
+          <LocationSelector
+            region={region}
+            district={district}
+            onRegionChange={handleRegionChange}
+            onDistrictChange={handleDistrictChange}
+          />
+          <div className="mt-8 rounded-xl border border-gray-400 p-4 sm:mt-4 sm:p-3 md:mt-6 md:p-4">
+            {/* 時間選擇 */}
+            <TimeSelection
+              date={date}
+              goOutTime={goOutTime}
+              goHomeTime={goHomeTime}
+              onGoOutTimeChange={handleGoOutTimeChange}
+              onGoHomeTimeChange={handleGoHomeTimeChange}
+              errorMessage={errorMessage}
+            />
 
-            {/* 縣市選擇 */}
-            {/* e為option中的value */}
-            <select className="area__input" onChange={(e) => changeArea(e)}>
-              {/* city import from rawData  */}
-              {/* e.g. city = [ ['宜蘭縣', 'F-D0047-001'], ['桃園市', 'F-D0047-005'],['新竹縣', 'F-D0047-009'] ] */}
-              {city.map((data) => {
-                return (
-                  // 顯示給user的只有data[0]，但存入的資料為整個Array，因需要data[1]的API參數
-                  <option key={data} value={data}>
-                    {data[0]}
-                  </option>
-                );
-              })}
-            </select>
-            {/* 市區選擇 */}
-            {/* e為option中的value */}
-            <select
-              className="area__input"
-              value={district}
-              onChange={(e) => setDistrict(e.target.value)}
-            >
-              {/* 顯示的資料根據region(縣市資料['桃園市', 'F-D0047-001']) 選取[0]的縣市 */}
-              {/* 桃園市': [    '中壢區','平鎮區','龍潭區','楊梅區','新屋區', '觀音區'.. ] */}
-              {districts[region[0]].map((data, num) => {
-                return (
-                  <option key={data} value={data}>
-                    {data}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          {/* 出門&回家時間選擇 */}
-          <div className="inbox">
-            <div className="setTime">
-              <div className="setTime__div">
-                <label htmlFor="go-out-time" className="setTime__text">
-                  <h3>出門時間</h3>
-                </label>
+            {/* 交通工具選擇 */}
+            <TransportationSelector
+              selectedTraffic={traffic}
+              onTrafficChange={handleTrafficChange}
+            />
 
-                {/* //將選擇的日期、出門或回家時間，傳入TimeOption */}
-                <TimeOption
-                  onChange={(e) => {
-                    setGoOutTime(e.target.value);
-                  }}
-                  date={date}
-                  defaultTime={goOutTime}
-                  className="setTime__option"
-                />
-              </div>
-              <div className="setTime__div">
-                <label htmlFor="go-home-time" className="setTime__text">
-                  <h3>回家時間</h3>
-                </label>
-                <TimeOption
-                  onChange={(e) => {
-                    setGoHomeTime(e.target.value);
-                  }}
-                  date={date}
-                  defaultTime={goHomeTime}
-                />
-              </div>
-              {/* 預設errorMessage為""，但若當Out & back time validate成立的話errorMessage = "出門時間要大於目前時間" */}
-            </div>
-            <span className="TimeValidateText">{errorMessage}</span>
-
-            {/*  交通工具 */}
-            <h3 className="trafficText">交通工具</h3>
-            <div className="traffic">
-              {/* walk */}
-              <input
-                type="radio"
-                id="walk"
-                value="walking"
-                className="traffic__walkinput"
-                onChange={(event) => setTraffic(event.target.value)}
-                checked={traffic === "walking"}
-              ></input>
-              <label htmlFor="walk" className="traffic__walklabel">
-                {/* icon套件 ion-icon https://ionic.io/ionicons */}
-                {/* name是ion-icon的參數 */}
-                <ion-icon
-                  name="walk"
-                  className="traffic__walklabel--icon"
-                ></ion-icon>
-              </label>
-              {/* bike or moto */}
-              <input
-                type="radio"
-                id="moto"
-                value="cycling"
-                onChange={(event) => setTraffic(event.target.value)}
-                checked={traffic === "cycling"}
-              ></input>
-              <label htmlFor="moto">
-                <ion-icon name="bicycle"></ion-icon>
-              </label>
-              {/* car */}
-              <input
-                type="radio"
-                id="car"
-                value="driving"
-                onChange={(event) => setTraffic(event.target.value)}
-                checked={traffic === "driving"}
-              ></input>
-              <label htmlFor="car">
-                <ion-icon name="car-sport"></ion-icon>
-              </label>
-              {/* car */}
-              <input
-                type="radio"
-                id="bus"
-                value="public"
-                onChange={(event) => setTraffic(event.target.value)}
-                checked={traffic === "public"}
-              ></input>
-              <label htmlFor="bus">
-                <ion-icon name="bus"></ion-icon>
-              </label>
-            </div>
-            {/* Subbit Button */}
-            <div className="subbmit">
-              {/* 當errorMessage不會空或null時，將button設定成disable */}
-              <button
-                disabled={errorMessage && true}
-                className="subbmit__btn"
-                onClick={handleSubmit}
-              >
-                {" "}
-                What Should I Wear?{" "}
-              </button>
-            </div>
+            {/* 提交按鈕 */}
+            <SubmitButton disabled={!!errorMessage} onClick={handleSubmit} />
           </div>
         </div>
       </form>

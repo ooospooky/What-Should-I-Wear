@@ -1,4 +1,3 @@
-import "./App.scss";
 import Home from "./Page/Home/Home";
 import LandingPage from "./Page/LandingPage/LangingPage";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
@@ -8,34 +7,30 @@ import ResultWrapper from "./Page/Result/ResultWrapper";
 
 function App() {
   return (
-    <div className="App" style={{ position: "relative" }}>
+    <div className="relative">
       <QueryProvider>
         <Router>
-            <div className="logoDiv">
-              <Link to="/">
-                <img className="logoDiv__img" src={logo} />
-              </Link>
-              <span className="logoDiv__span">WHAT SHOULD I WEAR?</span>
-            </div>
-            <Routes>
-              <Route path="/" element={<LandingPage />}></Route>
-              <Route path="/home" element={<Home />}></Route>
-              <Route path="/result" element={<ResultWrapper />}></Route>
-              <Route
-                path="*"
-                element={
-                  <h1
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignContent: "center",
-                    }}
-                  >
-                    PAGE NOT FOUND
-                  </h1>
-                }
-              ></Route>
-            </Routes>
+          <div className="absolute left-16 top-6 z-1 flex items-center iphoneXR:hidden">
+            <Link to="/">
+              <img className="mr-2.5 h-10 w-10" src={logo} />
+            </Link>
+            <span className="font-brand text-xl font-bold text-white">
+              WHAT SHOULD I WEAR?
+            </span>
+          </div>
+          <Routes>
+            <Route path="/" element={<LandingPage />}></Route>
+            <Route path="/home" element={<Home />}></Route>
+            <Route path="/result" element={<ResultWrapper />}></Route>
+            <Route
+              path="*"
+              element={
+                <h1 className="flex items-center justify-center">
+                  PAGE NOT FOUND
+                </h1>
+              }
+            ></Route>
+          </Routes>
         </Router>
       </QueryProvider>
     </div>
