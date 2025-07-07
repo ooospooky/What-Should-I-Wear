@@ -1,27 +1,8 @@
 import { Player } from "@lottiefiles/react-lottie-player";
 import salesman from "../Assets/animation/salesman.json";
 
-interface LoadingSpinnerProps {
-  message?: string;
-  fullScreen?: boolean;
-}
-
-export const LoadingSpinner = ({ fullScreen = true }: LoadingSpinnerProps) => {
-  const containerStyle = fullScreen
-    ? {
-        height: "100vh",
-      }
-    : {};
-
-  return (
-    <div className="transition__div" style={containerStyle}>
-      <Player
-        className="transitionAnimation"
-        autoplay
-        loop
-        src={salesman}
-        style={{ height: "500px", width: "500px" }}
-      />
-    </div>
-  );
-};
+export const LoadingSpinner = () => (
+  <div className="flex min-h-screen w-full items-center justify-center bg-gradient-primary">
+    <Player className="h-96 w-96" autoplay loop src={salesman} />
+  </div>
+);

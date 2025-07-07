@@ -1,6 +1,3 @@
-// 🌤️ Result 頁面 - Suspense 版本
-
-import "./Result.scss";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { URLParamsUtils } from "../../types/url";
 import {
@@ -13,6 +10,7 @@ import {
 } from "../../hooks/useWeatherCalculation";
 import moment from "moment";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { memo, useMemo, useCallback } from "react";
 
 // Animations
 import resultSun from "../../Assets/animation/resultSun.json";
@@ -46,25 +44,211 @@ import womanJacket from "../../Assets/img/womanJacket.png";
 import manPufferJacket from "../../Assets/img/manPufferJacket.png";
 import womanPufferJacket from "../../Assets/img/womanPufferJacket.png";
 
+const TEMPERATURE_THRESHOLDS = {
+  HOT: 26,
+  WARM: 22,
+  MILD: 20,
+  COOL: 16,
+  COLD: 12,
+} as const;
+
+const RAIN_THRESHOLD = 10;
+const NIGHT_START_HOUR = 18;
+const NIGHT_END_HOUR = 6;
+
+const RAIN_PROBABILITY_THRESHOLDS = {
+  LOW: 20,
+  MODERATE: 40,
+} as const;
+
+const GLOVES_TEMPERATURE = 12;
+
+interface ClothingItem {
+  icon: string;
+  name: string;
+  description: string;
+}
+
+interface ClothingConfig {
+  womanImage: string;
+  manImage: string;
+  items: ClothingItem[];
+  additionalItems?: ClothingItem[];
+}
+
+type TemperatureRange = "hot" | "warm" | "mild" | "cool" | "cold" | "freezing";
+
+interface WeatherData {
+  locationName: string;
+}
+
+interface UserSchedule {
+  transportation: string;
+  goOutTime: string;
+  goHomeTime: string;
+}
+
+interface WeatherCalculation {
+  averageTemperature: number;
+  temperatureDifference: number;
+  averageRainProbability: number;
+}
+
+const CLOTHING_CONFIG: Record<TemperatureRange, ClothingConfig> = {
+  hot: {
+    womanImage: womanShortPants,
+    manImage: manShortPants,
+    items: [
+      { icon: shirt, name: "短袖", description: "短袖" },
+      { icon: shortpants, name: "短褲", description: "短褲" },
+    ],
+  },
+  warm: {
+    womanImage: womanTshirtLongPants1,
+    manImage: manTshirtLognPants,
+    items: [
+      { icon: shirt, name: "短袖", description: "短袖" },
+      {
+        icon: longpants,
+        name: "長褲",
+        description: "長褲優先，怕熱的話短褲也不錯",
+      },
+    ],
+  },
+  mild: {
+    womanImage: womanLongShirtPants,
+    manImage: manLongShirtPants,
+    items: [
+      { icon: longshirt, name: "薄長袖", description: "薄長袖" },
+      { icon: longpants, name: "長褲", description: "長褲" },
+    ],
+  },
+  cool: {
+    womanImage: womanSweater,
+    manImage: manHoodie,
+    items: [
+      { icon: hoodie, name: "大學t或帽t", description: "大學T或帽T" },
+      { icon: longpants, name: "長褲", description: "長褲" },
+    ],
+  },
+  cold: {
+    womanImage: womanJacket,
+    manImage: manJacket,
+    items: [
+      { icon: hoodie, name: "大學t或帽t", description: "大學T或帽T" },
+      { icon: insideshirt, name: "發熱衣", description: "加上一件發熱衣保暖" },
+      { icon: longpants, name: "長褲", description: "長褲" },
+    ],
+  },
+  freezing: {
+    womanImage: womanPufferJacket,
+    manImage: manPufferJacket,
+    items: [
+      { icon: hoodie, name: "大學t", description: "大學t或帽t" },
+      { icon: insideshirt, name: "發熱衣", description: "加上一件發熱衣保暖" },
+      { icon: longpants, name: "長褲", description: "長褲" },
+      { icon: pufferjacket, name: "厚外套", description: "厚外套" },
+    ],
+  },
+};
+
+const MODERN_STYLES = {
+  main: "min-h-screen bg-gradient-primary flex flex-col lg:flex-row justify-center items-center p-4 gap-6",
+  weatherSection:
+    "w-full lg:w-96 xl:w-80 2xl:w-96 grid grid-cols-2 gap-3 sm:gap-4 text-white",
+  weatherHeader:
+    "col-span-2 flex flex-col items-center justify-center bg-primary/20 backdrop-blur-sm rounded-3xl p-6 transition-all duration-300 hover:bg-primary/30",
+  weatherIcon:
+    "w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 transition-transform duration-300 hover:scale-110",
+  temperature:
+    "text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent",
+  locationText:
+    "text-sm sm:text-base lg:text-lg font-medium text-center mt-2 opacity-90",
+  weatherCard:
+    "bg-primary/40 backdrop-blur-sm rounded-2xl p-4 flex items-center justify-center text-center transition-all duration-300 hover:bg-primary/50 hover:scale-105 hover:shadow-lg",
+  weatherCardText: "text-sm sm:text-base lg:text-lg font-medium",
+  weatherCardSmallText: "text-xs sm:text-sm lg:text-base font-medium",
+  suggestionSection: "w-full lg:w-auto flex-1 max-w-4xl",
+  suggestionContainer: "flex flex-col lg:flex-row items-center gap-8 lg:gap-12",
+  imagesContainer: "flex flex-row gap-4 sm:gap-6",
+  clothingImage: "w-48 h-80 sm:w-56 sm:h-96 lg:w-64 lg:h-[26rem] ",
+  suggestionText: "text-white flex flex-col items-start gap-4 flex-1",
+  suggestionTitle:
+    "text-2xl sm:text-3xl font-bold mb-2 bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent",
+  clothingGrid: "grid grid-cols-1 sm:grid-cols-2 gap-3 w-full",
+  clothingItem:
+    "flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-xl transition-all duration-300 hover:bg-white/20 hover:scale-105",
+  clothingIcon: "w-8 h-8 sm:w-10 sm:h-10 flex-shrink-0",
+  clothingText: "text-sm sm:text-base font-medium",
+  backButton:
+    "fixed bottom-6 right-6 lg:absolute lg:bottom-8 lg:right-8 bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-full font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 shadow-lg border border-white/20",
+};
+
+const WeatherCard = memo(
+  ({
+    title,
+    value,
+    className = "",
+  }: {
+    title: string;
+    value: string;
+    className?: string;
+  }) => (
+    <div className={`${MODERN_STYLES.weatherCard} ${className}`}>
+      <div>
+        <div className={MODERN_STYLES.weatherCardText}>{title}</div>
+        <div className="mt-1 text-lg font-bold sm:text-xl lg:text-2xl">
+          {value}
+        </div>
+      </div>
+    </div>
+  )
+);
+
+const ClothingItem = memo(({ item }: { item: ClothingItem }) => (
+  <div className={MODERN_STYLES.clothingItem}>
+    <img
+      src={item.icon}
+      alt={item.name}
+      className={MODERN_STYLES.clothingIcon}
+      loading="lazy"
+    />
+    <span className={MODERN_STYLES.clothingText}>{item.description}</span>
+  </div>
+));
+
+const ClothingImages = memo(({ config }: { config: ClothingConfig }) => (
+  <div className={MODERN_STYLES.imagesContainer}>
+    <img
+      src={config.womanImage}
+      alt="女性穿搭建議"
+      className={MODERN_STYLES.clothingImage}
+      loading="lazy"
+    />
+    <img
+      src={config.manImage}
+      alt="男性穿搭建議"
+      className={MODERN_STYLES.clothingImage}
+      loading="lazy"
+    />
+  </div>
+));
+
 function ResultSuspense() {
-  const containerStyle = {
-    "--view-height": `${window.innerHeight}px`,
-  };
-
   const [searchParams] = useSearchParams();
-  const urlParams = URLParamsUtils.fromURLSearchParams(searchParams);
+  const navigate = useNavigate();
 
-  // 檢查參數完整性，如果不完整則導向首頁
+  const urlParams = useMemo(
+    () => URLParamsUtils.fromURLSearchParams(searchParams),
+    [searchParams]
+  );
+
   if (!URLParamsUtils.isComplete(urlParams)) {
     return <InvalidParamsRedirect />;
   }
 
   const { data: weatherData } = useWeatherSuspenseQuery(urlParams);
-
   const userSchedule = createUserScheduleFromURLSuspense(urlParams);
-
-  const navigate = useNavigate();
-
   const calculation = useWeatherCalculation(weatherData, userSchedule);
   const goOutTemp = useTemperatureAtTime(weatherData, userSchedule.goOutTime);
   const goHomeTemp = useTemperatureAtTime(weatherData, userSchedule.goHomeTime);
@@ -79,329 +263,167 @@ function ResultSuspense() {
     averageRainProbability: averagePop,
   } = calculation;
 
-  // 格式化日期
-  const date = moment().format("MMM Do");
+  const date = useMemo(() => moment().format("MMM Do"), []);
 
-  // 衣物建議渲染函數
-  const renderClothingSuggestion = (
-    imageSrc: string,
-    altText: string,
-    description: string
-  ) => (
-    <div>
-      <img src={imageSrc} alt={altText} />
-      <span>{description}</span>
-    </div>
-  );
+  const getTemperatureRange = useCallback((temp: number): TemperatureRange => {
+    if (temp >= TEMPERATURE_THRESHOLDS.HOT) return "hot";
+    if (temp >= TEMPERATURE_THRESHOLDS.WARM) return "warm";
+    if (temp >= TEMPERATURE_THRESHOLDS.MILD) return "mild";
+    if (temp >= TEMPERATURE_THRESHOLDS.COOL) return "cool";
+    if (temp >= TEMPERATURE_THRESHOLDS.COLD) return "cold";
+    return "freezing";
+  }, []);
 
-  const motoOrNot = () => {
-    if (userSchedule.transportation === "cycling") {
-      if (averageTemp < 12)
-        return renderClothingSuggestion(
-          gloves,
-          "手套",
-          "騎車時可以戴上手套保暖"
-        );
-      return renderClothingSuggestion(
-        thinJacket,
-        "薄外套",
-        "建議在騎車時穿上薄外套擋風"
-      );
-    }
-    return null;
-  };
+  const cyclingGear = useMemo((): ClothingItem | null => {
+    if (userSchedule.transportation !== "cycling") return null;
 
-  const needRaincoat = () => {
-    return averagePop > 10
-      ? renderClothingSuggestion(
-          raincoat,
-          "雨衣",
-          `降雨機率為${averagePop}%建議帶上雨衣或雨傘`
-        )
+    return averageTemp < GLOVES_TEMPERATURE
+      ? {
+          icon: gloves,
+          name: "手套",
+          description: "騎車時可以戴上手套保暖",
+        }
+      : {
+          icon: thinJacket,
+          name: "薄外套",
+          description: "建議在騎車時穿上薄外套擋風",
+        };
+  }, [userSchedule.transportation, averageTemp]);
+
+  const rainGear = useMemo((): ClothingItem | null => {
+    return averagePop > RAIN_THRESHOLD
+      ? {
+          icon: raincoat,
+          name: "雨衣",
+          description: `降雨機率為${averagePop}%建議帶上雨衣或雨傘`,
+        }
       : null;
-  };
+  }, [averagePop]);
 
-  const suggestion = () => {
-    if (averageTemp >= 26) {
-      return (
-        <>
-          <div className="result__right__imgdiv">
-            <img
-              className="result__right__img"
-              src={womanShortPants}
-              alt="womanShortPants"
-            />
-            <img
-              className="result__right__img"
-              src={manShortPants}
-              alt="manShortPants"
-              style={{ marginLeft: "1rem" }}
-            />
-          </div>
-          <div className="description">
-            <h3 style={{ marginLeft: "1rem" }}>衣著建議</h3>
-            <>
-              {renderClothingSuggestion(shirt, "短袖", "短袖")}
-              {renderClothingSuggestion(shortpants, "短褲", "短褲")}
-              {needRaincoat()}
-            </>
-          </div>
-        </>
-      );
+  const clothingSuggestion = useMemo(() => {
+    const tempRange = getTemperatureRange(averageTemp);
+    const config = CLOTHING_CONFIG[tempRange];
+
+    const allItems = [
+      ...config.items,
+      ...(cyclingGear ? [cyclingGear] : []),
+      ...(rainGear ? [rainGear] : []),
+    ];
+
+    return { config, allItems };
+  }, [averageTemp, cyclingGear, rainGear, getTemperatureRange]);
+
+  const isNightTime = useMemo(() => {
+    const goOutHour = parseInt(userSchedule.goOutTime.slice(0, 2));
+    const goHomeHour = parseInt(userSchedule.goHomeTime.slice(0, 2));
+
+    return (
+      goOutHour >= NIGHT_START_HOUR ||
+      (goOutHour < NIGHT_END_HOUR && goHomeHour <= NIGHT_END_HOUR)
+    );
+  }, [userSchedule.goOutTime, userSchedule.goHomeTime]);
+
+  const weatherAnimationSrc = useMemo(() => {
+    if (averagePop <= RAIN_PROBABILITY_THRESHOLDS.LOW) {
+      return isNightTime ? resultMoon : resultSun;
     }
-
-    if (averageTemp < 26 && averageTemp >= 22) {
-      return (
-        <>
-          <div className="result__right__imgdiv">
-            <img
-              className="result__right__img"
-              src={womanTshirtLongPants1}
-              alt="womanTshirtLongPants1"
-            />
-            <img
-              className="result__right__img"
-              src={manTshirtLognPants}
-              alt="manTshirtLognPants"
-            />
-          </div>
-          <div className="description">
-            <h3>衣著建議</h3>
-            <>
-              {renderClothingSuggestion(shirt, "短袖", "短袖")}
-              {renderClothingSuggestion(
-                longpants,
-                "長褲",
-                "長褲優先，怕熱的話短褲也不錯"
-              )}
-              {motoOrNot()}
-              {needRaincoat()}
-            </>
-          </div>
-        </>
-      );
+    if (averagePop <= RAIN_PROBABILITY_THRESHOLDS.MODERATE) {
+      return resultCloudy;
     }
+    return resultRain;
+  }, [averagePop, isNightTime]);
 
-    if (averageTemp < 22 && averageTemp >= 20) {
-      return (
-        <>
-          <div className="result__right__imgdiv">
-            <img
-              className="result__right__img"
-              src={womanLongShirtPants}
-              alt="womanLongShirtPants"
-            />
-            <img
-              className="result__right__img"
-              src={manLongShirtPants}
-              alt="manLongShirtPants"
-            />
-          </div>
-          <div className="description">
-            <h3>衣著建議</h3>
-            <>
-              {renderClothingSuggestion(longshirt, "薄長袖", "薄長袖")}
-              {renderClothingSuggestion(longpants, "長褲", "長褲")}
-              {motoOrNot()}
-              {needRaincoat()}
-            </>
-          </div>
-        </>
-      );
-    }
-
-    if (averageTemp < 20 && averageTemp >= 16) {
-      return (
-        <>
-          <div className="result__right__imgdiv">
-            <img
-              className="result__right__img"
-              src={womanSweater}
-              alt="womanSweater"
-            />
-            <img
-              className="result__right__img result__right__hoodieManImg"
-              src={manHoodie}
-              alt="manHoodie"
-              style={{ marginLeft: ".5rem" }}
-            />
-          </div>
-          <div className="description">
-            <h3>衣著建議</h3>
-            <>
-              {renderClothingSuggestion(hoodie, "大學t或帽t", "大學T或帽T")}
-              {renderClothingSuggestion(longpants, "長褲", "長褲")}
-              {motoOrNot()}
-              {needRaincoat()}
-            </>
-          </div>
-        </>
-      );
-    }
-
-    if (averageTemp < 16 && averageTemp >= 12) {
-      return (
-        <>
-          <div className="result__right__imgdiv">
-            <img
-              className="result__right__img"
-              src={womanJacket}
-              alt="womanJacket"
-            />
-            <img
-              className="result__right__img"
-              src={manJacket}
-              alt="manJacket"
-            />
-          </div>
-          <div className="description">
-            <h3>衣著建議</h3>
-            <>
-              {renderClothingSuggestion(hoodie, "大學t或帽t", "大學T或帽T")}
-              {renderClothingSuggestion(
-                insideshirt,
-                "發熱衣",
-                "加上一件發熱衣保暖"
-              )}
-              {renderClothingSuggestion(longpants, "長褲", "長褲")}
-              {needRaincoat()}
-            </>
-          </div>
-        </>
-      );
-    }
-
-    if (averageTemp < 12) {
-      return (
-        <>
-          <div className="result__right__imgdiv">
-            <img
-              className="result__right__img"
-              src={womanPufferJacket}
-              alt="womanJacket"
-            />
-            <img
-              className="result__right__img"
-              src={manPufferJacket}
-              alt="manPufferJacket"
-            />
-          </div>
-          <div className="description">
-            <h3>衣著建議</h3>
-            <>
-              {renderClothingSuggestion(hoodie, "大學t", "大學t或帽t")}
-              {renderClothingSuggestion(
-                insideshirt,
-                "發熱衣",
-                "加上一件發熱衣保暖"
-              )}
-              {renderClothingSuggestion(longpants, "長褲", "長褲")}
-              {renderClothingSuggestion(pufferjacket, "厚外套", "厚外套")}
-              {motoOrNot()}
-              {needRaincoat()}
-            </>
-          </div>
-        </>
-      );
-    }
-  };
-
-  const outAtNightCondition =
-    parseInt(userSchedule.goOutTime.slice(0, 2)) >= 18 ||
-    (parseInt(userSchedule.goOutTime.slice(0, 2)) < 6 &&
-      parseInt(userSchedule.goHomeTime.slice(0, 2)) <= 6);
-
-  const getresultAnimation = () => {
-    if (averagePop <= 20) {
-      if (outAtNightCondition) return resultMoon;
-      return resultSun;
-    }
-    if (averagePop > 20 && averagePop <= 40) return resultCloudy;
-    if (averagePop > 40) return resultRain;
-  };
-
-  const weatherAnimation = (
-    <Player
-      className="resultAnimation"
-      autoplay
-      loop
-      src={getresultAnimation()}
-    />
-  );
+  const handleBackClick = useCallback(() => {
+    navigate("/home");
+  }, [navigate]);
 
   return (
-    <div className="result" style={containerStyle}>
-      <div className="result__left">
-        <div className="sun">
-          <div className="sun__up">
-            <div className="weatherAnimation">{weatherAnimation}</div>
-            <span className="sun__up__temp">{averageTemp}&deg;C</span>
+    <main className={MODERN_STYLES.main}>
+      <section className={MODERN_STYLES.weatherSection} aria-label="天氣資訊">
+        <div className={MODERN_STYLES.weatherHeader}>
+          <div className="flex items-center gap-4">
+            <Player
+              className={MODERN_STYLES.weatherIcon}
+              autoplay
+              loop
+              src={weatherAnimationSrc}
+            />
+            <span className={MODERN_STYLES.temperature}>
+              {averageTemp}&deg;C
+            </span>
           </div>
-          <div className="sun__down">
-            <span>{date}&ensp;&ensp;</span>
-            <span>{weatherData.locationName}</span>
+          <div className={MODERN_STYLES.locationText}>
+            {date} • {weatherData.locationName}
           </div>
         </div>
-        <div className="lilcontainer outTemp ">
-          <span className="lilcontainer__bigText">
-            出門: <br />
-            {goOutTemp ?? "--"}&deg;C
-          </span>
+
+        <WeatherCard title="出門" value={`${goOutTemp ?? "--"}°C`} />
+        <WeatherCard title="回家" value={`${goHomeTemp ?? "--"}°C`} />
+        <WeatherCard
+          title="平均溫度"
+          value={`${averageTemp}°C`}
+          className="col-span-2"
+        />
+        <WeatherCard title="最大溫差" value={`${tempDiff}°C`} />
+        <WeatherCard title="降雨機率" value={`${averagePop}%`} />
+      </section>
+
+      <section
+        className={MODERN_STYLES.suggestionSection}
+        aria-label="穿搭建議"
+      >
+        <div className={MODERN_STYLES.suggestionContainer}>
+          <ClothingImages config={clothingSuggestion.config} />
+          <div className={MODERN_STYLES.suggestionText}>
+            <h2 className={MODERN_STYLES.suggestionTitle}>穿搭建議</h2>
+            <div className={MODERN_STYLES.clothingGrid}>
+              {clothingSuggestion.allItems.map((item, index) => (
+                <ClothingItem key={`${item.name}-${index}`} item={item} />
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="lilcontainer backTemp">
-          <span className="lilcontainer__bigText">
-            回家: <br />
-            {goHomeTemp ?? "--"}&deg;C
-          </span>
-        </div>
-        <div className="lilcontainer avgTemp">
-          <span className="lilcontainer__smallText">
-            在外時平均溫度: {averageTemp}&deg;C
-          </span>
-        </div>
-        <div className="lilcontainer avgTempDiff">
-          <span className="lilcontainer__smallText">
-            在外時最大溫差: {tempDiff}&deg;C
-          </span>
-        </div>
-        <div className="lilcontainer pop">
-          <span className="lilcontainer__smallText">
-            在外時降雨率: {averagePop}%
-          </span>
-        </div>
-      </div>
-      <div className="result__right">
-        {suggestion()}
-        <button className="backBtn" onClick={() => navigate("/home")}>
-          &larr;&nbsp;返回
-        </button>
-      </div>
-    </div>
+      </section>
+
+      <button
+        className={MODERN_STYLES.backButton}
+        onClick={handleBackClick}
+        aria-label="返回首頁"
+      >
+        ← 返回
+      </button>
+    </main>
   );
 }
 
-/**
- * 參數不完整時的重導向組件
- * TODO: refactor when change to Tailwind
- */
-const InvalidParamsRedirect = () => {
+const InvalidParamsRedirect = memo(() => {
   const navigate = useNavigate();
 
-  const containerStyle = {
-    "--view-height": `${window.innerHeight}px`,
-  };
+  const handleHomeClick = useCallback(() => {
+    navigate("/home");
+  }, [navigate]);
 
   return (
-    <div className="result" style={containerStyle}>
-      <div style={{ textAlign: "center", padding: "2rem" }}>
-        <h2>參數不完整</h2>
-        <p>請重新選擇天氣查詢條件</p>
-        <button className="backBtn" onClick={() => navigate("/home")}>
-          &larr;&nbsp;返回首頁
-        </button>
+    <main className="flex min-h-screen items-center justify-center bg-gradient-primary p-4">
+      <div className="mx-auto max-w-md text-center">
+        <div className="rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur-sm">
+          <h2 className="mb-4 text-2xl font-bold text-white sm:text-3xl">
+            參數不完整
+          </h2>
+          <p className="mb-8 text-base text-white/80 sm:text-lg">
+            請重新選擇天氣查詢條件
+          </p>
+          <button
+            className="rounded-full border border-white/20 bg-white/20 px-8 py-4 font-medium text-white backdrop-blur-sm transition-all duration-300 hover:scale-105 hover:bg-white/30"
+            onClick={handleHomeClick}
+            aria-label="返回首頁"
+          >
+            ← 返回首頁
+          </button>
+        </div>
       </div>
-    </div>
+    </main>
   );
-};
+});
 
 export default ResultSuspense;

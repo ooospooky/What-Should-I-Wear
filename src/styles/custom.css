@@ -1,0 +1,217 @@
+/* 自定義 CSS - 處理 Tailwind 無法覆蓋的複雜樣式 */
+
+/* ============= 瀏覽器兼容性 ============= */
+/* iOS Safari viewport height fix */
+:root {
+  --view-height: 100vh;
+}
+
+@supports (-webkit-touch-callout: none) {
+  :root {
+    --view-height: -webkit-fill-available;
+  }
+}
+
+/* ============= 自定義組件類別 ============= */
+
+/* viewport height utility */
+.h-view {
+  height: 100vh;
+  height: var(--view-height);
+}
+
+/* Home 頁面背景圖片 */
+.date-btn-bg {
+  background-image: url("../Page/Home/background.png");
+  background-size: cover;
+}
+
+/* sunAnimation 絕對定位 (Tailwind 無法處理的百分比定位) */
+.sun-animation {
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  height: 300px;
+  width: 300px;
+}
+
+@media (max-width: 1180px) {
+  .sun-animation {
+    top: -5%;
+    height: 250px;
+    width: 250px;
+  }
+}
+
+@media (max-width: 1028px) {
+  .sun-animation {
+    top: 0;
+    left: -5%;
+    height: 220px;
+    width: 220px;
+  }
+}
+
+@media (max-width: 800px) {
+  .sun-animation {
+    top: 10%;
+    height: 200px;
+    width: 200px;
+  }
+}
+
+@media (max-width: 414px) {
+  .sun-animation {
+    top: 0;
+    left: 13%;
+    height: 200px;
+    width: 200px;
+  }
+}
+
+/* Result 頁面 CSS Grid Template Areas */
+.result-grid {
+  display: grid;
+  grid-template-rows: 30% 20% 16% 16% 16%;
+  grid-template-columns: 50% 50%;
+  grid-template-areas:
+    "sun sun"
+    "outTemp backTemp"
+    "avgTemp avgTemp"
+    "avgTempDiff avgTempDiff"
+    "pop pop";
+}
+
+@media (max-width: 414px) {
+  .result-grid {
+    grid-template-rows: repeat(5, 20%);
+    grid-template-columns: 25% 25% 25% 25%;
+    grid-template-areas:
+      "sun sun avgTemp avgTemp"
+      "sun sun avgTempDiff avgTempDiff"
+      "sun sun pop pop"
+      "outTemp outTemp backTemp backTemp"
+      "outTemp outTemp backTemp backTemp";
+  }
+}
+
+/* Grid area utilities */
+.grid-area-sun {
+  grid-area: sun;
+}
+.grid-area-outTemp {
+  grid-area: outTemp;
+}
+.grid-area-backTemp {
+  grid-area: backTemp;
+}
+.grid-area-avgTemp {
+  grid-area: avgTemp;
+}
+.grid-area-avgTempDiff {
+  grid-area: avgTempDiff;
+}
+.grid-area-pop {
+  grid-area: pop;
+}
+
+/* table-cell utility for vertical centering */
+.table-cell-center {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+/* ============= 精確尺寸類別 ============= */
+/* 這些是從原始 SCSS 提取的精確像素值，Tailwind 標準尺寸無法覆蓋 */
+
+/* Result 頁面圖片尺寸 */
+.img-result-base {
+  width: 230px;
+  height: 450px;
+}
+.img-result-small-desktop {
+  width: 200px;
+  height: 400px;
+}
+.img-result-tab-port {
+  width: 170px;
+  height: 330px;
+}
+.img-result-small-tab-port {
+  width: 150px;
+  height: 300px;
+}
+.img-result-ipad {
+  width: 130px;
+  height: 250px;
+}
+.img-result-mobile {
+  width: 120px;
+  height: 220px;
+}
+.img-result-iphoneXR {
+  width: 130px;
+  height: 230px;
+}
+.img-result-iphoneSE {
+  width: 120px;
+  height: 210px;
+}
+
+/* ============= LandingPage 組件樣式 ============= */
+
+/* 動畫容器 - Mobile First 方法 */
+.landing-animation {
+  /* Mobile: 300px */
+  width: 300px;
+  height: 300px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Mobile First 響應式動畫尺寸 */
+@media (min-width: 640px) {
+  /* sm: */
+  .landing-animation {
+    width: 350px;
+    height: 350px;
+  }
+}
+
+@media (min-width: 768px) {
+  /* md: */
+  .landing-animation {
+    width: 400px;
+    height: 400px;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* lg: */
+  .landing-animation {
+    width: 500px;
+    height: 500px;
+  }
+}
+
+@media (min-width: 1280px) {
+  /* xl: */
+  .landing-animation {
+    width: 600px;
+    height: 600px;
+  }
+}
+
+/* 第二張圖片的 margin 修正 */
+.img-second-margin {
+  margin-left: -5px;
+  margin-right: 10px;
+}
+
+@media (max-width: 650px) {
+  .img-second-margin {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0.5rem;
+  }
+}
