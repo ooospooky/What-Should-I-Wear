@@ -8,9 +8,10 @@ import {
   useWeatherCalculation,
   useTemperatureAtTime,
 } from "../../hooks/useWeatherCalculation";
+import { useAISuggestionMutation } from "../../hooks/useAISuggestionQuery";
 import moment from "moment";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { memo, useMemo, useCallback } from "react";
+import { memo, useMemo, useCallback, useState } from "react";
 
 // Animations
 import resultSun from "../../Assets/animation/resultSun.json";
@@ -237,6 +238,9 @@ const ClothingImages = memo(({ config }: { config: ClothingConfig }) => (
 function ResultSuspense() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
+
+  const aiMutation = useAISuggestionMutation();
 
   const urlParams = useMemo(
     () => URLParamsUtils.fromURLSearchParams(searchParams),
@@ -337,6 +341,34 @@ function ResultSuspense() {
     navigate("/home");
   }, [navigate]);
 
+  const handleAISuggestion = useCallback(async () => {
+    try {
+      const result = await aiMutation.mutateAsync({
+        weatherData,
+        userSchedule,
+        calculation,
+      });
+      setAiSuggestion(result);
+    } catch (error) {
+      console.error("Failed to get AI suggestion:", error);
+    }
+  }, [weatherData, userSchedule, calculation, aiMutation]);
+
+  const formattedSuggestion = useMemo(() => {
+    if (!aiSuggestion) return null;
+
+    // **重點內容**，顯示成粗體
+    return aiSuggestion.split(/(\*\*.*?\*\*)/).map((part, i) =>
+      part.startsWith("**") && part.endsWith("**") ? (
+        <strong key={i} className="font-semibold">
+          {part.slice(2, -2)}
+        </strong>
+      ) : (
+        part
+      )
+    );
+  }, [aiSuggestion]);
+
   return (
     <main className={MODERN_STYLES.main}>
       <section className={MODERN_STYLES.weatherSection} aria-label="天氣資訊">
@@ -375,7 +407,32 @@ function ResultSuspense() {
         <div className={MODERN_STYLES.suggestionContainer}>
           <ClothingImages config={clothingSuggestion.config} />
           <div className={MODERN_STYLES.suggestionText}>
-            <h2 className={MODERN_STYLES.suggestionTitle}>穿搭建議</h2>
+            <div className="flex items-center gap-2">
+              <h2 className={MODERN_STYLES.suggestionTitle}>穿搭建議</h2>
+              <button
+                onClick={handleAISuggestion}
+                disabled={aiMutation.isPending}
+                className="rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white transition-all hover:bg-blue-600 disabled:opacity-50"
+              >
+                {aiMutation.isPending ? "AI 分析中..." : "🤖 AI 建議"}
+              </button>
+            </div>
+
+            {aiSuggestion && (
+              <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-gray-700">
+                <h3 className="mb-2 font-semibold text-blue-800">
+                  AI 專業建議：
+                </h3>
+                <div className="whitespace-pre-wrap">{formattedSuggestion}</div>
+              </div>
+            )}
+
+            {aiMutation.isError && (
+              <div className="mt-4 rounded-lg bg-red-50 p-4 text-sm text-red-700">
+                無法取得 AI 建議，請稍後再試
+              </div>
+            )}
+
             <div className={MODERN_STYLES.clothingGrid}>
               {clothingSuggestion.allItems.map((item, index) => (
                 <ClothingItem key={`${item.name}-${index}`} item={item} />
