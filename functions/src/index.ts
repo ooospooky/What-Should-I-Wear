@@ -1,3 +1,5 @@
+import { handleAISuggestion } from './ai-handler';
+
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
 		const allowedOrigins = ['https://what-should-i-wear-bd38a.web.app', 'http://localhost:3000', 'http://localhost:3001'];
@@ -7,7 +9,7 @@ export default {
 
 		const corsHeaders = {
 			'Access-Control-Allow-Origin': isAllowedOrigin ? origin : 'null',
-			'Access-Control-Allow-Methods': 'GET, OPTIONS',
+			'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 			'Access-Control-Allow-Headers': 'Content-Type',
 		};
 
@@ -15,11 +17,21 @@ export default {
 			return new Response(null, { headers: corsHeaders });
 		}
 
+		const url = new URL(request.url);
+
+		// Handle AI suggestion endpoint
+		if (url.pathname === '/ai-suggestion') {
+			if (request.method !== 'POST') {
+				return new Response('Method not allowed for AI endpoint', { status: 405, headers: corsHeaders });
+			}
+			return await handleAISuggestion(request, env, corsHeaders);
+		}
+
+		// Handle weather endpoint (default)
 		if (request.method !== 'GET') {
 			return new Response('Method not allowed', { status: 405 });
 		}
 
-		const url = new URL(request.url);
 		const locationId = url.searchParams.get('locationId');
 		const locationName = url.searchParams.get('locationName');
 		const dateRange = url.searchParams.get('dateRange') || '';
@@ -71,7 +83,7 @@ export default {
 						'Content-Type': 'application/json',
 						...corsHeaders,
 					},
-				}
+				},
 			);
 		}
 	},
