@@ -1,52 +1,53 @@
 # 🔥 What Should I Wear?
 
- <a href="https://what-should-i-wear-bd38a.web.app/">Check Out My Project!</a>
+  **Smart outfit recommendations with AI-powered personalization**
 
-Alleviate Your Worries: Dress Suggestions for Any Weather
+[Try it now →](https://what-should-i-wear-bd38a.web.app/)
 
 ---
 
-Are you tired of struggling with what to wear every time you step out of the door? Don't worry, we've got you covered! "What Should I Wear" is here to alleviate your worries by providing dress suggestions for the weather conditions.
+## ✨ What's New
 
-## 🎯 Project Purpose
+Powered by **Gemini AI**: Personalized outfit suggestions based on weather, schedule, and transportation!
 
-The main purpose of this project is to make your life easier and more comfortable when it comes to deciding what to wear. By leveraging weather data, our service offers dress recommendations based on the current and forecasted weather conditions. Whether it's a sunny day, a rainy afternoon, or a chilly evening, we'll ensure you're appropriately dressed for any occasion.
+---
 
-## 🛠 Tools
-<picture>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/512px-React-icon.svg.png?20220125121207" height="50px" width="50px">
-</picture>
-<picture>
-  <img src="https://cdn.worldvectorlogo.com/logos/javascript-1.svg" height="50px" width="50px">
-</picture>
-<picture>
-  <img src="https://cdn-icons-png.flaticon.com/512/5968/5968358.png" height="50px" width="50px">
-</picture>
-<picture>
-  <img src="https://icons-for-free.com/iconfiles/png/512/svg+developer+firebase+google+programming+icon-1320183319887802192.png" height="50px" width="50px">
-</picture>
-<picture>
-  <img src="https://forum.bubble.io/uploads/default/original/3X/8/4/84c1f5c09eddc477a4cebd29b44604cc13f6208e.png" height="50px" width="50px">
-</picture>
-<picture>
-  <img src="https://www.svgrepo.com/show/354262/react-router.svg" height="50px" width="50px">
-</picture>
+## 🌟 Features
 
-## 🏁  Key Advantages
+| Feature                | Description |
+|------------------------|-------------|
+| 🤖 **AI Suggestions**  | Gemini analyzes weather, schedule, and context to suggest outfits |
+| 📍 **Location-based**  | Uses real-time weather API for Taiwan |
+| ⏰ **Schedule-aware**  | Adapts to your time of departure and return |
+| 🚗 **Transportation-aware** | Recommends based on how you travel |
+| 🌡️ **Temperature-smart** | Accounts for temperature changes during the day |
 
-- ***Accurate Weather-based Suggestions:***     Our dress recommendations are based on real-time and forecasted weather conditions, ensuring you're prepared for any weather.
+---
 
-- ***Effortless Adaptation:*** Say goodbye to the hassle of checking weather apps and guessing what to wear. Our service takes the guesswork out of your clothing choices, allowing you to effortlessly adapt to different climate conditions.
+## 🧑‍💻 Tech Stack
 
-- ***Tailored to Your Location:*** Whether you're in Taipei, Taichung, or any other region in Taiwan, our service covers all areas, providing dress suggestions that are relevant to your specific location.
+- **Frontend**: React, TypeScript, Tailwind CSS, React Query
+- **Backend**: Cloudflare Workers  
+- **AI**: Google Gemini API  
 
-- ***Multiple Transportation Options:*** We understand that different activities require different attire. That's why our service takes into account various transportation options, ensuring that you're appropriately dressed whether you're commuting, walking, cycling, or taking public transportation.
+---
 
-- ***Convenient Reminders:*** We'll never let you forget to bring your raincoat or umbrella when rain is in the forecast. Our service sends you timely reminders, so you're always prepared for unexpected weather changes.
+## 🎯 Use Cases
 
+- **Daily commuters** who need practical outfit suggestions
+- **Travelers** exploring Taiwan in changing weather
+- **Anyone** tired of checking multiple apps before getting dressed
 
+---
 
+## 🛠️ How It Works
 
+  1. Enter your location and schedule
+  2. Select your transportation method
+  3. Get AI-powered outfit suggestions
+  4. Never worry about what to wear again!
+
+---
 ## 💻 Screenshots
 <picture>
   <img src="https://i.ibb.co/frRrQpD/2023-06-07-2-48-10.png">
