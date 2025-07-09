@@ -2,7 +2,8 @@
 
   **Smart outfit recommendations with AI-powered personalization**
 
-[Try it now →](https://what-should-i-wear-bd38a.web.app/)
+<a href="https://what-should-i-wear-bd38a.web.app/" target="_blank">Try it now →</a>
+
 
 ---
 
