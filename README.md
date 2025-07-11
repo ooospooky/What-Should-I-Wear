@@ -57,7 +57,7 @@ Powered by **Gemini AI**: Personalized outfit suggestions based on weather, sche
   <img src="https://i.ibb.co/5s6PrR8/2023-06-07-3-04-16.png">
 </picture>
 <picture>
-  <img src="https://i.ibb.co/zr5ykVR/2023-06-20-2-45-19.png">
+  <img src="https://i.postimg.cc/ncj32Nst/2025-07-11-7-35-57.png">
 </picture>
 
 ## 👩‍💻  Contributors
