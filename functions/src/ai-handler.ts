@@ -1,5 +1,7 @@
+import { type } from 'arktype';
 import { GeminiAIPayload } from '../../src/services/aiService';
 import type { TransportationType } from '../../src/types/weather';
+import { AISuggestionSchema, AI_SUGGESTION_JSON_SCHEMA, type AISuggestionResponse, type AISuggestion } from '../../src/types/ai-suggestion';
 
 const transportationMap: Record<TransportationType, string> = {
 	walking: '步行',
@@ -18,6 +20,35 @@ interface GeminiResponse {
 	}>;
 }
 
+type ErrorCode = 'VALIDATION_ERROR' | 'GEMINI_API_ERROR' | 'UNKNOWN_ERROR';
+
+const createErrorResponse = (code: ErrorCode, message: string, corsHeaders: Record<string, string>, details?: string): Response => {
+	const response: AISuggestionResponse = {
+		success: false,
+		error: { code, message, details },
+	};
+	return new Response(JSON.stringify(response), {
+		status: code === 'VALIDATION_ERROR' ? 422 : 500,
+		headers: {
+			'Content-Type': 'application/json',
+			...corsHeaders,
+		},
+	});
+};
+
+const createSuccessResponse = (data: AISuggestion, corsHeaders: Record<string, string>): Response => {
+	const response: AISuggestionResponse = {
+		success: true,
+		data,
+	};
+	return new Response(JSON.stringify(response), {
+		headers: {
+			'Content-Type': 'application/json',
+			...corsHeaders,
+		},
+	});
+};
+
 export async function handleAISuggestion(
 	request: Request,
 	env: { GEMINI_API_KEY: string },
@@ -27,10 +58,7 @@ export async function handleAISuggestion(
 		const aiRequest: GeminiAIPayload = await request.json();
 
 		if (!aiRequest.weatherData || !aiRequest.userSchedule || !aiRequest.calculation) {
-			return new Response('Missing required parameters: weatherData, userSchedule, and calculation', {
-				status: 400,
-				headers: corsHeaders,
-			});
+			return createErrorResponse('VALIDATION_ERROR', '缺少必要參數：weatherData、userSchedule 或 calculation', corsHeaders);
 		}
 
 		const { weatherData, userSchedule, calculation } = aiRequest;
@@ -52,26 +80,23 @@ export async function handleAISuggestion(
 - 最低溫度：${calculation.minTemperature}°C
 - 溫差：${calculation.temperatureDifference}°C
 - 平均降雨機率：${calculation.averageRainProbability}%
-- 濕度
 
 用戶行程：
 - 出門時間：${userSchedule.goOutTime} (溫度約${goOutTemp}°C)
 - 回家時間：${userSchedule.goHomeTime} (溫度約${goHomeTemp}°C)
 - 交通方式：${transportationMap[userSchedule.transportation]}
 
-請提供實用的穿搭建議，包括：
-1. 衣物搭配
-2. 外套需求（考慮溫差和交通方式）
-3. 配件建議（雨具、手套等）
-4. 針對交通方式的提醒
+請提供實用的穿搭建議，要求：
+1. outfit 陣列：包含 2-4 件衣物，每件標明 type（top=上衣/bottom=下身/outerwear=外套）
+2. accessories 陣列：0-2 件配件（如雨傘、帽子、手套），若無需配件則為空陣列
+3. transportTips 陣列：針對「${transportationMap[userSchedule.transportation]}」的 1-2 個提醒
+4. warnings 陣列：天氣相關注意事項 0-2 項，若無則為空陣列
 
-格式要求：
-1. 重要的衣物名稱和關鍵建議請用 **重點內容** 包圍，例如：**短袖上衣**、**防曬外套**，其餘內容皆不使用'*'
-2. 如果交通方式為 cycling，請統一使用「騎車」一詞，儘管cycling可能是摩托車或腳踏車。
-3. 保持簡潔實用、簡短，重點關注實用性
-4. 在配件建議以及針對交通方式的提醒上，最多提供兩個細項
+注意：
+- 如果交通方式為 cycling，統一使用「騎車」一詞
+- 保持簡潔實用
+- 回答請用繁體中文`;
 
-回答請用繁體中文，重點關注舒適度和天氣適應性。`;
 		const geminiResponse = await fetch(
 			`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GEMINI_API_KEY}`,
 			{
@@ -82,13 +107,13 @@ export async function handleAISuggestion(
 				body: JSON.stringify({
 					contents: [
 						{
-							parts: [
-								{
-									text: prompt,
-								},
-							],
+							parts: [{ text: prompt }],
 						},
 					],
+					generationConfig: {
+						responseMimeType: 'application/json',
+						responseSchema: AI_SUGGESTION_JSON_SCHEMA,
+					},
 				}),
 			},
 		);
@@ -96,37 +121,41 @@ export async function handleAISuggestion(
 		if (!geminiResponse.ok) {
 			const errorText = await geminiResponse.text();
 			console.error('Gemini API Error:', errorText);
-			throw new Error(`Gemini API returned ${geminiResponse.status}: ${errorText}`);
+			return createErrorResponse('GEMINI_API_ERROR', 'Gemini API 請求失敗', corsHeaders, `Status: ${geminiResponse.status}`);
 		}
 
 		const geminiData: GeminiResponse = await geminiResponse.json();
-		const suggestion = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || 'Unable to generate clothing suggestion';
+		const rawText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
 
-		return new Response(
-			JSON.stringify({
-				suggestion,
-			}),
-			{
-				headers: {
-					'Content-Type': 'application/json',
-					...corsHeaders,
-				},
-			},
-		);
+		if (!rawText) {
+			return createErrorResponse('GEMINI_API_ERROR', '無法取得 AI 回應', corsHeaders);
+		}
+
+		// 解析 JSON
+		let parsedData: unknown;
+		try {
+			parsedData = JSON.parse(rawText);
+		} catch {
+			console.error('JSON parse error, raw text:', rawText);
+			return createErrorResponse('VALIDATION_ERROR', 'AI 回應格式錯誤，無法解析 JSON', corsHeaders);
+		}
+
+		// ArkType 驗證
+		const validationResult = AISuggestionSchema(parsedData);
+
+		if (validationResult instanceof type.errors) {
+			console.error('Validation failed:', validationResult.summary);
+			return createErrorResponse('VALIDATION_ERROR', '穿搭建議格式驗證失敗', corsHeaders, validationResult.summary);
+		}
+
+		return createSuccessResponse(validationResult, corsHeaders);
 	} catch (error) {
 		console.error('AI Suggestion Error:', error);
-		return new Response(
-			JSON.stringify({
-				error: 'Failed to generate AI suggestion',
-				details: error instanceof Error ? error.message : 'Unknown error',
-			}),
-			{
-				status: 500,
-				headers: {
-					'Content-Type': 'application/json',
-					...corsHeaders,
-				},
-			},
+		return createErrorResponse(
+			'UNKNOWN_ERROR',
+			'處理 AI 建議時發生未預期的錯誤',
+			corsHeaders,
+			error instanceof Error ? error.message : 'Unknown error',
 		);
 	}
 }

@@ -9,9 +9,11 @@ import {
   useTemperatureAtTime,
 } from "../../hooks/useWeatherCalculation";
 import { useAISuggestionMutation } from "../../hooks/useAISuggestionQuery";
+import { AISuggestionError } from "../../services/aiService";
+import type { AISuggestion, OutfitItem } from "../../types/ai-suggestion";
 import moment from "moment";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { memo, useMemo, useCallback, useState } from "react";
+import { memo, useMemo, useCallback } from "react";
 
 // Animations
 import resultSun from "../../Assets/animation/resultSun.json";
@@ -78,22 +80,6 @@ interface ClothingConfig {
 }
 
 type TemperatureRange = "hot" | "warm" | "mild" | "cool" | "cold" | "freezing";
-
-interface WeatherData {
-  locationName: string;
-}
-
-interface UserSchedule {
-  transportation: string;
-  goOutTime: string;
-  goHomeTime: string;
-}
-
-interface WeatherCalculation {
-  averageTemperature: number;
-  temperatureDifference: number;
-  averageRainProbability: number;
-}
 
 const CLOTHING_CONFIG: Record<TemperatureRange, ClothingConfig> = {
   hot: {
@@ -235,10 +221,123 @@ const ClothingImages = memo(({ config }: { config: ClothingConfig }) => (
   </div>
 ));
 
+// === AI 建議相關元件 ===
+
+const OUTFIT_TYPE_ICONS: Record<OutfitItem["type"], string> = {
+  top: shirt,
+  bottom: longpants,
+  outerwear: hoodie,
+};
+
+const OUTFIT_TYPE_LABELS: Record<OutfitItem["type"], string> = {
+  top: "上衣",
+  bottom: "下身",
+  outerwear: "外套",
+};
+
+interface AISuggestionDisplayProps {
+  suggestion: AISuggestion;
+}
+
+const AISuggestionDisplay = memo(({ suggestion }: AISuggestionDisplayProps) => (
+  <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-gray-700">
+    <h3 className="mb-3 font-semibold text-blue-800">AI 專業建議：</h3>
+
+    {/* 衣物搭配 */}
+    <div className="mb-3">
+      <h4 className="mb-2 font-medium text-gray-800">穿搭建議</h4>
+      <ul className="space-y-2">
+        {suggestion.outfit.map((item, index) => (
+          <li key={index} className="flex items-start gap-2">
+            <img
+              src={OUTFIT_TYPE_ICONS[item.type]}
+              alt={OUTFIT_TYPE_LABELS[item.type]}
+              className="h-5 w-5 flex-shrink-0"
+              loading="lazy"
+            />
+            <span>
+              <strong className="font-semibold">{item.item}</strong>
+              <span className="text-gray-600"> - {item.reason}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    {/* 配件建議 */}
+    {suggestion.accessories.length > 0 && (
+      <div className="mb-3">
+        <h4 className="mb-2 font-medium text-gray-800">配件建議</h4>
+        <ul className="space-y-1">
+          {suggestion.accessories.map((acc, index) => (
+            <li key={index}>
+              <strong className="font-semibold">{acc.item}</strong>
+              <span className="text-gray-600"> - {acc.reason}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    {/* 交通提醒 */}
+    {suggestion.transportTips.length > 0 && (
+      <div className="mb-3">
+        <h4 className="mb-2 font-medium text-gray-800">交通提醒</h4>
+        <ul className="list-inside list-disc space-y-1 text-gray-600">
+          {suggestion.transportTips.map((tip, index) => (
+            <li key={index}>{tip}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    {/* 注意事項 */}
+    {suggestion.warnings.length > 0 && (
+      <div>
+        <h4 className="mb-2 font-medium text-gray-800">注意事項</h4>
+        <ul className="list-inside list-disc space-y-1 text-gray-600">
+          {suggestion.warnings.map((warning, index) => (
+            <li key={index}>{warning}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+));
+
+interface AISuggestionErrorUIProps {
+  error: AISuggestionError;
+  onRetry: () => void;
+}
+
+const AISuggestionErrorUI = memo(
+  ({ error, onRetry }: AISuggestionErrorUIProps) => (
+    <div className="mt-4 rounded-lg bg-red-50 p-4 text-sm">
+      <h3 className="mb-2 font-semibold text-red-800">無法取得 AI 建議</h3>
+      <p className="mb-2 text-red-700">{error.message}</p>
+      {error.details && (
+        <details className="mb-3">
+          <summary className="cursor-pointer text-red-600 hover:text-red-800">
+            詳細資訊
+          </summary>
+          <pre className="mt-2 overflow-auto rounded bg-red-100 p-2 text-xs text-red-800">
+            {error.details}
+          </pre>
+        </details>
+      )}
+      <button
+        onClick={onRetry}
+        className="rounded bg-red-600 px-3 py-1 text-white transition-colors hover:bg-red-700"
+      >
+        重試
+      </button>
+    </div>
+  )
+);
+
 function ResultSuspense() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
 
   const aiMutation = useAISuggestionMutation();
 
@@ -341,33 +440,18 @@ function ResultSuspense() {
     navigate("/home");
   }, [navigate]);
 
-  const handleAISuggestion = useCallback(async () => {
-    try {
-      const result = await aiMutation.mutateAsync({
-        weatherData,
-        userSchedule,
-        calculation,
-      });
-      setAiSuggestion(result);
-    } catch (error) {
-      console.error("Failed to get AI suggestion:", error);
-    }
+  const handleAISuggestion = useCallback(() => {
+    aiMutation.mutate({
+      weatherData,
+      userSchedule,
+      calculation,
+    });
   }, [weatherData, userSchedule, calculation, aiMutation]);
 
-  const formattedSuggestion = useMemo(() => {
-    if (!aiSuggestion) return null;
-
-    // **重點內容**，顯示成粗體
-    return aiSuggestion.split(/(\*\*.*?\*\*)/).map((part, i) =>
-      part.startsWith("**") && part.endsWith("**") ? (
-        <strong key={i} className="font-semibold">
-          {part.slice(2, -2)}
-        </strong>
-      ) : (
-        part
-      )
-    );
-  }, [aiSuggestion]);
+  const handleRetry = useCallback(() => {
+    aiMutation.reset();
+    handleAISuggestion();
+  }, [aiMutation, handleAISuggestion]);
 
   return (
     <main className={MODERN_STYLES.main}>
@@ -418,20 +502,24 @@ function ResultSuspense() {
               </button>
             </div>
 
-            {aiSuggestion && (
-              <div className="mt-4 rounded-lg bg-blue-50 p-4 text-sm text-gray-700">
-                <h3 className="mb-2 font-semibold text-blue-800">
-                  AI 專業建議：
-                </h3>
-                <div className="whitespace-pre-wrap">{formattedSuggestion}</div>
-              </div>
+            {aiMutation.data && (
+              <AISuggestionDisplay suggestion={aiMutation.data} />
             )}
 
-            {aiMutation.isError && (
-              <div className="mt-4 rounded-lg bg-red-50 p-4 text-sm text-red-700">
-                無法取得 AI 建議，請稍後再試
-              </div>
-            )}
+            {aiMutation.isError &&
+              aiMutation.error instanceof AISuggestionError && (
+                <AISuggestionErrorUI
+                  error={aiMutation.error}
+                  onRetry={handleRetry}
+                />
+              )}
+
+            {aiMutation.isError &&
+              !(aiMutation.error instanceof AISuggestionError) && (
+                <div className="mt-4 rounded-lg bg-red-50 p-4 text-sm text-red-700">
+                  無法取得 AI 建議，請稍後再試
+                </div>
+              )}
 
             <div className={MODERN_STYLES.clothingGrid}>
               {clothingSuggestion.allItems.map((item, index) => (
