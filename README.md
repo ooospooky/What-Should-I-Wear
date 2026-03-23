@@ -27,7 +27,7 @@ Powered by **Gemini AI**: Personalized outfit suggestions based on weather, sche
 
 ## 🧑‍💻 Tech Stack
 
-- **Frontend**: React, TypeScript, Tailwind CSS, React Query
+- **Frontend**: React, TypeScript, Tailwind CSS, React Query, ArkType, Vite
 - **Backend**: Cloudflare Workers  
 - **AI**: Google Gemini API  
 
@@ -66,6 +66,6 @@ Special thanks to my friend Jenna, an excellent UI/UX designer, who has provided
 
 <p align="center">
   <a href="https://github.com/ooospooky/What-Should-I-Wear">
-    <img src="https://superagi.com/wp-content/uploads/2023/05/backToTopButton.png" alt="Back to top" height="29"/>
+  Back to top
   </a>
 </p>
