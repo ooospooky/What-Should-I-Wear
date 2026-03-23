@@ -14,5 +14,8 @@
 		"typescript": "^5.5.2",
 		"vitest": "~3.2.0",
 		"wrangler": "^4.22.0"
+	},
+	"dependencies": {
+		"arktype": "^2.2.0"
 	}
 }
